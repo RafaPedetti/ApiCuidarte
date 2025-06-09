@@ -1,0 +1,6 @@
+@ApiCuidarte_HostAddress = http://localhost:5285
+
+GET {{ApiCuidarte_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

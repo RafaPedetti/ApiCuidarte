@@ -1,4 +1,5 @@
-﻿using LogicaNegocio.Entidades;
+﻿using LogicaAplicacion.Dtos.TipoPlanes;
+using LogicaNegocio.Entidades;
 using LogicaNegocio.Excepciones;
 using LogicaNegocio.Excepciones.Usuario;
 using LogicaNegocio.InterfazServicios;
@@ -13,15 +14,15 @@ namespace ApiCuidarte.Controllers
 	[Authorize]
 	public class TipoPlanController : ControllerBase
 	{
-		IAlta<TipoPlan> _alta;
-		IEditar<TipoPlan> _editar;
+		IAlta<TipoPlanDto, TipoPlan> _alta;
+		IEditar<TipoPlanDto, TipoPlan> _editar;
 		IEliminar<TipoPlan> _eliminar;
 		IObtenerTodos<TipoPlan> _getAll;
 		IObtener<TipoPlan> _obtener;
 
 		public TipoPlanController(
-			IAlta<TipoPlan> alta,
-			IEditar<TipoPlan> editar,
+			IAlta<TipoPlanDto, TipoPlan> alta,
+			IEditar<TipoPlanDto, TipoPlan> editar,
 			IEliminar<TipoPlan> eliminar,
 			IObtenerTodos<TipoPlan> getAll,
 			IObtener<TipoPlan> obtener
@@ -38,12 +39,12 @@ namespace ApiCuidarte.Controllers
 		[ProducesResponseType(StatusCodes.Status500InternalServerError)]
 		[HttpPost]
 		[Route("Crear")]
-		public IActionResult Crear(TipoPlan tp)
+		public IActionResult Crear(TipoPlanDto tp)
 		{
 			try
 			{
-				_alta.Ejecutar(tp);
-				return Ok();
+				TipoPlan tipoPlanCreado = _alta.Ejecutar(tp);
+				return Ok(tipoPlanCreado);
 			}
 			catch (DomainException ex)
 			{
@@ -62,11 +63,11 @@ namespace ApiCuidarte.Controllers
 		[ProducesResponseType(StatusCodes.Status500InternalServerError)]
 		[HttpPut]
 		[Route("Editar")]
-		public IActionResult Editar(int id, TipoPlan tp)
+		public IActionResult Editar(int id, TipoPlanDto tp)
 		{
 			try
 			{
-				_editar.Ejecutar(id, tp);
+				_editar.Ejecutar(tp);
 				return Ok();
 			}
 			catch (DomainException ex)
@@ -86,7 +87,7 @@ namespace ApiCuidarte.Controllers
 		[ProducesResponseType(StatusCodes.Status500InternalServerError)]
 		[HttpDelete]
 		[Route("Eliminar")]
-		public IActionResult Eliminar(int id)
+		public IActionResult Eliminar([FromBody] int id)
 		{
 			try
 			{
@@ -119,7 +120,7 @@ namespace ApiCuidarte.Controllers
 				TipoPlan tp = _obtener.Ejecutar(id);
 				if (tp == null || tp.Eliminado)
 				{
-					throw new UsuarioException("No se encontro el usuario");
+					throw new DomainException("No se encontro el tipo plan");
 				}
 				return Ok(tp);
 			}
@@ -142,14 +143,14 @@ namespace ApiCuidarte.Controllers
 		[ProducesResponseType(StatusCodes.Status500InternalServerError)]
 		[HttpGet]
 		[Route("ObtenerTodos")]
-		public IActionResult ObtenerTodos()
+		public IActionResult ObtenerTodos(int pagina)
 		{
 			try
 			{
-				IEnumerable<TipoPlan> tp = _getAll.Ejecutar();
+				IEnumerable<TipoPlan> tp = _getAll.Ejecutar(pagina);
 				if (tp == null || !tp.Any())
 				{
-					throw new UsuarioException("No se encontraron usuarios");
+					throw new DomainException("No se encontraron usuarios");
 				}
 				return Ok(tp);
 			}

@@ -15,11 +15,11 @@ namespace LogicaNegocio.Entidades
 		[Required]
 		public string Nombre {  get; set; }
 		[Required]
-		public float PrecioHora { get; set; }
+		public decimal PrecioHora { get; set; }
 
 		public bool Eliminado { get; set; } = false;
 
-		public TipoServicio(int id, string nombre, float precioHora)
+		public TipoServicio(int id, string nombre, decimal precioHora)
 		{
 			Id = id;
 			Nombre = nombre;
@@ -31,6 +31,12 @@ namespace LogicaNegocio.Entidades
 			Nombre = obj.Nombre;
 			PrecioHora = obj.PrecioHora;
 
+		}
+
+		public override bool Equals(object? obj)
+		{
+			return obj is TipoServicio servicio &&
+				   Nombre == servicio.Nombre;
 		}
 	}
 }

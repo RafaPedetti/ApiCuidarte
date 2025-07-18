@@ -1,11 +1,13 @@
 ﻿using LogicaAplicacion.Dtos.Usuarios;
 using LogicaNegocio.DtosAuxs.Usuarios;
+using LogicaNegocio.Entidades;
 using LogicaNegocio.Excepciones;
 using LogicaNegocio.Excepciones.Usuario;
 using LogicaNegocio.InterfacesServicios;
 using LogicaNegocio.InterfazServicios;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 using WebApi;
 
 namespace ApiCuidarte.Controllers
@@ -15,19 +17,19 @@ namespace ApiCuidarte.Controllers
 	public class UsuarioController : ControllerBase
 	{
 		IObtenerTodos<UsuarioDto> _getAll;
-		IAlta<CrearUsuarioDto> _alta;
+		IAlta<CrearUsuarioDto, Usuario> _alta;
 		IObtener<UsuarioDto> _obtener;
-		IEditar<EditarUsuarioDto> _editar;
+		IEditar<EditarUsuarioDto,Usuario> _editar;
 		IEliminar<UsuarioDto> _eliminar;
 		ILogin<UsuarioDto> _obtenerLogin;
 		IObtenerPorTexto<UsuarioDto> _obtenerPorTexto;
 
 		public UsuarioController(
 			IObtenerTodos<UsuarioDto> getAll,
-			IAlta<CrearUsuarioDto> alta,
+			IAlta<CrearUsuarioDto,Usuario> alta,
 			IObtener<UsuarioDto> obtener,
 			IObtenerPorTexto<UsuarioDto> obtenerPorTexto,
-			IEditar<EditarUsuarioDto> editar,
+			IEditar<EditarUsuarioDto,Usuario> editar,
 			IEliminar<UsuarioDto> eliminar,
 			ILogin<UsuarioDto> login
 		)
@@ -61,8 +63,9 @@ namespace ApiCuidarte.Controllers
 					throw new ArgumentException("No se encontro el usuario");
 				}
 				var token = ManejadorJwt.GenerarToken(usuario);
-				return Ok(token);
+				var usuarioConToken = usuario with { token = token };
 
+				return Ok(usuarioConToken);
 			}
 			catch (DomainException ex)
 			{
@@ -76,7 +79,6 @@ namespace ApiCuidarte.Controllers
 			{
 				return StatusCode(500, "Hupps hubo un error intente nuevamente mas tarde");
 			}
-		
 		}
 
 		[ProducesResponseType(StatusCodes.Status200OK)]
@@ -88,8 +90,8 @@ namespace ApiCuidarte.Controllers
 		{
 			try
 			{
-				_alta.Ejecutar(user);
-				return Ok();
+				Usuario uCreado = _alta.Ejecutar(user);
+				return Ok(uCreado);
 			}
 			catch (DomainException ex)
 			{
@@ -114,8 +116,8 @@ namespace ApiCuidarte.Controllers
 		{
 			try
 			{
-				_editar.Ejecutar(id, user);
-				return Ok();
+				Usuario uEditado = _editar.Ejecutar(user);
+				return Ok(uEditado);
 			}
 			catch (DomainException ex)
 			{
@@ -135,7 +137,7 @@ namespace ApiCuidarte.Controllers
 		[HttpDelete]
 		[Route("Eliminar")]
 		[Authorize]
-		public IActionResult Eliminar(int id)
+		public IActionResult Eliminar([FromBody]int id)
 		{
 			try
 			{
@@ -228,11 +230,20 @@ namespace ApiCuidarte.Controllers
 		[HttpGet]
 		[Route("ObtenerTodos")]
 		[Authorize]
-		public IActionResult ObtenerTodos()
+		public IActionResult ObtenerTodos(int pagina)
 		{
 			try
 			{
-				IEnumerable<UsuarioDto> usuarios = _getAll.Ejecutar();
+				var rol = User.FindFirst(ClaimTypes.Role)?.Value;
+				IEnumerable<UsuarioDto> usuarios;
+				if (rol == Administrador.DiscriminadorStatic)
+				{
+					usuarios = _getAll.Ejecutar(pagina);
+				}
+				else
+				{
+					usuarios = _obtenerPorTexto.Ejecutar(User.FindFirst(ClaimTypes.Email).Value);
+				}
 				if (usuarios == null || !usuarios.Any())
 				{
 					throw new UsuarioException("No se encontraron usuarios");

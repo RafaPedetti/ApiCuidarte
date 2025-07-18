@@ -1,8 +1,10 @@
 ﻿using LogicaNegocio.Entidades;
 using LogicaNegocio.InterfacesRepocitorio;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Numerics;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -16,11 +18,17 @@ namespace Infraestructura.LogicaAccesoDatos.EF
 			_context = context;
 		}
 
-		public void Add(TipoPlan obj)
+		public TipoPlan Add(TipoPlan obj)
 		{
 			if (obj == null) throw new ArgumentNullException(nameof(obj), "El objeto no puede ser nulo.");
+			foreach (var servicio in obj.Servicios)
+			{
+				_context.Entry(servicio.tipoServicio).State = EntityState.Unchanged;
+			}
+
 			_context.TiposPlanes.Add(obj);
 			_context.SaveChanges();
+			return obj;
 		}
 
 		public void Delete(int id)
@@ -31,14 +39,15 @@ namespace Infraestructura.LogicaAccesoDatos.EF
 				throw new KeyNotFoundException($"Tipo de plan con ID {id} no encontrado.");
 			}
 			tipoPlan.Eliminado = true;
-			Update(id, tipoPlan);
+			Update(tipoPlan);
 		}
 
-		public IEnumerable<TipoPlan> GetAll()
+		public IEnumerable<TipoPlan> GetAll(int pagina)
 		{
-			return _context.TiposPlanes
-			.Where(ts => !ts.Eliminado)
-			.ToList();
+			return _context.TiposPlanes.Include(tp => tp.Servicios)
+		.ThenInclude(s => s.tipoServicio)
+		.Where(ts => !ts.Eliminado).Skip(pagina * Parametros.MaxItemsPaginado)
+		.Take(Parametros.MaxItemsPaginado).ToList();
 		}
 
 		public TipoPlan GetById(int id)
@@ -47,7 +56,11 @@ namespace Infraestructura.LogicaAccesoDatos.EF
 			{
 				throw new ArgumentNullException(nameof(id), "El ID no puede ser nulo.");
 			}
-			TipoPlan tipoPlan = _context.TiposPlanes.FirstOrDefault(tp => tp.Id == id && !tp.Eliminado);
+			TipoPlan tipoPlan = _context.TiposPlanes
+				.Include(tp => tp.Servicios)
+				.ThenInclude(s => s.tipoServicio)
+				.FirstOrDefault(tp => tp.Id == id);
+
 			if (tipoPlan == null)
 			{
 				throw new KeyNotFoundException($"Tipo de plan con ID {id} no encontrado.");
@@ -55,16 +68,17 @@ namespace Infraestructura.LogicaAccesoDatos.EF
 			return tipoPlan;
 		}
 
-		public void Update(int id, TipoPlan obj)
+		public TipoPlan Update(TipoPlan obj)
 		{
 			if (obj == null)
 			{
 				throw new ArgumentNullException(nameof(obj), "El objeto no puede ser nulo.");
 			}
-			TipoPlan tipoPlan = GetById(id);
+			TipoPlan tipoPlan = GetById(obj.Id);
 			tipoPlan.Update(obj);
 			_context.TiposPlanes.Update(tipoPlan);
 			_context.SaveChanges();
+			return tipoPlan;
 		}
 	}
 }

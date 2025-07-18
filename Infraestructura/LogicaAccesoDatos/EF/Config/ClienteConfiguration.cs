@@ -19,6 +19,11 @@ namespace Infraestructura.LogicaAccesoDatos.EF.Config
 				nomC.Property(n => n.Apellido).HasColumnName("Apellido");
 			});
 
+			builder.OwnsOne(c => c.Email, email =>
+			{
+				email.Property(e => e.Value).HasColumnName("Email");
+			});
+
 
 			builder.OwnsOne(c => c.Telefono, telefono =>
 			{

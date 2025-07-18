@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace LogicaAplicacion.Usuarios
 {
-	public class AltaUsuario : IAlta<CrearUsuarioDto>
+	public class AltaUsuario : IAlta<CrearUsuarioDto,Usuario>
 	{
 		IRepositorioUsuario _repositorioUsuario;
 
@@ -20,10 +20,10 @@ namespace LogicaAplicacion.Usuarios
 			_repositorioUsuario = repositorioUsuario;
 		}
 
-		public void Ejecutar(CrearUsuarioDto obj)
+		public Usuario Ejecutar(CrearUsuarioDto obj)
 		{
 			Usuario usuario = UsuarioMapper.FromDto(obj);
-			_repositorioUsuario.Add(usuario);
+			return _repositorioUsuario.Add(usuario);
 		}
 	}
 }

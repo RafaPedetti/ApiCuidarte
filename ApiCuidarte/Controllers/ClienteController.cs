@@ -1,7 +1,10 @@
-﻿using LogicaAplicacion.Dtos.Clientes;
+﻿using LogicaAplicacion.Dtos;
+using LogicaAplicacion.Dtos.Clientes;
 using LogicaNegocio.Entidades;
 using LogicaNegocio.Excepciones;
+using LogicaNegocio.Excepciones.Cliente;
 using LogicaNegocio.Excepciones.Usuario;
+using LogicaNegocio.InterfacesServicios;
 using LogicaNegocio.InterfazServicios;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -13,18 +16,20 @@ namespace ApiCuidarte.Controllers
 	[Authorize]
 	public class ClienteController : ControllerBase
 	{
-		IAlta<ClienteDto> _alta;
-		IEditar<ClienteDto> _editar;
-		IEliminar<ClienteDto> _eliminar;
-		IObtenerTodos<ClienteDto> _getAll;
-		IObtener<ClienteDto> _obtener;
+		IAlta<ClienteDto,Cliente> _alta;
+		IEditar<ClienteDto,Cliente> _editar;
+		IEliminar<Cliente> _eliminar;
+		IObtenerTodos<Cliente> _getAll;
+		IObtenerPaginado<PaginadoResultado<Cliente>> _obtener;
+		IObtenerPorTexto<Cliente> _obtenerPorTexto;
 
 		public ClienteController(
-			IAlta<ClienteDto> alta,
-			IEditar<ClienteDto> editar,
-			IEliminar<ClienteDto> eliminar,
-			IObtenerTodos<ClienteDto> getAll,
-			IObtener<ClienteDto> obtener
+			IAlta<ClienteDto,Cliente> alta,
+			IEditar<ClienteDto,Cliente> editar,
+			IEliminar<Cliente> eliminar,
+			IObtenerTodos<Cliente> getAll,
+			IObtenerPaginado<PaginadoResultado<Cliente>> obtener,
+			IObtenerPorTexto<Cliente> obtenerPorTexto
 		)
 		{
 			_alta = alta;
@@ -32,6 +37,7 @@ namespace ApiCuidarte.Controllers
 			_eliminar = eliminar;
 			_getAll = getAll;
 			_obtener = obtener;
+			_obtenerPorTexto = obtenerPorTexto;
 		}
 
 		[ProducesResponseType(StatusCodes.Status200OK)]
@@ -42,8 +48,8 @@ namespace ApiCuidarte.Controllers
 		{
 			try
 			{
-				_alta.Ejecutar(c);
-				return Ok();
+				Cliente cCreado= _alta.Ejecutar(c);
+				return Ok(cCreado);
 			}
 			catch (DomainException ex)
 			{
@@ -66,8 +72,8 @@ namespace ApiCuidarte.Controllers
 		{
 			try
 			{
-				_editar.Ejecutar(id, c);
-				return Ok();
+				Cliente cCreado= _editar.Ejecutar(c);
+				return Ok(cCreado);
 			}
 			catch (DomainException ex)
 			{
@@ -86,7 +92,7 @@ namespace ApiCuidarte.Controllers
 		[ProducesResponseType(StatusCodes.Status500InternalServerError)]
 		[HttpDelete]
 		[Route("Eliminar")]
-		public IActionResult Eliminar(int id)
+		public IActionResult Eliminar([FromBody] int id)
 		{
 			try
 			{
@@ -116,10 +122,40 @@ namespace ApiCuidarte.Controllers
 		{
 			try
 			{
-				ClienteDto c = _obtener.Ejecutar(id);
+				PaginadoResultado<Cliente> c = _obtener.Ejecutar(id);
 				if (c == null)
 				{
-					throw new UsuarioException("No se encontro el usuario");
+					throw new ClienteException("No se encontro el cliente");
+				}
+				return Ok(c);
+			}
+			catch (DomainException ex)
+			{
+				return StatusCode(400, ex.Message);
+			}
+			catch (ArgumentException ex)
+			{
+				return StatusCode(500, "Hupp" + ex.Message);
+			}
+			catch (Exception ex)
+			{
+				return StatusCode(500, "Hupps hubo un error intente nuevamente mas tarde");
+			}
+		}
+
+		[ProducesResponseType(StatusCodes.Status200OK)]
+		[ProducesResponseType(StatusCodes.Status204NoContent)]
+		[ProducesResponseType(StatusCodes.Status500InternalServerError)]
+		[Route("ObtenerPorTexto")]
+		[HttpGet]
+		public IActionResult ObtenerPorTexto(string texto)
+		{
+			try
+			{
+				IEnumerable<Cliente> c = _obtenerPorTexto.Ejecutar(texto);
+				if (c == null)
+				{
+					throw new ClienteException("No se encontro el cliente");
 				}
 				return Ok(c);
 			}
@@ -142,16 +178,16 @@ namespace ApiCuidarte.Controllers
 		[ProducesResponseType(StatusCodes.Status500InternalServerError)]
 		[HttpGet]
 		[Route("ObtenerTodos")]
-		public IActionResult ObtenerTodos()
+		public IActionResult ObtenerTodos(int pagina)
 		{
 			try
 			{
-				IEnumerable<ClienteDto> tp = _getAll.Ejecutar();
-				if (tp == null || !tp.Any())
+				IEnumerable<Cliente> c = _getAll.Ejecutar(pagina);
+				if (c == null || !c.Any())
 				{
-					throw new UsuarioException("No se encontraron usuarios");
+					throw new ClienteException("No se encontraron cliente");
 				}
-				return Ok(tp);
+				return Ok(c);
 			}
 			catch (DomainException ex)
 			{

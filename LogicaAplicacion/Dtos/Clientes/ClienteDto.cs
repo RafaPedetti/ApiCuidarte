@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace LogicaAplicacion.Dtos.Clientes
 {
-	public record ClienteDto (string nombre, string apellido, DateOnly fechaNacimiento, string direccion, string telefono, int plan)
+	public record ClienteDto (int id,string nombre, string apellido,string ci,string Email, DateTime fechaNacimiento, string direccion, string telefono, int TipoPlanId)
 	{
 
 	}

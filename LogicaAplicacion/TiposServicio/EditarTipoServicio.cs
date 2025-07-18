@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace LogicaAplicacion.TiposServicio
 {
-	public class EditarTipoServicio : IEditar<TipoServicio>
+	public class EditarTipoServicio : IEditar<TipoServicio,TipoServicio>
 	{
 		private IRepositorioTipoServicio _context;
 
@@ -18,14 +18,9 @@ namespace LogicaAplicacion.TiposServicio
 			_context = context;
 		}
 
-		public void Ejecutar(int id, TipoServicio obj)
+		public TipoServicio Ejecutar(TipoServicio obj)
 		{
-			TipoServicio tipoServicio = _context.GetById(id);
-			if (tipoServicio == null)
-			{
-				throw new Exception("Tipo de servicio no encontrado.");
-			}
-			_context.Update(id, obj);
+			return _context.Update(obj);
 		}
 	}
 }

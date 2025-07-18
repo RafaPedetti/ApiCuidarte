@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace LogicaAplicacion.Dtos.Usuarios
 {
-	public record EditarUsuarioDto(string email, string nombre, string apellido, string pass)
+	public record EditarUsuarioDto(int id,string email, string nombre, string apellido, string password)
 	{
 	}
 }

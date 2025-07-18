@@ -8,10 +8,10 @@ namespace LogicaNegocio.InterfazRepositorio
 {
     public interface IRepositorio <T>
     {
-        public void Add(T obj);
+        public T Add(T obj);
         public void Delete(int id);
-        public void Update(int id, T obj);
+        public T Update(T obj);
         public T GetById(int id);
-        public IEnumerable<T> GetAll();
+        public IEnumerable<T> GetAll(int pagina);
     }
 }

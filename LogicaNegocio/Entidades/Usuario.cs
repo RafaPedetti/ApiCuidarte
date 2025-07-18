@@ -26,7 +26,7 @@ namespace LogicaNegocio.Entidades
 
 		public bool Eliminado { get; set; } = false;
 
-		public static string RolValor { get; set; }
+		public  abstract string  Discriminador { get; set; }
 
 		public Usuario(string email, string nombre, string apellido, string password)
 		{

@@ -8,7 +8,9 @@ namespace LogicaNegocio.Entidades
 {
 	public class Administrador : Usuario
 	{
-		public static new string RolValor = "Administrador";
+		public override string Discriminador { get; set; } = "Administrador";
+
+		public static readonly string DiscriminadorStatic = "Administrador";
 
 		public Administrador() { }
 

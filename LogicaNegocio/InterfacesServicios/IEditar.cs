@@ -6,8 +6,8 @@ using System.Threading.Tasks;
 
 namespace LogicaNegocio.InterfazServicios
 {
-    public interface IEditar<T>
+    public interface IEditar<TDto, TRespuesta>
     {
-        public void Ejecutar(int id, T obj);
+        public TRespuesta Ejecutar( TDto obj);
     }
 }

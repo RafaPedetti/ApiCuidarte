@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace LogicaAplicacion.TiposServicio
 {
-	public class AltaTipoServicio : IAlta<TipoServicio>
+	public class AltaTipoServicio : IAlta<TipoServicio,TipoServicio>
 	{
 		private readonly IRepositorioTipoServicio _context;
 		public AltaTipoServicio(IRepositorioTipoServicio context)
@@ -17,13 +17,13 @@ namespace LogicaAplicacion.TiposServicio
 			_context = context;
 		}
 
-		public void Ejecutar(TipoServicio obj)
+		public TipoServicio Ejecutar(TipoServicio obj)
 		{
 			if (obj == null)
 			{
 				throw new ArgumentNullException("El tipo de objeto esta vacio");
 			}
-			_context.Add(obj);
+			return _context.Add(obj);
 		}
 	}
 }

@@ -8,11 +8,15 @@ namespace LogicaNegocio.Entidades
 {
 	public class Funcionario : Usuario
 	{
-		public static new string RolValor = "Funcionario";
+
+		public override string Discriminador { get; set; } = "Funcionario";
+
+		public static readonly string DiscriminadorStatic = "Funcionario";
+
+
 		public Funcionario() { }
 		public Funcionario(string emai, string nom, string ape, string pass) : base(emai, nom, ape, pass)
 		{
-			RolValor = "Funcionario";
 		}
 	}
 }

@@ -21,10 +21,60 @@ namespace LogicaNegocio.Entidades
 	
 		public bool Eliminado { get; set; }
 
+
+		public TipoPlan()
+		{
+		}
+
+		public TipoPlan(int id, string nombre, List<Servicio> servicios)
+		{
+			Id = id;
+			Nombre = nombre;
+			Servicios = servicios;
+		}
+
+		public TipoPlan(string nombre, List<Servicio> servicios)
+		{
+			Nombre = nombre;
+			Servicios = servicios;
+			servicios = new List<Servicio>();
+		}
+
 		public void Update(TipoPlan obj)
 		{
 			this.Nombre = obj.Nombre;
-			this.Servicios = obj.Servicios ?? new List<Servicio>();
+
+			// Eliminar servicios que ya no están
+			this.Servicios.RemoveAll(s => !obj.Servicios.Any(ns => ns.Id == s.Id));
+
+			foreach (var nuevo in obj.Servicios)
+			{
+				var existente = this.Servicios.FirstOrDefault(s => s.Id == nuevo.Id);
+
+				if (existente != null)
+				{
+					// Actualizar propiedades
+					existente.cantServicios = nuevo.cantServicios;
+					existente.tipoServicio = nuevo.tipoServicio;
+				}
+				else
+				{
+					// Agregar nuevo servicio
+					this.Servicios.Add(new Servicio
+					{
+						cantServicios = nuevo.cantServicios,
+						tipoServicio = nuevo.tipoServicio
+					});
+				}
+			}
+		}
+
+
+
+		public void AddServicio(Servicio s)
+		{
+			if (this.Servicios == null) this.Servicios = new List<Servicio>();
+			this.Servicios.Add(s);
 		}
 	}
 }

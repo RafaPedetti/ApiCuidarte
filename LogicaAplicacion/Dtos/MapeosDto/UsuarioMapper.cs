@@ -14,9 +14,10 @@ namespace LogicaAplicacion.Dtos.MapeosDto
     {
         public static Usuario FromDto(UsuarioDto usuarioDto)
         {
-            if (usuarioDto.Discriminador.Equals(Administrador.RolValor))
-            {
-                return new Administrador(usuarioDto.Email, usuarioDto.Nombre, usuarioDto.Apellido, usuarioDto.password);
+			if (string.Equals(usuarioDto.Discriminador, Administrador.DiscriminadorStatic))
+
+			{
+				return new Administrador(usuarioDto.Email, usuarioDto.Nombre, usuarioDto.Apellido, usuarioDto.password);
             }
             else
             {
@@ -26,7 +27,7 @@ namespace LogicaAplicacion.Dtos.MapeosDto
         }
 		public static Usuario FromDto(CrearUsuarioDto usuarioDto)
 		{
-			if (usuarioDto.Discriminador.Equals(Administrador.RolValor))
+			if (usuarioDto.Discriminador.Equals(Administrador.DiscriminadorStatic))
 			{
 				return new Administrador(usuarioDto.Email, usuarioDto.Nombre, usuarioDto.Apellido, usuarioDto.password);
 			}
@@ -48,7 +49,7 @@ namespace LogicaAplicacion.Dtos.MapeosDto
             {
                 discriminador = "Funcionario";
             }
-            return new UsuarioDto(usuario.Id,usuario.Email.Value,usuario.NombreCompleto.Nombre,usuario.NombreCompleto.Apellido,usuario.Password.Value,discriminador, usuario.Eliminado);
+            return new UsuarioDto(usuario.Id,usuario.Email.Value,usuario.NombreCompleto.Nombre,usuario.NombreCompleto.Apellido,usuario.Password.Value,discriminador, usuario.Eliminado,null);
         }
 
         public static IEnumerable<UsuarioDto> ToListaDto(IEnumerable<Usuario> usuarios)

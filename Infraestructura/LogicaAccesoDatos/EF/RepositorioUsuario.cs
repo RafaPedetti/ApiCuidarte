@@ -18,17 +18,18 @@ namespace Infraestructura.LogicaAccesoDatos.EF
 			_context = context;
 		}
 
-		public void Add(Usuario obj)
+		public Usuario Add(Usuario obj)
 		{
-			if( obj == null)
+			if (obj == null)
 			{
 				throw new ArgumentNullException(nameof(obj), "El usuario no puede ser nulo.");
 			}
 			try
 			{
-			obj.Id = 0; 
-			_context.Usuarios.Add(obj);
+				obj.Id = 0;
+				_context.Usuarios.Add(obj);
 				_context.SaveChanges();
+				return obj;
 			}
 			catch (Exception ex)
 			{
@@ -45,22 +46,23 @@ namespace Infraestructura.LogicaAccesoDatos.EF
 			}
 			Usuario userCopia = user;
 			userCopia.Eliminado = true;
-			Update(id, userCopia);
+			Update(userCopia);
 		}
 
-		public IEnumerable<Usuario> GetAll()
+		public IEnumerable<Usuario> GetAll(int pagina)
 		{
 			IEnumerable<Usuario> usuarios = _context.Usuarios
-			  .Where(user => !user.Eliminado);
+			.Where(user => !user.Eliminado).Skip(pagina * Parametros.MaxItemsPaginado)
+			.Take(Parametros.MaxItemsPaginado).ToList();
 
-			if(usuarios.Count() == 0) throw new Exception("No se encontraron usuarios.");
+			if (usuarios.Count() == 0) throw new Exception("No se encontraron usuarios.");
 			return usuarios.ToList();
 		}
 
 		public Usuario GetById(int id)
 		{
 			Usuario u = _context.Usuarios.FirstOrDefault(user => user.Id == id);
-			if( u == null)
+			if (u == null)
 			{
 				throw new NotFoundException($"Usuario con ID {id} no encontrado.");
 			}
@@ -84,11 +86,11 @@ namespace Infraestructura.LogicaAccesoDatos.EF
 			return usuarios;
 		}
 
-		public void Update(int id, Usuario obj)
+		public Usuario Update(Usuario obj)
 		{
 			try
 			{
-				Usuario user = GetById(id);
+				Usuario user = GetById(obj.Id);
 				if (user == null)
 				{
 					throw new NotFoundException();
@@ -99,6 +101,7 @@ namespace Infraestructura.LogicaAccesoDatos.EF
 				}
 				_context.Usuarios.Update(user);
 				_context.SaveChanges(true);
+				return user;
 			}
 			catch (Exception ex)
 			{

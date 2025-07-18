@@ -30,14 +30,26 @@ namespace Infraestructura.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
+                    b.Property<string>("CI")
+                        .IsRequired()
+                        .HasColumnType("text");
+
                     b.Property<string>("Direccion")
                         .IsRequired()
                         .HasColumnType("text");
 
+                    b.Property<bool>("Eliminado")
+                        .HasColumnType("boolean");
+
                     b.Property<DateOnly>("FechaNacimiento")
                         .HasColumnType("date");
 
+                    b.Property<int>("TipoPlanId")
+                        .HasColumnType("integer");
+
                     b.HasKey("Id");
+
+                    b.HasIndex("TipoPlanId");
 
                     b.ToTable("Clientes");
                 });
@@ -50,20 +62,40 @@ namespace Infraestructura.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<int?>("TipoPlanId")
+                    b.Property<int?>("ClienteId")
                         .HasColumnType("integer");
 
-                    b.Property<int>("TipoServicioId")
+                    b.Property<int?>("ClienteId1")
+                        .HasColumnType("integer");
+
+                    b.Property<int?>("TareaId")
+                        .HasColumnType("integer");
+
+                    b.Property<int?>("TareaId1")
+                        .HasColumnType("integer");
+
+                    b.Property<int?>("TipoPlanId")
                         .HasColumnType("integer");
 
                     b.Property<int>("cantServicios")
                         .HasColumnType("integer");
 
+                    b.Property<int>("tipoServicioId")
+                        .HasColumnType("integer");
+
                     b.HasKey("Id");
+
+                    b.HasIndex("ClienteId");
+
+                    b.HasIndex("ClienteId1");
+
+                    b.HasIndex("TareaId");
+
+                    b.HasIndex("TareaId1");
 
                     b.HasIndex("TipoPlanId");
 
-                    b.HasIndex("TipoServicioId");
+                    b.HasIndex("tipoServicioId");
 
                     b.ToTable("Servicios");
                 });
@@ -78,6 +110,13 @@ namespace Infraestructura.Migrations
 
                     b.Property<int>("ClienteId")
                         .HasColumnType("integer");
+
+                    b.Property<string>("Descripcion")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<bool>("Eliminado")
+                        .HasColumnType("boolean");
 
                     b.Property<int>("EmpleadoResponsableId")
                         .HasColumnType("integer");
@@ -132,8 +171,8 @@ namespace Infraestructura.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<float>("PrecioHora")
-                        .HasColumnType("real");
+                    b.Property<decimal>("PrecioHora")
+                        .HasColumnType("numeric");
 
                     b.HasKey("Id");
 
@@ -147,6 +186,10 @@ namespace Infraestructura.Migrations
                         .HasColumnType("integer");
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Discriminador")
+                        .IsRequired()
+                        .HasColumnType("text");
 
                     b.Property<string>("Discriminator")
                         .IsRequired()
@@ -181,6 +224,30 @@ namespace Infraestructura.Migrations
 
             modelBuilder.Entity("LogicaNegocio.Entidades.Cliente", b =>
                 {
+                    b.HasOne("LogicaNegocio.Entidades.TipoPlan", "Plan")
+                        .WithMany()
+                        .HasForeignKey("TipoPlanId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.OwnsOne("LogicaNegocio.ValueObject.Email", "Email", b1 =>
+                        {
+                            b1.Property<int>("ClienteId")
+                                .HasColumnType("integer");
+
+                            b1.Property<string>("Value")
+                                .IsRequired()
+                                .HasColumnType("text")
+                                .HasColumnName("Email");
+
+                            b1.HasKey("ClienteId");
+
+                            b1.ToTable("Clientes");
+
+                            b1.WithOwner()
+                                .HasForeignKey("ClienteId");
+                        });
+
                     b.OwnsOne("LogicaNegocio.ValueObject.NombreCompleto", "NombreCompleto", b1 =>
                         {
                             b1.Property<int>("ClienteId")
@@ -222,8 +289,13 @@ namespace Infraestructura.Migrations
                                 .HasForeignKey("ClienteId");
                         });
 
+                    b.Navigation("Email")
+                        .IsRequired();
+
                     b.Navigation("NombreCompleto")
                         .IsRequired();
+
+                    b.Navigation("Plan");
 
                     b.Navigation("Telefono")
                         .IsRequired();
@@ -231,17 +303,33 @@ namespace Infraestructura.Migrations
 
             modelBuilder.Entity("LogicaNegocio.Entidades.Servicio", b =>
                 {
+                    b.HasOne("LogicaNegocio.Entidades.Cliente", null)
+                        .WithMany("ServiciosDisponibles")
+                        .HasForeignKey("ClienteId");
+
+                    b.HasOne("LogicaNegocio.Entidades.Cliente", null)
+                        .WithMany("ServiciosExtras")
+                        .HasForeignKey("ClienteId1");
+
+                    b.HasOne("LogicaNegocio.Entidades.Tarea", null)
+                        .WithMany("ServiciosExtras")
+                        .HasForeignKey("TareaId");
+
+                    b.HasOne("LogicaNegocio.Entidades.Tarea", null)
+                        .WithMany("serviciosUsados")
+                        .HasForeignKey("TareaId1");
+
                     b.HasOne("LogicaNegocio.Entidades.TipoPlan", null)
                         .WithMany("Servicios")
                         .HasForeignKey("TipoPlanId");
 
-                    b.HasOne("LogicaNegocio.Entidades.TipoServicio", "TipoServicio")
+                    b.HasOne("LogicaNegocio.Entidades.TipoServicio", "tipoServicio")
                         .WithMany()
-                        .HasForeignKey("TipoServicioId")
+                        .HasForeignKey("tipoServicioId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("TipoServicio");
+                    b.Navigation("tipoServicio");
                 });
 
             modelBuilder.Entity("LogicaNegocio.Entidades.Tarea", b =>
@@ -265,6 +353,27 @@ namespace Infraestructura.Migrations
 
             modelBuilder.Entity("LogicaNegocio.Entidades.Usuario", b =>
                 {
+                    b.OwnsOne("LogicaNegocio.ValueObject.Email", "Email", b1 =>
+                        {
+                            b1.Property<int>("UsuarioId")
+                                .HasColumnType("integer");
+
+                            b1.Property<string>("Value")
+                                .IsRequired()
+                                .HasColumnType("text")
+                                .HasColumnName("Email");
+
+                            b1.HasKey("UsuarioId");
+
+                            b1.HasIndex("Value")
+                                .IsUnique();
+
+                            b1.ToTable("Usuarios");
+
+                            b1.WithOwner()
+                                .HasForeignKey("UsuarioId");
+                        });
+
                     b.OwnsOne("LogicaNegocio.ValueObject.NombreCompleto", "NombreCompleto", b1 =>
                         {
                             b1.Property<int>("UsuarioId")
@@ -281,27 +390,6 @@ namespace Infraestructura.Migrations
                                 .HasColumnName("Nombre");
 
                             b1.HasKey("UsuarioId");
-
-                            b1.ToTable("Usuarios");
-
-                            b1.WithOwner()
-                                .HasForeignKey("UsuarioId");
-                        });
-
-                    b.OwnsOne("LogicaNegocio.ValueObject.Email", "Email", b1 =>
-                        {
-                            b1.Property<int>("UsuarioId")
-                                .HasColumnType("integer");
-
-                            b1.Property<string>("Value")
-                                .IsRequired()
-                                .HasColumnType("text")
-                                .HasColumnName("Email");
-
-                            b1.HasKey("UsuarioId");
-
-                            b1.HasIndex("Value")
-                                .IsUnique();
 
                             b1.ToTable("Usuarios");
 
@@ -335,6 +423,20 @@ namespace Infraestructura.Migrations
 
                     b.Navigation("Password")
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("LogicaNegocio.Entidades.Cliente", b =>
+                {
+                    b.Navigation("ServiciosDisponibles");
+
+                    b.Navigation("ServiciosExtras");
+                });
+
+            modelBuilder.Entity("LogicaNegocio.Entidades.Tarea", b =>
+                {
+                    b.Navigation("ServiciosExtras");
+
+                    b.Navigation("serviciosUsados");
                 });
 
             modelBuilder.Entity("LogicaNegocio.Entidades.TipoPlan", b =>

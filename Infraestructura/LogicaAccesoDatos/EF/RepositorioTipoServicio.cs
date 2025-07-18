@@ -18,11 +18,12 @@ namespace Infraestructura.LogicaAccesoDatos.EF
 			_context = context;
 		}
 
-		public void Add(TipoServicio obj)
+		public TipoServicio Add(TipoServicio obj)
 		{
 			if(obj == null) throw new ArgumentNullException(nameof(obj), "El objeto no puede ser nulo.");
 			_context.TipoServicios.Add(obj);
 			_context.SaveChanges();
+			return obj;
 		}
 		public void Delete(int id)
 		{
@@ -32,12 +33,14 @@ namespace Infraestructura.LogicaAccesoDatos.EF
 				throw new KeyNotFoundException($"Tipo de servicio con ID {id} no encontrado.");
 			}
 			tipoServicio.Eliminado = true; 
-			Update(id, tipoServicio);
+			Update(tipoServicio);
 		}
-		public IEnumerable<TipoServicio> GetAll()
+		public IEnumerable<TipoServicio> GetAll(int pagina)
 		{
 			return _context.TipoServicios
 				.Where(ts => !ts.Eliminado)
+				.Skip(pagina * Parametros.MaxItemsPaginado)
+				.Take(Parametros.MaxItemsPaginado)
 				.ToList();
 		}
 		public TipoServicio GetById(int id)
@@ -53,16 +56,18 @@ namespace Infraestructura.LogicaAccesoDatos.EF
 			}
 			return tipoServicio;
 		}
-		public void Update(int id, TipoServicio obj)
+		public TipoServicio Update(TipoServicio obj)
 		{
 			if(obj == null)
 			{
 				throw new ArgumentNullException(nameof(obj), "El objeto no puede ser nulo.");
 			}
-			TipoServicio tipoServicio = GetById(id);
+			TipoServicio tipoServicio = GetById(obj.Id);
+			if(tipoServicio == null) throw new KeyNotFoundException($"Tipo de servicio con ID {obj.Id} no encontrado.");
 			tipoServicio.Update(obj);
 			_context.TipoServicios.Update(tipoServicio);
 			_context.SaveChanges();
+			return tipoServicio;
 		}
 	}
 }

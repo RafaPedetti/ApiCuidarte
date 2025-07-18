@@ -18,9 +18,9 @@ namespace LogicaAplicacion.TiposPlanes
 			_context = context;
 		}
 
-		public IEnumerable<TipoServicio> Ejecutar()
+		public IEnumerable<TipoServicio> Ejecutar(int pagina)
 		{
-			return _context.GetAll();
+			return _context.GetAll(pagina);
 		}
 	}
 }

@@ -10,6 +10,9 @@ namespace LogicaNegocio.InterfacesRepocitorio
 {
 	public interface IRepositorioCliente : IRepositorio<Cliente>
 	{
-		public void CambiarPlan(TipoPlan tipoPlan);
+		public void CambiarPlan(int idCliente,TipoPlan tipoPlan);
+
+		public IEnumerable<Cliente> GetByTexto(string texto);
+		public int TotalItems();
 	}
 }

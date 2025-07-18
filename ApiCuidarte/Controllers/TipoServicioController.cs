@@ -15,15 +15,15 @@ namespace ApiCuidarte.Controllers
 	[Authorize]
 	public class TipoServicioController : ControllerBase
 	{
-		IAlta<TipoServicio> _alta;
-		IEditar<TipoServicio> _editar;
+		IAlta<TipoServicio, TipoServicio> _alta;
+		IEditar<TipoServicio, TipoServicio> _editar;
 		IEliminar<TipoServicio> _eliminar;
 		IObtenerTodos<TipoServicio> _getAll;
 		IObtener<TipoServicio> _obtener;
 
 		public TipoServicioController(
-			IAlta<TipoServicio> alta,
-			IEditar<TipoServicio> editar,
+			IAlta<TipoServicio, TipoServicio> alta,
+			IEditar<TipoServicio, TipoServicio> editar,
 			IEliminar<TipoServicio> eliminar,
 			IObtenerTodos<TipoServicio> getAll,
 			IObtener<TipoServicio> obtener
@@ -44,8 +44,9 @@ namespace ApiCuidarte.Controllers
 		{
 			try
 			{
-				_alta.Ejecutar(ts);
-				return Ok();
+				TipoServicio tsCreado= _alta.Ejecutar(ts);
+				Console.WriteLine(tsCreado);
+				return Ok(tsCreado);
 			}
 			catch (DomainException ex)
 			{
@@ -64,12 +65,12 @@ namespace ApiCuidarte.Controllers
 		[ProducesResponseType(StatusCodes.Status500InternalServerError)]
 		[HttpPut]
 		[Route("Editar")]
-		public IActionResult Editar(int id, TipoServicio tp)
-		{
+		public IActionResult Editar(TipoServicio tp)
+		 {
 			try
 			{
-				_editar.Ejecutar(id, tp);
-				return Ok();
+				_editar.Ejecutar(tp);
+				return Ok(tp);
 			}
 			catch (DomainException ex)
 			{
@@ -88,7 +89,7 @@ namespace ApiCuidarte.Controllers
 		[ProducesResponseType(StatusCodes.Status500InternalServerError)]
 		[HttpDelete]
 		[Route("Eliminar")]
-		public IActionResult Eliminar(int id)
+		public IActionResult Eliminar([FromBody] int id)
 		{
 			try
 			{
@@ -121,7 +122,7 @@ namespace ApiCuidarte.Controllers
 				var usuario = _obtener.Ejecutar(id);
 				if (usuario == null || usuario.Eliminado)
 				{
-					throw new UsuarioException("No se encontro el usuario");
+					throw new DomainException("No se encontro el tipo servicio");
 				}
 				return Ok(usuario);
 			}
@@ -144,14 +145,14 @@ namespace ApiCuidarte.Controllers
 		[ProducesResponseType(StatusCodes.Status500InternalServerError)]
 		[HttpGet]
 		[Route("ObtenerTodos")]
-		public IActionResult ObtenerTodos()
+		public IActionResult ObtenerTodos(int pagina)
 		{
 			try
 			{
-				IEnumerable<TipoServicio> tp = _getAll.Ejecutar();
+				IEnumerable<TipoServicio> tp = _getAll.Ejecutar(pagina);
 				if (tp == null || !tp.Any())
 				{
-					throw new UsuarioException("No se encontraron usuarios");
+					throw new DomainException("No se encontraro el tipo servicio");
 				}
 				return Ok(tp);
 			}

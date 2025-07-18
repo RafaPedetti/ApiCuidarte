@@ -1,5 +1,11 @@
 using Infraestructura.LogicaAccesoDatos.EF;
+using LogicaAplicacion.Clientes;
+using LogicaAplicacion.Dtos;
+using LogicaAplicacion.Dtos.Clientes;
+using LogicaAplicacion.Dtos.Tareas;
+using LogicaAplicacion.Dtos.TipoPlanes;
 using LogicaAplicacion.Dtos.Usuarios;
+using LogicaAplicacion.Tareas;
 using LogicaAplicacion.TiposPlan;
 using LogicaAplicacion.TiposPlanes;
 using LogicaAplicacion.TiposServicio;
@@ -10,13 +16,13 @@ using LogicaNegocio.InterfacesServicios;
 using LogicaNegocio.InterfazServicios;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
-using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.BlazorIdentity.Pages;
 using System.Reflection;
 using System.Text;
 using System.Text.Json.Serialization;
+using Microsoft.Extensions.Configuration;
+
 namespace ApiCuidarte
 {
 	public class Program
@@ -27,6 +33,15 @@ namespace ApiCuidarte
 			var builder = WebApplication.CreateBuilder(args);
 
 			// Add services to the container.
+			builder.Services.AddCors(options =>
+			{
+				options.AddPolicy("PermitirFrontend", policy =>
+				{
+					policy.WithOrigins("http://localhost:3000")
+						  .AllowAnyHeader()
+						  .AllowAnyMethod();
+				});
+			});
 
 			builder.Services.AddControllers();
 			// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
@@ -112,29 +127,47 @@ namespace ApiCuidarte
 			builder.Services.AddScoped<IRepositorioUsuario, RepositorioUsuario>();
 			builder.Services.AddScoped<IRepositorioTipoServicio, RepositorioTipoServicio>();
 			builder.Services.AddScoped<IRepositorioTipoPlan, RepositorioTipoPlan>();
+			builder.Services.AddScoped<IRepositorioCliente, RepositorioCliente>();
+			builder.Services.AddScoped<IRepositorioTarea, RepositorioTarea>();
 
 			// caso de uso -- Usuario --
 			builder.Services.AddScoped<IObtenerTodos<UsuarioDto>, GetAllUsuario>();
-			builder.Services.AddScoped<IAlta<CrearUsuarioDto>, AltaUsuario>();
+			builder.Services.AddScoped<IAlta<CrearUsuarioDto,Usuario>, AltaUsuario>();
 			builder.Services.AddScoped<IObtener<UsuarioDto>, GetByIdUsuario>();
-			builder.Services.AddScoped<IEditar<EditarUsuarioDto>, EditarUsuario>();
+			builder.Services.AddScoped<IEditar<EditarUsuarioDto,Usuario>, EditarUsuario>();
 			builder.Services.AddScoped<IEliminar<UsuarioDto>, EliminarUsuario>();
 			builder.Services.AddScoped<ILogin<UsuarioDto>, LoginUsuario>();
 			builder.Services.AddScoped<IObtenerPorTexto<UsuarioDto>, ObtenerPorTextoUsuario>();
 
 			// caso de uso -- TipoServicio --
 			builder.Services.AddScoped<IObtenerTodos<TipoServicio>, GetAllTipoServicio>();
-			builder.Services.AddScoped<IAlta<TipoServicio>, AltaTipoServicio>();
+			builder.Services.AddScoped<IAlta<TipoServicio, TipoServicio>, AltaTipoServicio>();
 			builder.Services.AddScoped<IObtener<TipoServicio>, GetByIdTipoServicio>();
-			builder.Services.AddScoped<IEditar<TipoServicio>, EditarTipoServicio>();
+			builder.Services.AddScoped<IEditar<TipoServicio, TipoServicio>, EditarTipoServicio>();
 			builder.Services.AddScoped<IEliminar<TipoServicio>, EliminarTipoServicio>();
 
 			// caso de uso -- TipoPlan --
 			builder.Services.AddScoped<IObtenerTodos<TipoPlan>, GetAllTipoPlan>();
-			builder.Services.AddScoped<IAlta<TipoPlan>, AltaTipoPlan>();
+			builder.Services.AddScoped<IAlta<TipoPlanDto, TipoPlan>, AltaTipoPlan>();
 			builder.Services.AddScoped<IObtener<TipoPlan>, GetByIdTipoPlan>();
-			builder.Services.AddScoped<IEditar<TipoPlan>, EditarTipoPlan>();
+			builder.Services.AddScoped<IEditar<TipoPlanDto,TipoPlan>, EditarTipoPlan>();
 			builder.Services.AddScoped<IEliminar<TipoPlan>, EliminarTipoPlan>();
+
+			// caso de uso -- Clientes --
+			builder.Services.AddScoped<IObtenerPaginado<PaginadoResultado<Cliente>>, GetAllCliente>();
+			builder.Services.AddScoped<IAlta<ClienteDto, Cliente>, AltaCliente>();
+			builder.Services.AddScoped<IObtener<Cliente>, GetByIdCliente>();
+			builder.Services.AddScoped<IEditar<ClienteDto, Cliente>, EditarCliente>();
+			builder.Services.AddScoped<IEliminar<Cliente>, EliminarCliente>();
+			builder.Services.AddScoped<IObtenerPorTexto<Cliente>, GetByTextoCliente>();
+
+			// caso de uso -- Tareas --
+			builder.Services.AddScoped<IObtenerPaginado<PaginadoResultado<Tarea>>, GetAllTarea>();
+			builder.Services.AddScoped<IAlta<TareaDto, Tarea>, AltaTarea>();
+			builder.Services.AddScoped<IObtener<Tarea>, GetByIdTarea>();
+			builder.Services.AddScoped<IEditar<TareaDto, Tarea>, EditarTarea>();
+			builder.Services.AddScoped<IEliminar<Tarea>, EliminarTarea>();
+			builder.Services.AddScoped<IObtenerPorTexto<Tarea>, GetByTextoTarea>();
 
 			var config = new ConfigurationBuilder()
 			.AddJsonFile("parametos.json", optional: true, reloadOnChange: true)
@@ -157,6 +190,8 @@ namespace ApiCuidarte
 				app.UseSwagger();
 				app.UseSwaggerUI();
 			}
+
+			app.UseCors("PermitirFrontend");
 
 			app.UseHttpsRedirection();
 

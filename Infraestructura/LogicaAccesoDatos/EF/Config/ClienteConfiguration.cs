@@ -30,7 +30,6 @@ namespace Infraestructura.LogicaAccesoDatos.EF.Config
 				telefono.Property(e => e.Value).HasColumnName("Telefono");
 			}
 			   );
-
 		}
 	}
 }

@@ -12,6 +12,7 @@ namespace LogicaNegocio.InterfacesRepocitorio
 	{
 		public IEnumerable<Tarea> GetByTexto(string texto);
 
+		public IEnumerable<Tarea> GetAll(int pagina);
 		public int TotalItemsAsync();
 	}
 }

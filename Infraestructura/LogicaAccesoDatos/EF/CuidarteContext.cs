@@ -23,6 +23,9 @@ namespace Infraestructura.LogicaAccesoDatos.EF
 
 		public DbSet<Tarea> Tareas { get; set; }
 
+		public DbSet<Empresa> Empresas { get; set; }
+		public DbSet<Mensualidad> Mensualidades { get; set; }
+		public DbSet<Suscripcion> Suscripciones { get; set; }
 
 
 		public CuidarteContext(DbContextOptions<CuidarteContext> options) : base(options) { }
@@ -35,6 +38,10 @@ namespace Infraestructura.LogicaAccesoDatos.EF
 
 			modelBuilder.ApplyConfiguration(new ClienteConfiguration());
 
+			modelBuilder.ApplyConfiguration(new SuscripcionConfiguration());
+
+			modelBuilder.ApplyConfiguration(new MensualidadConfiguration());
+			modelBuilder.ApplyConfiguration(new EmpresaConfiguration());
 		}
 	}
 }

@@ -12,6 +12,7 @@ namespace LogicaNegocio.InterfazRepositorio
         public void Delete(int id);
         public T Update(T obj);
         public T GetById(int id);
-        public IEnumerable<T> GetAll(int pagina);
+		public IEnumerable<T> GetAll();
+
     }
 }

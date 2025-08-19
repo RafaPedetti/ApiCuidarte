@@ -8,6 +8,6 @@ namespace LogicaNegocio.InterfazServicios
 {
     public interface IObtenerTodos<T>
     {
-        public IEnumerable<T> Ejecutar(int pagina);
+        public IEnumerable<T> Ejecutar();
     }
 }

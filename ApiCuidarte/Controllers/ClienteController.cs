@@ -16,19 +16,19 @@ namespace ApiCuidarte.Controllers
 	[Authorize]
 	public class ClienteController : ControllerBase
 	{
-		IAlta<ClienteDto,Cliente> _alta;
-		IEditar<ClienteDto,Cliente> _editar;
+		IAlta<ClienteDto, Cliente> _alta;
+		IEditar<ClienteDto, Cliente> _editar;
 		IEliminar<Cliente> _eliminar;
-		IObtenerTodos<Cliente> _getAll;
-		IObtenerPaginado<PaginadoResultado<Cliente>> _obtener;
+		IObtenerPaginado<PaginadoResultado<Cliente>> _getAll;
+		IObtener<Cliente> _obtener;
 		IObtenerPorTexto<Cliente> _obtenerPorTexto;
 
 		public ClienteController(
-			IAlta<ClienteDto,Cliente> alta,
-			IEditar<ClienteDto,Cliente> editar,
+			IAlta<ClienteDto, Cliente> alta,
+			IEditar<ClienteDto, Cliente> editar,
 			IEliminar<Cliente> eliminar,
-			IObtenerTodos<Cliente> getAll,
-			IObtenerPaginado<PaginadoResultado<Cliente>> obtener,
+			IObtenerPaginado<PaginadoResultado<Cliente>> getAll,
+			IObtener<Cliente> obtener,
 			IObtenerPorTexto<Cliente> obtenerPorTexto
 		)
 		{
@@ -48,7 +48,7 @@ namespace ApiCuidarte.Controllers
 		{
 			try
 			{
-				Cliente cCreado= _alta.Ejecutar(c);
+				Cliente cCreado = _alta.Ejecutar(c);
 				return Ok(cCreado);
 			}
 			catch (DomainException ex)
@@ -72,7 +72,7 @@ namespace ApiCuidarte.Controllers
 		{
 			try
 			{
-				Cliente cCreado= _editar.Ejecutar(c);
+				Cliente cCreado = _editar.Ejecutar(c);
 				return Ok(cCreado);
 			}
 			catch (DomainException ex)
@@ -122,7 +122,7 @@ namespace ApiCuidarte.Controllers
 		{
 			try
 			{
-				PaginadoResultado<Cliente> c = _obtener.Ejecutar(id);
+				Cliente c = _obtener.Ejecutar(id);
 				if (c == null)
 				{
 					throw new ClienteException("No se encontro el cliente");
@@ -182,8 +182,8 @@ namespace ApiCuidarte.Controllers
 		{
 			try
 			{
-				IEnumerable<Cliente> c = _getAll.Ejecutar(pagina);
-				if (c == null || !c.Any())
+				PaginadoResultado<Cliente> c = _getAll.Ejecutar(pagina);
+				if (c == null)
 				{
 					throw new ClienteException("No se encontraron cliente");
 				}

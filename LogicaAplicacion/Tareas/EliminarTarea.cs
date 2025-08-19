@@ -7,9 +7,9 @@ namespace LogicaAplicacion.Tareas
 {
 	public class EliminarTarea : IEliminar<Tarea>
 	{
-		public readonly IRepositorioCliente _context;
+		public readonly IRepositorioTarea _context;
 
-		public EliminarTarea(IRepositorioCliente context)
+		public EliminarTarea(IRepositorioTarea context)
 		{
 			_context = context;
 		}

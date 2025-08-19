@@ -145,11 +145,11 @@ namespace ApiCuidarte.Controllers
 		[ProducesResponseType(StatusCodes.Status500InternalServerError)]
 		[HttpGet]
 		[Route("ObtenerTodos")]
-		public IActionResult ObtenerTodos(int pagina)
+		public IActionResult ObtenerTodos()
 		{
 			try
 			{
-				IEnumerable<TipoServicio> tp = _getAll.Ejecutar(pagina);
+				IEnumerable<TipoServicio> tp = _getAll.Ejecutar();
 				if (tp == null || !tp.Any())
 				{
 					throw new DomainException("No se encontraro el tipo servicio");

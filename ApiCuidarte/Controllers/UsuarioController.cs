@@ -230,7 +230,7 @@ namespace ApiCuidarte.Controllers
 		[HttpGet]
 		[Route("ObtenerTodos")]
 		[Authorize]
-		public IActionResult ObtenerTodos(int pagina)
+		public IActionResult ObtenerTodos()
 		{
 			try
 			{
@@ -238,7 +238,7 @@ namespace ApiCuidarte.Controllers
 				IEnumerable<UsuarioDto> usuarios;
 				if (rol == Administrador.DiscriminadorStatic)
 				{
-					usuarios = _getAll.Ejecutar(pagina);
+					usuarios = _getAll.Ejecutar();
 				}
 				else
 				{

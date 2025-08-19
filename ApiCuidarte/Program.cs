@@ -2,9 +2,13 @@ using Infraestructura.LogicaAccesoDatos.EF;
 using LogicaAplicacion.Clientes;
 using LogicaAplicacion.Dtos;
 using LogicaAplicacion.Dtos.Clientes;
+using LogicaAplicacion.Dtos.Empresas;
 using LogicaAplicacion.Dtos.Tareas;
 using LogicaAplicacion.Dtos.TipoPlanes;
 using LogicaAplicacion.Dtos.Usuarios;
+using LogicaAplicacion.Empresas;
+using LogicaAplicacion.EmpresaS;
+using LogicaAplicacion.Mensualidades;
 using LogicaAplicacion.Tareas;
 using LogicaAplicacion.TiposPlan;
 using LogicaAplicacion.TiposPlanes;
@@ -13,6 +17,7 @@ using LogicaAplicacion.Usuarios;
 using LogicaNegocio.Entidades;
 using LogicaNegocio.InterfacesRepocitorio;
 using LogicaNegocio.InterfacesServicios;
+using LogicaNegocio.InterfacesServicios.Mensualidades;
 using LogicaNegocio.InterfazServicios;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
@@ -21,7 +26,6 @@ using Microsoft.OpenApi.Models;
 using System.Reflection;
 using System.Text;
 using System.Text.Json.Serialization;
-using Microsoft.Extensions.Configuration;
 
 namespace ApiCuidarte
 {
@@ -44,17 +48,12 @@ namespace ApiCuidarte
 			});
 
 			builder.Services.AddControllers();
-			// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 			builder.Services.AddEndpointsApiExplorer();
 
-			// En caso que de problemas al consumir el api con las
-			// referencias ciclicas
 			builder.Services.AddControllers().AddJsonOptions(
 				option =>
 				option.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles
 				);
-
-			// personalizar configuracion de swagger
 			builder.Services.AddSwaggerGen(opt =>
 			{
 				opt.SwaggerDoc(
@@ -65,7 +64,6 @@ namespace ApiCuidarte
 						Description = "RestApi",
 					});
 
-				// Set the comments path for the Swagger JSON and UI.
 				var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
 				var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
 				if (File.Exists(xmlPath))
@@ -101,8 +99,6 @@ namespace ApiCuidarte
 				});
 			});
 
-			// configuracion de la autorizacion y el JWT
-			// 
 			var claveSecreta = "ZWRpw6fDo28gZW0gY29tcHV0YWRvcmE=";
 			builder.Services.AddAuthentication(aut =>
 			{
@@ -129,7 +125,9 @@ namespace ApiCuidarte
 			builder.Services.AddScoped<IRepositorioTipoPlan, RepositorioTipoPlan>();
 			builder.Services.AddScoped<IRepositorioCliente, RepositorioCliente>();
 			builder.Services.AddScoped<IRepositorioTarea, RepositorioTarea>();
-
+			builder.Services.AddScoped<IRepositorioEmpresa, RepositorioEmpresa>();
+			builder.Services.AddScoped<IRepositorioSuscripcion, RepositorioSuscripcion>();
+			builder.Services.AddScoped<IRepositorioMensualidad, RepositorioMensualidad>();
 			// caso de uso -- Usuario --
 			builder.Services.AddScoped<IObtenerTodos<UsuarioDto>, GetAllUsuario>();
 			builder.Services.AddScoped<IAlta<CrearUsuarioDto,Usuario>, AltaUsuario>();
@@ -168,6 +166,16 @@ namespace ApiCuidarte
 			builder.Services.AddScoped<IEditar<TareaDto, Tarea>, EditarTarea>();
 			builder.Services.AddScoped<IEliminar<Tarea>, EliminarTarea>();
 			builder.Services.AddScoped<IObtenerPorTexto<Tarea>, GetByTextoTarea>();
+
+			// caso de uso -- Empresa --
+			builder.Services.AddScoped<IObtenerTodos<Empresa>, GetAllEmpresa>();
+			builder.Services.AddScoped<IAlta<EmpresaDto, Empresa>, AltaEmpresa>();
+			builder.Services.AddScoped<IEditar<EmpresaDto, Empresa>, EditarEmpresa>();
+			builder.Services.AddScoped<IEliminar<Empresa>, EliminarEmpresa>();
+
+			// caso de uso -- Mensualidad  --
+			builder.Services.AddScoped<IObtenerPorCliente<Mensualidad>, GetAllMensualidad>();
+			builder.Services.AddScoped<IAlta<Mensualidad, Mensualidad>, AltaMensualidad>();
 
 			var config = new ConfigurationBuilder()
 			.AddJsonFile("parametos.json", optional: true, reloadOnChange: true)

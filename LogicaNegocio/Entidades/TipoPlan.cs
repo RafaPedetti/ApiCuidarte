@@ -17,8 +17,17 @@ namespace LogicaNegocio.Entidades
 		public string Nombre { get; set; }
 
 		[Required]
-		public List<Servicio> Servicios{ get; set;}
-	
+		public List<Servicio> Servicios{ get; set;} = new List<Servicio>();
+
+		public int? EmpresaId { get; set; }
+		public Empresa? Empresa { get; set; }
+
+		[Required]
+		public decimal Precio { get; set; }
+
+		public ICollection<Suscripcion> Suscripciones { get; set; }
+		  = new List<Suscripcion>();
+
 		public bool Eliminado { get; set; }
 
 
@@ -26,18 +35,19 @@ namespace LogicaNegocio.Entidades
 		{
 		}
 
-		public TipoPlan(int id, string nombre, List<Servicio> servicios)
+		public TipoPlan(int id, string nombre, List<Servicio> servicios, decimal precio)
 		{
 			Id = id;
 			Nombre = nombre;
 			Servicios = servicios;
+			Precio = precio;
 		}
 
-		public TipoPlan(string nombre, List<Servicio> servicios)
+		public TipoPlan(string nombre, List<Servicio> servicios, decimal precio)
 		{
 			Nombre = nombre;
 			Servicios = servicios;
-			servicios = new List<Servicio>();
+			Precio = precio;
 		}
 
 		public void Update(TipoPlan obj)

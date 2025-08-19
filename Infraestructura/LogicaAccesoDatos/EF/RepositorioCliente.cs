@@ -19,9 +19,13 @@ namespace Infraestructura.LogicaAccesoDatos.EF
 		public Cliente Add(Cliente obj)
 		{
 			if (obj == null) throw new ArgumentNullException(nameof(obj), "El objeto no puede ser nulo.");
-			bool existe = _context.Clientes.Any(c => c.CI == obj.CI);
+			bool existe = _context.Clientes
+			.Where(c => !c.Eliminado && c.CI == obj.CI)
+			.Any();
+
 			if (existe)
 				throw new InvalidOperationException("Ya existe un cliente con esa cédula.");
+
 			_context.Clientes.Add(obj);
 			_context.SaveChanges();
 			return obj;
@@ -54,8 +58,17 @@ namespace Infraestructura.LogicaAccesoDatos.EF
 		{
 			return _context.Clientes.Include(c => c.Plan)
 			.Include(c => c.ServiciosDisponibles).ThenInclude(s => s.tipoServicio)
+			.Include(c => c.ServiciosExtras).ThenInclude(s => s.tipoServicio)
+			.Include(c => c.Suscripcion)
 			.Where(c => !c.Eliminado).Skip(pagina * Parametros.MaxItemsPaginado)
 		.Take(Parametros.MaxItemsPaginado).ToList();
+		}
+
+		public IEnumerable<Cliente> GetAll()
+		{
+			return _context.Clientes.Include(c => c.Plan)
+			.Include(c => c.ServiciosDisponibles).ThenInclude(s => s.tipoServicio)
+			.Where(c => !c.Eliminado).ToList();
 		}
 
 		public Cliente GetById(int id)
@@ -90,13 +103,12 @@ namespace Infraestructura.LogicaAccesoDatos.EF
 					.ThenInclude(s => s.tipoServicio)
 				.Include(c => c.ServiciosExtras)
 				.Where(c => !c.Eliminado)
-				.AsEnumerable() // ← necesario para usar ToLower en LINQ puro
 				.Where(c =>
 					(!string.IsNullOrEmpty(c.NombreCompleto.Nombre) && c.NombreCompleto.Nombre.ToLower().Contains(texto)) ||
+					(!string.IsNullOrEmpty(c.NombreCompleto.Apellido) && c.NombreCompleto.Apellido.ToLower().Contains(texto)) ||
 					(!string.IsNullOrEmpty(c.Email.Value) && c.Email.Value.ToLower().Contains(texto)) ||
-					(!string.IsNullOrEmpty(c.Direccion) && c.Direccion.ToLower().Contains(texto)) ||
-					c.ServiciosDisponibles.Any(s => s.tipoServicio?.Nombre.ToLower().Contains(texto) == true) ||
-					c.ServiciosExtras.Any(s => s.tipoServicio?.Nombre.ToLower().Contains(texto) == true)
+					(!string.IsNullOrEmpty(c.CI) && c.CI.Contains(texto)) ||
+					(!string.IsNullOrEmpty(c.Direccion) && c.Direccion.ToLower().Contains(texto))
 				);
 
 			return query.ToList();

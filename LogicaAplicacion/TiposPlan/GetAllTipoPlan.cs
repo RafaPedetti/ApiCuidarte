@@ -16,9 +16,9 @@ namespace LogicaAplicacion.TiposPlan
 		{
 			_context = context;
 		}
-		public IEnumerable<TipoPlan> Ejecutar(int pagina)
+		public IEnumerable<TipoPlan> Ejecutar()
 		{
-			return _context.GetAll(pagina);
+			return _context.GetAll();
 		}
 
 	}

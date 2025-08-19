@@ -38,5 +38,10 @@ namespace LogicaNegocio.Entidades
 			return obj is TipoServicio servicio &&
 				   Nombre == servicio.Nombre;
 		}
+
+		public override int GetHashCode()
+		{
+			throw new NotImplementedException();
+		}
 	}
 }

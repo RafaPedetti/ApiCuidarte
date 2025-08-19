@@ -79,11 +79,16 @@ namespace Infraestructura.LogicaAccesoDatos.EF
 
 		public IEnumerable<Tarea> GetAll(int pagina)
 		{
-			return _context.Tareas.Include(t => t.EmpleadoResponsable)
-			.Include(t => t.Cliente)
-			.Include(t => t.serviciosUsados).ThenInclude(s => s.tipoServicio)
-			.Include(t => t.ServiciosExtras).ThenInclude(s => s.tipoServicio)
-			.Where(ts => !ts.Eliminado).Distinct().Skip(pagina * Parametros.MaxItemsPaginado).Take(Parametros.MaxItemsPaginado).ToList();
+			return _context.Tareas
+		.Include(t => t.EmpleadoResponsable)
+		.Include(t => t.Cliente)
+		.Include(t => t.serviciosUsados).ThenInclude(s => s.tipoServicio)
+		.Include(t => t.ServiciosExtras).ThenInclude(s => s.tipoServicio)
+		.Where(ts => !ts.Eliminado)
+		.OrderByDescending(t => t.fecha)
+		.Skip(pagina * Parametros.MaxItemsPaginado)
+		.Take(Parametros.MaxItemsPaginado)
+		.ToList();
 
 		}
 
@@ -146,6 +151,11 @@ namespace Infraestructura.LogicaAccesoDatos.EF
 			_context.Tareas.Update(tarea);
 			_context.SaveChanges();
 			return tarea;
+		}
+
+		public IEnumerable<Tarea> GetAll()
+		{
+			throw new NotImplementedException();
 		}
 	}
 }

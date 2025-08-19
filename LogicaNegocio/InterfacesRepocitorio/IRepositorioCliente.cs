@@ -12,6 +12,7 @@ namespace LogicaNegocio.InterfacesRepocitorio
 	{
 		public void CambiarPlan(int idCliente,TipoPlan tipoPlan);
 
+		public IEnumerable<Cliente> GetAll(int pagina);
 		public IEnumerable<Cliente> GetByTexto(string texto);
 		public int TotalItems();
 	}

@@ -30,7 +30,8 @@ namespace LogicaNegocio.Entidades
 		public List<Servicio> ServiciosDisponibles { get; set; } = new();
 		public List<Servicio> ServiciosExtras { get; set; } = new();
 
-
+		public Suscripcion? Suscripcion { get; set; }
+		public int? SuscripcionId { get; set; }
 		public bool Eliminado { get; set; }
 
 		public Cliente(int id, NombreCompleto nombreCompleto, string ci,DateOnly fechaNacimiento, string direccion, Telefono telefono, int plan,Email email)

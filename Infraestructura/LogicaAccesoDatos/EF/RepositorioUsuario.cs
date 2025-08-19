@@ -49,11 +49,10 @@ namespace Infraestructura.LogicaAccesoDatos.EF
 			Update(userCopia);
 		}
 
-		public IEnumerable<Usuario> GetAll(int pagina)
+		public IEnumerable<Usuario> GetAll()
 		{
 			IEnumerable<Usuario> usuarios = _context.Usuarios
-			.Where(user => !user.Eliminado).Skip(pagina * Parametros.MaxItemsPaginado)
-			.Take(Parametros.MaxItemsPaginado).ToList();
+			.Where(user => !user.Eliminado).ToList();
 
 			if (usuarios.Count() == 0) throw new Exception("No se encontraron usuarios.");
 			return usuarios.ToList();

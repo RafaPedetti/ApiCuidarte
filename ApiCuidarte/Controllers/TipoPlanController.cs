@@ -143,11 +143,11 @@ namespace ApiCuidarte.Controllers
 		[ProducesResponseType(StatusCodes.Status500InternalServerError)]
 		[HttpGet]
 		[Route("ObtenerTodos")]
-		public IActionResult ObtenerTodos(int pagina)
+		public IActionResult ObtenerTodos()
 		{
 			try
 			{
-				IEnumerable<TipoPlan> tp = _getAll.Ejecutar(pagina);
+				IEnumerable<TipoPlan> tp = _getAll.Ejecutar();
 				if (tp == null || !tp.Any())
 				{
 					throw new DomainException("No se encontraron usuarios");

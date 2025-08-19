@@ -44,14 +44,94 @@ namespace Infraestructura.Migrations
                     b.Property<DateOnly>("FechaNacimiento")
                         .HasColumnType("date");
 
+                    b.Property<int?>("SuscripcionId")
+                        .HasColumnType("integer");
+
                     b.Property<int>("TipoPlanId")
                         .HasColumnType("integer");
 
                     b.HasKey("Id");
 
+                    b.HasIndex("SuscripcionId");
+
                     b.HasIndex("TipoPlanId");
 
                     b.ToTable("Clientes");
+                });
+
+            modelBuilder.Entity("LogicaNegocio.Entidades.Empresa", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<bool>("Eliminado")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("boolean")
+                        .HasDefaultValue(false);
+
+                    b.Property<string>("Nombre")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
+
+                    b.Property<int>("SuscripcionId")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("TipoPlanId")
+                        .HasColumnType("integer");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("SuscripcionId");
+
+                    b.HasIndex("TipoPlanId")
+                        .IsUnique();
+
+                    b.ToTable("Empresas");
+                });
+
+            modelBuilder.Entity("LogicaNegocio.Entidades.Mensualidad", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<bool>("Eliminado")
+                        .HasColumnType("boolean");
+
+                    b.Property<string>("Estado")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("character varying(20)");
+
+                    b.Property<DateTime>("FechaGeneracion")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<DateTime?>("FechaPago")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<decimal>("Monto")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<DateTime>("PeriodoDesde")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<DateTime>("PeriodoHasta")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<int>("SubscriptionId")
+                        .HasColumnType("integer");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("SubscriptionId");
+
+                    b.ToTable("Mensualidades", (string)null);
                 });
 
             modelBuilder.Entity("LogicaNegocio.Entidades.Servicio", b =>
@@ -98,6 +178,54 @@ namespace Infraestructura.Migrations
                     b.HasIndex("tipoServicioId");
 
                     b.ToTable("Servicios");
+                });
+
+            modelBuilder.Entity("LogicaNegocio.Entidades.Suscripcion", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<int?>("ClienteId")
+                        .HasColumnType("integer");
+
+                    b.Property<bool>("Eliminado")
+                        .HasColumnType("boolean");
+
+                    b.Property<int?>("EmpresaId")
+                        .HasColumnType("integer");
+
+                    b.Property<int?>("EmpresaId1")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("Estado")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("character varying(20)");
+
+                    b.Property<DateTime>("FechaInicio")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<int>("PlanId")
+                        .HasColumnType("integer");
+
+                    b.Property<DateTime>("ProximoCobro")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<int?>("TipoPlanId")
+                        .HasColumnType("integer");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("EmpresaId1");
+
+                    b.HasIndex("PlanId");
+
+                    b.HasIndex("TipoPlanId");
+
+                    b.ToTable("Suscripciones", (string)null);
                 });
 
             modelBuilder.Entity("LogicaNegocio.Entidades.Tarea", b =>
@@ -147,9 +275,15 @@ namespace Infraestructura.Migrations
                     b.Property<bool>("Eliminado")
                         .HasColumnType("boolean");
 
+                    b.Property<int?>("EmpresaId")
+                        .HasColumnType("integer");
+
                     b.Property<string>("Nombre")
                         .IsRequired()
                         .HasColumnType("text");
+
+                    b.Property<decimal>("Precio")
+                        .HasColumnType("numeric");
 
                     b.HasKey("Id");
 
@@ -224,6 +358,11 @@ namespace Infraestructura.Migrations
 
             modelBuilder.Entity("LogicaNegocio.Entidades.Cliente", b =>
                 {
+                    b.HasOne("LogicaNegocio.Entidades.Suscripcion", "Suscripcion")
+                        .WithMany("Clientes")
+                        .HasForeignKey("SuscripcionId")
+                        .OnDelete(DeleteBehavior.SetNull);
+
                     b.HasOne("LogicaNegocio.Entidades.TipoPlan", "Plan")
                         .WithMany()
                         .HasForeignKey("TipoPlanId")
@@ -297,8 +436,61 @@ namespace Infraestructura.Migrations
 
                     b.Navigation("Plan");
 
+                    b.Navigation("Suscripcion");
+
                     b.Navigation("Telefono")
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("LogicaNegocio.Entidades.Empresa", b =>
+                {
+                    b.HasOne("LogicaNegocio.Entidades.Suscripcion", "Suscripcion")
+                        .WithMany()
+                        .HasForeignKey("SuscripcionId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("LogicaNegocio.Entidades.TipoPlan", "Plan")
+                        .WithOne("Empresa")
+                        .HasForeignKey("LogicaNegocio.Entidades.Empresa", "TipoPlanId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.OwnsOne("LogicaNegocio.ValueObject.Telefono", "TelefonoContacto", b1 =>
+                        {
+                            b1.Property<int>("EmpresaId")
+                                .HasColumnType("integer");
+
+                            b1.Property<string>("Value")
+                                .IsRequired()
+                                .HasColumnType("text")
+                                .HasColumnName("TelefonoContacto");
+
+                            b1.HasKey("EmpresaId");
+
+                            b1.ToTable("Empresas");
+
+                            b1.WithOwner()
+                                .HasForeignKey("EmpresaId");
+                        });
+
+                    b.Navigation("Plan");
+
+                    b.Navigation("Suscripcion");
+
+                    b.Navigation("TelefonoContacto")
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("LogicaNegocio.Entidades.Mensualidad", b =>
+                {
+                    b.HasOne("LogicaNegocio.Entidades.Suscripcion", "Subscription")
+                        .WithMany("Mensualidades")
+                        .HasForeignKey("SubscriptionId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Subscription");
                 });
 
             modelBuilder.Entity("LogicaNegocio.Entidades.Servicio", b =>
@@ -330,6 +522,27 @@ namespace Infraestructura.Migrations
                         .IsRequired();
 
                     b.Navigation("tipoServicio");
+                });
+
+            modelBuilder.Entity("LogicaNegocio.Entidades.Suscripcion", b =>
+                {
+                    b.HasOne("LogicaNegocio.Entidades.Empresa", "Empresa")
+                        .WithMany()
+                        .HasForeignKey("EmpresaId1");
+
+                    b.HasOne("LogicaNegocio.Entidades.TipoPlan", "Plan")
+                        .WithMany()
+                        .HasForeignKey("PlanId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("LogicaNegocio.Entidades.TipoPlan", null)
+                        .WithMany("Suscripciones")
+                        .HasForeignKey("TipoPlanId");
+
+                    b.Navigation("Empresa");
+
+                    b.Navigation("Plan");
                 });
 
             modelBuilder.Entity("LogicaNegocio.Entidades.Tarea", b =>
@@ -432,6 +645,13 @@ namespace Infraestructura.Migrations
                     b.Navigation("ServiciosExtras");
                 });
 
+            modelBuilder.Entity("LogicaNegocio.Entidades.Suscripcion", b =>
+                {
+                    b.Navigation("Clientes");
+
+                    b.Navigation("Mensualidades");
+                });
+
             modelBuilder.Entity("LogicaNegocio.Entidades.Tarea", b =>
                 {
                     b.Navigation("ServiciosExtras");
@@ -441,7 +661,11 @@ namespace Infraestructura.Migrations
 
             modelBuilder.Entity("LogicaNegocio.Entidades.TipoPlan", b =>
                 {
+                    b.Navigation("Empresa");
+
                     b.Navigation("Servicios");
+
+                    b.Navigation("Suscripciones");
                 });
 #pragma warning restore 612, 618
         }

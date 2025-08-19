@@ -19,9 +19,9 @@ namespace LogicaAplicacion.Usuarios
 			_repositorioUsuario = repositorioUsuario;
 		}
 
-		public IEnumerable<UsuarioDto> Ejecutar(int pagina)
+		public IEnumerable<UsuarioDto> Ejecutar()
 		{
-			IEnumerable<UsuarioDto> usuarios = UsuarioMapper.ToListaDto(_repositorioUsuario.GetAll(pagina));
+			IEnumerable<UsuarioDto> usuarios = UsuarioMapper.ToListaDto(_repositorioUsuario.GetAll());
 			return usuarios;
 		}
 	}

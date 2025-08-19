@@ -35,14 +35,13 @@ namespace Infraestructura.LogicaAccesoDatos.EF
 			tipoServicio.Eliminado = true; 
 			Update(tipoServicio);
 		}
-		public IEnumerable<TipoServicio> GetAll(int pagina)
+		public IEnumerable<TipoServicio> GetAll()
 		{
 			return _context.TipoServicios
 				.Where(ts => !ts.Eliminado)
-				.Skip(pagina * Parametros.MaxItemsPaginado)
-				.Take(Parametros.MaxItemsPaginado)
 				.ToList();
 		}
+
 		public TipoServicio GetById(int id)
 		{
 			if(id == null)

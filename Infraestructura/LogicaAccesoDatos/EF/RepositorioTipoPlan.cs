@@ -42,12 +42,11 @@ namespace Infraestructura.LogicaAccesoDatos.EF
 			Update(tipoPlan);
 		}
 
-		public IEnumerable<TipoPlan> GetAll(int pagina)
+		public IEnumerable<TipoPlan> GetAll()
 		{
 			return _context.TiposPlanes.Include(tp => tp.Servicios)
-		.ThenInclude(s => s.tipoServicio)
-		.Where(ts => !ts.Eliminado).Skip(pagina * Parametros.MaxItemsPaginado)
-		.Take(Parametros.MaxItemsPaginado).ToList();
+			.ThenInclude(s => s.tipoServicio)
+			.Where(ts => !ts.Eliminado).ToList();
 		}
 
 		public TipoPlan GetById(int id)

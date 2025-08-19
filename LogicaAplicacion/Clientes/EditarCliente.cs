@@ -17,6 +17,7 @@ namespace LogicaAplicacion.Clientes
 	{
 		public readonly IRepositorioCliente _context;
 		public readonly IRepositorioTipoPlan _contextTP;
+		public readonly IRepositorioSuscripcion _contextSuscripcion;
 
 		public EditarCliente(IRepositorioCliente context, IRepositorioTipoPlan contextTP)
 		{
@@ -34,8 +35,11 @@ namespace LogicaAplicacion.Clientes
 				throw new ArgumentException("El Id del cliente debe ser mayor a 0");
 			}
 			Cliente c = ClienteMapper.FromDto(obj);
+			Suscripcion suscripcion = _contextSuscripcion.GetByIdCliente(c.Id);
 			TipoPlan tp= _contextTP.GetById(obj.TipoPlanId);
 			c.Plan = tp;
+			suscripcion.Plan = tp;
+			_contextSuscripcion.Update(suscripcion);
 			return _context.Update(c);
 
 		}

@@ -7,7 +7,7 @@ using LogicaNegocio.InterfazServicios;
 
 namespace LogicaAplicacion.Tareas
 {
-	public class EditarTarea : IEditar<TareaDto,Tarea>
+	public class EditarTarea : IEditar<TareaDto>
 	{
 		public readonly IRepositorioCliente _contextC;
 		public readonly IRepositorioUsuario _contextU;
@@ -19,7 +19,7 @@ namespace LogicaAplicacion.Tareas
 			_contextT = contextT;
 			_contextU = contextU;
 		}
-		public Tarea Ejecutar(TareaDto obj)
+		public TareaDto Ejecutar(TareaDto obj)
 		{
 			if (obj == null)
 			{
@@ -34,7 +34,8 @@ namespace LogicaAplicacion.Tareas
 			Usuario u = _contextU.GetById(obj.responsableId);
 			t.Cliente = c;
 			t.EmpleadoResponsable = u;
-			return _contextT.Update(t);
+			TareaDto tDto = TareaMapper.ToDto(_contextT.Update(t));
+			return tDto;
 
 		}
 	}

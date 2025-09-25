@@ -1,4 +1,5 @@
-﻿using LogicaNegocio.Entidades;
+﻿using LogicaAplicacion.Dtos.Empresas;
+using LogicaNegocio.Entidades;
 using LogicaNegocio.InterfacesRepocitorio;
 using LogicaNegocio.InterfazServicios;
 using System;
@@ -9,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace LogicaAplicacion.Empresas
 {
-	public class EliminarEmpresa : IEliminar<Empresa>
+	public class EliminarEmpresa : IEliminar<EmpresaDto>
 	{
 		public readonly IRepositorioEmpresa _context;
 

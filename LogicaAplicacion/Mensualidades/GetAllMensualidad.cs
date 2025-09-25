@@ -1,30 +1,26 @@
 ﻿using LogicaAplicacion.Dtos.MapeosDto;
-using LogicaAplicacion.Dtos.Usuarios;
+using LogicaAplicacion.Dtos.Suscripciones;
 using LogicaNegocio.Entidades;
 using LogicaNegocio.InterfacesRepocitorio;
 using LogicaNegocio.InterfacesServicios.Mensualidades;
-using LogicaNegocio.InterfazServicios;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace LogicaAplicacion.Mensualidades
 {
-	public class GetAllMensualidad : IObtenerPorCliente<Mensualidad>
+	public class GetAllMensualidad : IObtenerPorCliente<MensualidadDto>
 	{
 		IRepositorioMensualidad _repositorioMensualidad;
+		IRepositorioTarea _repositorioTarea;
 
-		public GetAllMensualidad(IRepositorioMensualidad repositorioMensualidad)
+		public GetAllMensualidad(IRepositorioMensualidad repositorioMensualidad, IRepositorioTarea repositorioTarea)
 		{
 			_repositorioMensualidad = repositorioMensualidad;
+			_repositorioTarea = repositorioTarea;
 		}
 
-		public IEnumerable<Mensualidad> Ejecutar(int id)
+		public IEnumerable<MensualidadDto> Ejecutar(int id)
 		{
 			IEnumerable<Mensualidad> mensualidades = _repositorioMensualidad.GetByCliente(id);
-			return mensualidades;
+			return MensualidadMapper.ToListaDto(mensualidades);
 		}
 
 	}

@@ -17,21 +17,23 @@ namespace ApiCuidarte.Controllers
 	public class UsuarioController : ControllerBase
 	{
 		IObtenerTodos<UsuarioDto> _getAll;
-		IAlta<CrearUsuarioDto, Usuario> _alta;
+		IAlta<UsuarioDto> _alta;
 		IObtener<UsuarioDto> _obtener;
-		IEditar<EditarUsuarioDto,Usuario> _editar;
+		IEditar<UsuarioDto> _editar;
 		IEliminar<UsuarioDto> _eliminar;
 		ILogin<UsuarioDto> _obtenerLogin;
 		IObtenerPorTexto<UsuarioDto> _obtenerPorTexto;
+		IObtenerHorasDelMes _obtenerHorasDelMes;
 
 		public UsuarioController(
 			IObtenerTodos<UsuarioDto> getAll,
-			IAlta<CrearUsuarioDto,Usuario> alta,
+			IAlta<UsuarioDto> alta,
 			IObtener<UsuarioDto> obtener,
 			IObtenerPorTexto<UsuarioDto> obtenerPorTexto,
-			IEditar<EditarUsuarioDto,Usuario> editar,
+			IEditar<UsuarioDto> editar,
 			IEliminar<UsuarioDto> eliminar,
-			ILogin<UsuarioDto> login
+			ILogin<UsuarioDto> login,
+			IObtenerHorasDelMes obtenerHorasDelMes
 		)
 		{
 			_getAll = getAll;
@@ -41,6 +43,7 @@ namespace ApiCuidarte.Controllers
 			_editar = editar;
 			_eliminar = eliminar;
 			_obtenerLogin = login;
+			_obtenerHorasDelMes = obtenerHorasDelMes;
 		}
 
 		[ProducesResponseType(StatusCodes.Status200OK)]
@@ -86,11 +89,11 @@ namespace ApiCuidarte.Controllers
 		[HttpPost]
 		[Route("Crear")]
 		[Authorize]
-		public IActionResult Crear(CrearUsuarioDto user)
+		public IActionResult Crear(UsuarioDto user)
 		{
 			try
 			{
-				Usuario uCreado = _alta.Ejecutar(user);
+				UsuarioDto uCreado = _alta.Ejecutar(user);
 				return Ok(uCreado);
 			}
 			catch (DomainException ex)
@@ -112,11 +115,11 @@ namespace ApiCuidarte.Controllers
 		[HttpPut]
 		[Route("Editar")]
 		[Authorize]
-		public IActionResult Editar(int id, EditarUsuarioDto user)
+		public IActionResult Editar(int id, UsuarioDto user)
 		{
 			try
 			{
-				Usuario uEditado = _editar.Ejecutar(user);
+				UsuarioDto uEditado = _editar.Ejecutar(user);
 				return Ok(uEditado);
 			}
 			catch (DomainException ex)
@@ -209,6 +212,38 @@ namespace ApiCuidarte.Controllers
 					throw new UsuarioException("No se encontraron usuarios con el texto proporcionado");
 				}
 				return Ok(usuarios);
+			}
+			catch (DomainException ex)
+			{
+				return StatusCode(400, ex.Message);
+			}
+			catch (ArgumentException ex)
+			{
+				return StatusCode(500, "Hupp" + ex.Message);
+			}
+			catch (Exception ex)
+			{
+				return StatusCode(500, "Hupps hubo un error intente nuevamente mas tarde");
+			}
+		}
+
+		[ProducesResponseType(StatusCodes.Status200OK)]
+		[ProducesResponseType(StatusCodes.Status204NoContent)]
+		[ProducesResponseType(StatusCodes.Status500InternalServerError)]
+		[Route("ObtenerHorasDelMes")]
+		[HttpGet]
+		[Authorize]
+		public IActionResult ObtenerHorasDelMes(int idFuncionario)
+		{
+			try
+			{
+				DateTime now = DateTime.Now;
+				var horas = _obtenerHorasDelMes.Ejecutar(idFuncionario,now.Month,now.Year);
+				if (horas == null)
+				{
+					throw new UsuarioException("No se encontro el usuario");
+				}
+				return Ok(horas);
 			}
 			catch (DomainException ex)
 			{

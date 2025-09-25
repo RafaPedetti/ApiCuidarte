@@ -3,6 +3,7 @@ using LogicaAplicacion.Clientes;
 using LogicaAplicacion.Dtos;
 using LogicaAplicacion.Dtos.Clientes;
 using LogicaAplicacion.Dtos.Empresas;
+using LogicaAplicacion.Dtos.Suscripciones;
 using LogicaAplicacion.Dtos.Tareas;
 using LogicaAplicacion.Dtos.TipoPlanes;
 using LogicaAplicacion.Dtos.Usuarios;
@@ -130,52 +131,52 @@ namespace ApiCuidarte
 			builder.Services.AddScoped<IRepositorioMensualidad, RepositorioMensualidad>();
 			// caso de uso -- Usuario --
 			builder.Services.AddScoped<IObtenerTodos<UsuarioDto>, GetAllUsuario>();
-			builder.Services.AddScoped<IAlta<CrearUsuarioDto,Usuario>, AltaUsuario>();
+			builder.Services.AddScoped<IAlta<UsuarioDto>, AltaUsuario>();
 			builder.Services.AddScoped<IObtener<UsuarioDto>, GetByIdUsuario>();
-			builder.Services.AddScoped<IEditar<EditarUsuarioDto,Usuario>, EditarUsuario>();
+			builder.Services.AddScoped<IEditar<UsuarioDto>, EditarUsuario>();
 			builder.Services.AddScoped<IEliminar<UsuarioDto>, EliminarUsuario>();
 			builder.Services.AddScoped<ILogin<UsuarioDto>, LoginUsuario>();
 			builder.Services.AddScoped<IObtenerPorTexto<UsuarioDto>, ObtenerPorTextoUsuario>();
-
+			builder.Services.AddScoped<IObtenerHorasDelMes, ObtenerHorasDelMes>();
 			// caso de uso -- TipoServicio --
 			builder.Services.AddScoped<IObtenerTodos<TipoServicio>, GetAllTipoServicio>();
-			builder.Services.AddScoped<IAlta<TipoServicio, TipoServicio>, AltaTipoServicio>();
+			builder.Services.AddScoped<IAlta<TipoServicio>, AltaTipoServicio>();
 			builder.Services.AddScoped<IObtener<TipoServicio>, GetByIdTipoServicio>();
-			builder.Services.AddScoped<IEditar<TipoServicio, TipoServicio>, EditarTipoServicio>();
+			builder.Services.AddScoped<IEditar<TipoServicio>, EditarTipoServicio>();
 			builder.Services.AddScoped<IEliminar<TipoServicio>, EliminarTipoServicio>();
 
 			// caso de uso -- TipoPlan --
-			builder.Services.AddScoped<IObtenerTodos<TipoPlan>, GetAllTipoPlan>();
-			builder.Services.AddScoped<IAlta<TipoPlanDto, TipoPlan>, AltaTipoPlan>();
-			builder.Services.AddScoped<IObtener<TipoPlan>, GetByIdTipoPlan>();
-			builder.Services.AddScoped<IEditar<TipoPlanDto,TipoPlan>, EditarTipoPlan>();
-			builder.Services.AddScoped<IEliminar<TipoPlan>, EliminarTipoPlan>();
+			builder.Services.AddScoped<IObtenerTodos<TipoPlanDto>, GetAllTipoPlan>();
+			builder.Services.AddScoped<IAlta<TipoPlanDto>, AltaTipoPlan>();
+			builder.Services.AddScoped<IObtener<TipoPlanDto>, GetByIdTipoPlan>();
+			builder.Services.AddScoped<IEditar<TipoPlanDto>, EditarTipoPlan>();
+			builder.Services.AddScoped<IEliminar<TipoPlanDto>, EliminarTipoPlan>();
 
 			// caso de uso -- Clientes --
-			builder.Services.AddScoped<IObtenerPaginado<PaginadoResultado<Cliente>>, GetAllCliente>();
-			builder.Services.AddScoped<IAlta<ClienteDto, Cliente>, AltaCliente>();
-			builder.Services.AddScoped<IObtener<Cliente>, GetByIdCliente>();
-			builder.Services.AddScoped<IEditar<ClienteDto, Cliente>, EditarCliente>();
-			builder.Services.AddScoped<IEliminar<Cliente>, EliminarCliente>();
-			builder.Services.AddScoped<IObtenerPorTexto<Cliente>, GetByTextoCliente>();
+			builder.Services.AddScoped<IObtenerPaginado<PaginadoResultado<ClienteDto>>, GetAllCliente>();
+			builder.Services.AddScoped<IAlta<ClienteDto>, AltaCliente>();
+			builder.Services.AddScoped<IObtener<ClienteDto>, GetByIdCliente>();
+			builder.Services.AddScoped<IEditar<ClienteDto>, EditarCliente>();
+			builder.Services.AddScoped<IEliminar<ClienteDto>, EliminarCliente>();
+			builder.Services.AddScoped<IObtenerPorTexto<ClienteDto>, GetByTextoCliente>();
 
 			// caso de uso -- Tareas --
-			builder.Services.AddScoped<IObtenerPaginado<PaginadoResultado<Tarea>>, GetAllTarea>();
-			builder.Services.AddScoped<IAlta<TareaDto, Tarea>, AltaTarea>();
-			builder.Services.AddScoped<IObtener<Tarea>, GetByIdTarea>();
-			builder.Services.AddScoped<IEditar<TareaDto, Tarea>, EditarTarea>();
-			builder.Services.AddScoped<IEliminar<Tarea>, EliminarTarea>();
-			builder.Services.AddScoped<IObtenerPorTexto<Tarea>, GetByTextoTarea>();
+			builder.Services.AddScoped<IObtenerPaginado<PaginadoResultado<TareaDto>>, GetAllTarea>();
+			builder.Services.AddScoped<IAlta<TareaDto>, AltaTarea>();
+			builder.Services.AddScoped<IObtener<TareaDto>, GetByIdTarea>();
+			builder.Services.AddScoped<IEditar<TareaDto>, EditarTarea>();
+			builder.Services.AddScoped<IEliminar<TareaDto>, EliminarTarea>();
+			builder.Services.AddScoped<IObtenerPorTexto<TareaDto>, GetByTextoTarea>();
 
 			// caso de uso -- Empresa --
-			builder.Services.AddScoped<IObtenerTodos<Empresa>, GetAllEmpresa>();
-			builder.Services.AddScoped<IAlta<EmpresaDto, Empresa>, AltaEmpresa>();
-			builder.Services.AddScoped<IEditar<EmpresaDto, Empresa>, EditarEmpresa>();
-			builder.Services.AddScoped<IEliminar<Empresa>, EliminarEmpresa>();
+			builder.Services.AddScoped<IObtenerTodos<EmpresaDto>, GetAllEmpresa>();
+			builder.Services.AddScoped<IAlta<EmpresaDto>, AltaEmpresa>();
+			builder.Services.AddScoped<IEditar<EmpresaDto>, EditarEmpresa>();
+			builder.Services.AddScoped<IEliminar<EmpresaDto>, EliminarEmpresa>();
 
 			// caso de uso -- Mensualidad  --
-			builder.Services.AddScoped<IObtenerPorCliente<Mensualidad>, GetAllMensualidad>();
-			builder.Services.AddScoped<IAlta<Mensualidad, Mensualidad>, AltaMensualidad>();
+			builder.Services.AddScoped<IObtenerPorCliente<MensualidadDto>, GetAllMensualidad>();
+			builder.Services.AddScoped<IPagarMensualidades<SuscripcionDto>, PagarMensualidad>();
 
 			var config = new ConfigurationBuilder()
 			.AddJsonFile("parametos.json", optional: true, reloadOnChange: true)

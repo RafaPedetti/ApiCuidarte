@@ -76,6 +76,52 @@ namespace LogicaNegocio.Entidades
 			if (d != null) this.Descripcion = d ?? string.Empty;
 			if (et != null) this.Estado = (EstadoTarea)et;
 		}
+		public void AplicarConsumoServicios(Cliente cliente, List<Servicio> serviciosSolicitados)
+		{
+			if (cliente == null || serviciosSolicitados == null) return;
 
+			foreach (var solicitado in serviciosSolicitados)
+			{
+				if (solicitado.cantServicios <= 0 || solicitado.tipoServicio == null) continue;
+
+				var disponible = cliente.ServiciosDisponibles
+					.FirstOrDefault(s => s.tipoServicio == solicitado.tipoServicio);
+
+				if (disponible == null || disponible.cantServicios == 0)
+				{
+					AgregarExtra(solicitado.tipoServicio, solicitado.cantServicios);
+					continue;
+				}
+
+				if (disponible.cantServicios >= solicitado.cantServicios)
+				{
+					disponible.cantServicios -= solicitado.cantServicios;
+				}
+				else
+				{
+					int cubierto = disponible.cantServicios;
+					int excedente = solicitado.cantServicios - cubierto;
+
+					disponible.cantServicios = 0;
+					AgregarExtra(solicitado.tipoServicio, excedente);
+				}
+			}
+		}
+		private void AgregarExtra(TipoServicio tipo, int cantidad)
+		{
+			var existente = ServiciosExtras.FirstOrDefault(s => s.tipoServicio == tipo);
+			if (existente != null)
+			{
+				existente.cantServicios += cantidad;
+			}
+			else
+			{
+				ServiciosExtras.Add(new Servicio
+				{
+					tipoServicio = tipo,
+					cantServicios = cantidad
+				});
+			}
+		}
 	}
 }

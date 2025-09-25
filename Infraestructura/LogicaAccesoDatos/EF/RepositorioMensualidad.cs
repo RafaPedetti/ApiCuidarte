@@ -43,15 +43,15 @@ namespace Infraestructura.LogicaAccesoDatos.EF
 				.ToList();
 		}
 
-		public IEnumerable<Mensualidad> GetByCliente(int idCliente)
+		public IEnumerable<Mensualidad> GetByCliente(int id)
 		{
 			return _context.Mensualidades
 				.Include(m => m.Subscription)
 					.ThenInclude(s => s.Clientes)
 				.Where(m => m.Subscription != null &&
-							m.Subscription.Clientes.Any(c => c.Id == idCliente) &&
+							m.Subscription.Id == id &&
 							!m.Eliminado)
-				.ToList();
+				.ToList().Take(12);
 		}
 
 		public Mensualidad GetById(int id)

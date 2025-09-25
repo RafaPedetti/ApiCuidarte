@@ -14,5 +14,8 @@ namespace LogicaNegocio.InterfacesRepocitorio
 
 		public IEnumerable<Tarea> GetAll(int pagina);
 		public int TotalItemsAsync();
+
+		public int GetHorasFuncionario(int idFuncionario, int mes, int anio);
+
 	}
 }

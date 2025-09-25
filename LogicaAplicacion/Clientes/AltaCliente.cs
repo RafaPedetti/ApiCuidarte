@@ -6,7 +6,7 @@ using LogicaNegocio.InterfazServicios;
 using System.Numerics;
 namespace LogicaAplicacion.Clientes
 {
-	public class AltaCliente : IAlta<ClienteDto,Cliente>
+	public class AltaCliente : IAlta<ClienteDto>
 	{
 		private readonly IRepositorioCliente _context;
 
@@ -19,7 +19,7 @@ namespace LogicaAplicacion.Clientes
 			_contextSuscripcion = contextSuscripcion;
 			_contextTipoPlan = contextTipoPlan;
 		}
-		public Cliente Ejecutar(ClienteDto obj)
+		public ClienteDto Ejecutar(ClienteDto obj)
 		{
 			if (obj == null)
 				throw new ArgumentNullException("El tipo de objeto está vacío");
@@ -27,12 +27,12 @@ namespace LogicaAplicacion.Clientes
 			TipoPlan plan = _contextTipoPlan.GetById(obj.TipoPlanId);
 			Cliente cCreado = _context.Add(c);
 			_context.CambiarPlan(cCreado.Id, plan);
-			var suscripcion = new Suscripcion(cCreado, cCreado.Plan);
+			var suscripcion = new Suscripcion(null,cCreado, cCreado.Plan);
 			_contextSuscripcion.Add(suscripcion);
 			cCreado.SuscripcionId = suscripcion.Id;
-			_context.Update(cCreado);
+			ClienteDto cDto = ClienteMapper.ToDto(_context.Update(cCreado));
 
-			return cCreado;
+			return cDto;
 		}
 
 	}

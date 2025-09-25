@@ -1,10 +1,5 @@
 ﻿using LogicaNegocio.IntefacesDominio;
 using LogicaNegocio.ValueObject.Suscripcion;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace LogicaNegocio.Entidades
 {
@@ -13,34 +8,36 @@ namespace LogicaNegocio.Entidades
 		public int Id { get; set; }
 		public int SubscriptionId { get; set; }
 		public Suscripcion? Subscription { get; set; }
-		public DateTime FechaGeneracion { get; set; }
-		public DateTime PeriodoDesde { get; set; }
-		public DateTime PeriodoHasta { get; set; }
-		public decimal Monto { get; set; }
-		public DateTime? FechaPago { get; set; }
+		public DateOnly PeriodoDesde { get; set; }
+		public DateOnly PeriodoHasta { get; set; }
 		public MensualidadEstado Estado { get; set; }
 		public bool Eliminado { get; set; } = false;
 
 
 		public Mensualidad()
 		{
-			FechaGeneracion = DateTime.Now;
-			PeriodoDesde = DateTime.Now;
-			PeriodoHasta = DateTime.Now.AddMonths(1);
-			Monto = 0;
+			PeriodoDesde = DateOnly.FromDateTime(DateTime.UtcNow);
+			PeriodoHasta = DateOnly.FromDateTime(DateTime.Now.AddMonths(1));
 			Estado = MensualidadEstado.Pagada;
 		}
 
-		public Mensualidad(int subscriptionId, DateTime periodoDesde, DateTime periodoHasta, decimal monto)
+		public Mensualidad(int subscriptionId, DateOnly periodoDesde, DateOnly periodoHasta)
 		{
 			SubscriptionId = subscriptionId;
 			PeriodoDesde = periodoDesde;
 			PeriodoHasta = periodoHasta;
-			Monto = monto;
-			FechaGeneracion = DateTime.Now;
 			Estado = MensualidadEstado.Pagada;
-			Eliminado = false;
 		}
+		public Mensualidad(int id,int subscriptionId,Suscripcion? suscripcion, DateOnly periodoDesde, DateOnly periodoHasta, MensualidadEstado estado)
+		{
+			Id = id;
+			SubscriptionId = subscriptionId;
+			if (suscripcion != null) Subscription = suscripcion;
+			PeriodoDesde = periodoDesde;
+			PeriodoHasta = periodoHasta;
+			Estado = estado;
+		}
+
 
 		public void Update(Mensualidad mensualidad)
 		{
@@ -56,15 +53,9 @@ namespace LogicaNegocio.Entidades
 			{
 				throw new ArgumentException("La fecha de inicio del periodo debe ser anterior a la fecha de fin del periodo.", nameof(mensualidad.PeriodoDesde));
 			}
-			if (mensualidad.Monto < 0)
-			{
-				throw new ArgumentException("El monto no puede ser negativo.", nameof(mensualidad.Monto));
-			}
 			SubscriptionId = mensualidad.SubscriptionId;
 			PeriodoDesde = mensualidad.PeriodoDesde;
 			PeriodoHasta = mensualidad.PeriodoHasta;
-			Monto = mensualidad.Monto;
-			FechaPago = mensualidad.FechaPago;
 			Estado = mensualidad.Estado;
 			Eliminado = mensualidad.Eliminado;
 			if (Eliminado)

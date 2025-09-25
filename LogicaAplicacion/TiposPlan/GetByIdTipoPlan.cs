@@ -1,4 +1,6 @@
-﻿using LogicaNegocio.Entidades;
+﻿using LogicaAplicacion.Dtos.MapeosDto;
+using LogicaAplicacion.Dtos.TipoPlanes;
+using LogicaNegocio.Entidades;
 using LogicaNegocio.InterfacesRepocitorio;
 using LogicaNegocio.InterfazServicios;
 using System;
@@ -9,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace LogicaAplicacion.TiposPlan
 {
-	public class GetByIdTipoPlan : IObtener<TipoPlan>
+	public class GetByIdTipoPlan : IObtener<TipoPlanDto>
 	{
 		private readonly IRepositorioTipoPlan _context;
 		public GetByIdTipoPlan(IRepositorioTipoPlan repositorioTipoPlan)
@@ -17,9 +19,10 @@ namespace LogicaAplicacion.TiposPlan
 			_context = repositorioTipoPlan;
 		}
 
-		public TipoPlan Ejecutar(int id)
+		public TipoPlanDto Ejecutar(int id)
 		{
-			return _context.GetById(id);
+			TipoPlanDto tpDto = TipoPlanMapper.ToDto(_context.GetById(id));
+			return tpDto;
 		}
 
 	}

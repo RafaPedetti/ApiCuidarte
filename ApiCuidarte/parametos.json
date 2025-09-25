@@ -1,5 +1,5 @@
 {
   "AllowedHosts": "*",
-  "MaxItemsPaginado": 4,
+  "MaxItemsPaginado": 20,
   "TopeUnidades": 30
 }

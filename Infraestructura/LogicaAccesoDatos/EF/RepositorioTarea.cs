@@ -8,6 +8,7 @@ using System.Numerics;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace Infraestructura.LogicaAccesoDatos.EF
 {
@@ -22,50 +23,16 @@ namespace Infraestructura.LogicaAccesoDatos.EF
 		public Tarea Add(Tarea obj)
 		{
 			if (obj == null) throw new ArgumentNullException(nameof(obj), "El objeto no puede ser nulo.");
+
+			obj.AplicarConsumoServicios(obj.Cliente,obj.serviciosUsados); 
+
 			_context.Tareas.Add(obj);
-			AplicarConsumoServicios(obj,obj.Cliente, obj.serviciosUsados);
 			_context.SaveChanges();
+
 			return obj;
 		}
 
-		public void AplicarConsumoServicios(Tarea tarea, Cliente cliente, List<Servicio> servicios)
-		{
-			foreach (var servicio in servicios)
-			{
-				var disponible = cliente.ServiciosDisponibles
-					.FirstOrDefault(s => s.tipoServicio == servicio.tipoServicio);
 
-				// Si no tiene el servicio en su plan, es extra completo
-				if (disponible == null)
-				{
-					tarea.ServiciosExtras.Add(new Servicio
-					{
-						tipoServicio = servicio.tipoServicio,
-						cantServicios = servicio.cantServicios
-					});
-					continue;
-				}
-
-				// Si tiene menos cantidad, usa lo que puede y el resto lo cobra
-				if (disponible.cantServicios < servicio.cantServicios)
-				{
-					int cantidadDisponible = disponible.cantServicios;
-					int cantidadExcedente = servicio.cantServicios - cantidadDisponible;
-
-					disponible.cantServicios = 0;
-
-					tarea.ServiciosExtras.Add(new Servicio
-					{
-						tipoServicio = servicio.tipoServicio,
-						cantServicios = cantidadExcedente
-					});
-				}
-				else
-				{
-					disponible.cantServicios -= servicio.cantServicios;
-				}
-			}
-		}
 		public void Delete(int id)
 		{
 			Tarea tarea = GetById(id);
@@ -92,7 +59,7 @@ namespace Infraestructura.LogicaAccesoDatos.EF
 
 		}
 
-		public  int TotalItemsAsync()
+		public int TotalItemsAsync()
 		{
 			return _context.Tareas.Count(t => !t.Eliminado);
 		}
@@ -131,6 +98,7 @@ namespace Infraestructura.LogicaAccesoDatos.EF
 				.Where(t =>
 					(!string.IsNullOrWhiteSpace(t.Descripcion) && t.Descripcion.ToLower().Contains(texto)) ||
 					(!string.IsNullOrWhiteSpace(t.Cliente.NombreCompleto.Nombre) && t.Cliente.NombreCompleto.Apellido.ToLower().Contains(texto)) ||
+							(!string.IsNullOrWhiteSpace(t.EmpleadoResponsable.NombreCompleto.Nombre) && t.EmpleadoResponsable.NombreCompleto.Apellido.ToLower().Contains(texto)) ||
 					t.serviciosUsados.Any(s => s.tipoServicio?.Nombre.ToLower().Contains(texto) == true) ||
 					t.ServiciosExtras.Any(s => s.tipoServicio?.Nombre.ToLower().Contains(texto) == true)
 				);
@@ -157,5 +125,32 @@ namespace Infraestructura.LogicaAccesoDatos.EF
 		{
 			throw new NotImplementedException();
 		}
+
+		public int GetHorasFuncionario(int idFuncionario, int mes, int anio)
+		{
+			var inicioMes = new DateTime(anio, mes, 1, 0, 0, 0, DateTimeKind.Utc);
+			var finMes = inicioMes.AddMonths(1);
+
+
+			var tareasDelMes = _context.Tareas
+					.Include(t => t.EmpleadoResponsable)
+					.Include(t => t.Cliente)
+					.Include(t => t.serviciosUsados).ThenInclude(s => s.tipoServicio)
+					.Include(t => t.ServiciosExtras).ThenInclude(s => s.tipoServicio)
+					.Where(ts => !ts.Eliminado)
+				.Where(t => t.EmpleadoResponsable.Id == idFuncionario &&
+							t.fecha >= inicioMes &&
+							t.fecha < finMes)
+				.ToList();
+
+			var totalHoras = tareasDelMes.Sum(t =>
+				t.ServiciosExtras.Sum(s => s.cantServicios) +
+				t.serviciosUsados.Sum(s => s.cantServicios)
+			);
+
+			return totalHoras;
+		}
+
+
 	}
 }

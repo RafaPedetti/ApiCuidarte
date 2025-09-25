@@ -17,7 +17,7 @@ namespace LogicaNegocio.Entidades
 		public Telefono TelefonoContacto { get; set; }
 		public int TipoPlanId { get; set; }
 		public TipoPlan? Plan { get; set; }
-		public int SuscripcionId { get; set; }
+		public int? SuscripcionId { get; set; }
 		public Suscripcion? Suscripcion { get; set; }
 		public bool Eliminado { get; set; }
 
@@ -38,6 +38,16 @@ namespace LogicaNegocio.Entidades
 			TipoPlanId = planid;
 			this.Eliminado = false;
 			this.TelefonoContacto = new Telefono(telefonoContacto);
+		}
+
+		public Empresa(int id, string nombre, int planid, string telefonoContacto, Suscripcion suscripcion)
+		{
+			Id = id;
+			Nombre = nombre;
+			TipoPlanId = planid;
+			this.Eliminado = false;
+			this.TelefonoContacto = new Telefono(telefonoContacto);
+			this.Suscripcion = suscripcion;
 		}
 
 		public void Update(Empresa empresa)

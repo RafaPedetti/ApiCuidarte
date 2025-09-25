@@ -1,4 +1,5 @@
-﻿using LogicaAplicacion.Dtos.TipoPlanes;
+﻿using LogicaAplicacion.Dtos.Clientes;
+using LogicaAplicacion.Dtos.TipoPlanes;
 using LogicaAplicacion.Dtos.Usuarios;
 using LogicaNegocio.Entidades;
 using System;
@@ -17,17 +18,32 @@ namespace LogicaAplicacion.Dtos.MapeosDto
 			{
 				Id = tpDto.id,
 				Nombre = tpDto.nombre,
+				Precio = tpDto.precio,
 			};
 			return plan;
 		}
 
-		public static IEnumerable<UsuarioDto> ToListaDto(IEnumerable<Usuario> usuarios)
+		public static TipoPlanDto ToDto(TipoPlan tp)
 		{
-			List<UsuarioDto> aux = new List<UsuarioDto>();
-			foreach (var user in usuarios)
+			TipoPlanDto tpDto;
+			if (tp.EmpresaId == null || tp.Empresa == null)
 			{
-				UsuarioDto userDto = UsuarioMapper.ToDto(user);
-				aux.Add(userDto);
+				tpDto = new TipoPlanDto(tp.Id, tp.Nombre, ServicioMapper.ToListaDto(tp.Servicios).ToList(),null, tp.Precio);
+			}
+			else
+			{
+				tpDto = new TipoPlanDto(tp.Id, tp.Nombre, ServicioMapper.ToListaDto(tp.Servicios).ToList(), tp.Empresa.Id, tp.Precio);
+			}
+			return tpDto;
+		}
+
+		public static IEnumerable<TipoPlanDto> ToListaDto(IEnumerable<TipoPlan> tipoPlanes)
+		{
+			List<TipoPlanDto> aux = new List<TipoPlanDto>();
+			foreach (var tipoPlan in tipoPlanes)
+			{
+				TipoPlanDto tipoPlanDto = TipoPlanMapper.ToDto(tipoPlan);
+				aux.Add(tipoPlanDto);
 			}
 			return aux;
 		}

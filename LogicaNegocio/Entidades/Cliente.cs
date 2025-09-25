@@ -34,7 +34,21 @@ namespace LogicaNegocio.Entidades
 		public int? SuscripcionId { get; set; }
 		public bool Eliminado { get; set; }
 
-		public Cliente(int id, NombreCompleto nombreCompleto, string ci,DateOnly fechaNacimiento, string direccion, Telefono telefono, int plan,Email email)
+		public Cliente(int id, NombreCompleto nombreCompleto, string ci,DateOnly fechaNacimiento, string direccion, Telefono telefono, int plan,Email email,Suscripcion suscripcion)
+		{
+			Id = id;
+			NombreCompleto = nombreCompleto;
+			FechaNacimiento = fechaNacimiento;
+			Direccion = direccion;
+			Telefono = telefono;
+			TipoPlanId = plan;
+			CI = ci;
+			Email = email;
+			Suscripcion = suscripcion;
+			//ValidarCedula(CI);
+		}
+
+		public Cliente(int id, NombreCompleto nombreCompleto, string ci, DateOnly fechaNacimiento, string direccion, Telefono telefono, int plan, Email email)
 		{
 			Id = id;
 			NombreCompleto = nombreCompleto;
@@ -46,6 +60,7 @@ namespace LogicaNegocio.Entidades
 			Email = email;
 			ValidarCedula(CI);
 		}
+
 
 		public Cliente(int id, NombreCompleto nombreCompleto, string ci, DateOnly fechaNacimiento, string direccion, Telefono telefono,Email email)
 		{
@@ -109,6 +124,9 @@ namespace LogicaNegocio.Entidades
 			if(digitoVerificadorCalculado != digitoVerificadorReal) throw new ClienteException("cedula invalida");
 		}
 
-
+		public void ResetearServicios()
+		{
+			this.ServiciosDisponibles = this.Plan.Servicios;
+		}
 	}
 }

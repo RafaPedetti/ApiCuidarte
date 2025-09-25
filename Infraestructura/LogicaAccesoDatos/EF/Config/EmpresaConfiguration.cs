@@ -21,8 +21,11 @@ namespace Infraestructura.LogicaAccesoDatos.EF.Config
 				   .OnDelete(DeleteBehavior.Restrict);
 
 			builder.HasOne(e => e.Suscripcion)
-				   .WithMany() 
-				   .HasForeignKey(e => e.SuscripcionId);
+	   .WithMany()
+	   .HasForeignKey(e => e.SuscripcionId)
+	   .IsRequired(false)
+	   .OnDelete(DeleteBehavior.SetNull);
+
 
 			builder.Property(e => e.Nombre)
 				   .IsRequired()

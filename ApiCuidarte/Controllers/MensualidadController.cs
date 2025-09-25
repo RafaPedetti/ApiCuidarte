@@ -1,5 +1,4 @@
-﻿using LogicaAplicacion.Dtos;
-using LogicaAplicacion.Dtos.Clientes;
+﻿using LogicaAplicacion.Dtos.Suscripciones;
 using LogicaNegocio.Entidades;
 using LogicaNegocio.Excepciones;
 using LogicaNegocio.InterfacesServicios;
@@ -16,26 +15,17 @@ namespace ApiCuidarte.Controllers
 	[Authorize]
 	public class MensualidadController : ControllerBase
 	{
-		IAlta<Suscripcion, Suscripcion> _alta;
-		IObtenerPorCliente<Mensualidad> _getAll;
-		IObtenerPorEmpresa<Mensualidad> _obtenerPorEmpresa;
-		IPagarMensualidades<Suscripcion> _pagarMensualidades;
-		ICancelarConvenio<Suscripcion> _cancelarConvenio;
+		IObtenerPorCliente<MensualidadDto> _getAll;
+		IPagarMensualidades<SuscripcionDto> _pagarMensualidades;
 		public MensualidadController
 			(
-			IAlta<Suscripcion, Suscripcion> alta,
-			IObtenerPorCliente<Mensualidad> getAll,
-			IObtenerPorEmpresa<Mensualidad> obtenerPorEmpresa,
-			IPagarMensualidades<Suscripcion> pagarMensualidades,
-			ICancelarConvenio<Suscripcion> cancelarConvenio
+			IObtenerPorCliente<MensualidadDto> getAll,
+			IPagarMensualidades<SuscripcionDto> pagarMensualidades
 			)
 		{
-			this._alta = alta;
 			this._getAll = getAll;
-			this._obtenerPorEmpresa = obtenerPorEmpresa;
-			this._pagarMensualidades = pagarMensualidades;
-			this._cancelarConvenio = cancelarConvenio;
 
+			this._pagarMensualidades = pagarMensualidades;
 		}
 
 		[ProducesResponseType(StatusCodes.Status200OK)]
@@ -63,5 +53,29 @@ namespace ApiCuidarte.Controllers
 			}
 		}
 
+		[ProducesResponseType(StatusCodes.Status200OK)]
+		[ProducesResponseType(StatusCodes.Status500InternalServerError)]
+		[HttpGet]
+		[Route("ObtenerTodos")]
+		public IActionResult GetAll(int idSuscripcion)
+		{
+			try
+			{
+			    IEnumerable<MensualidadDto> mCreado = _getAll.Ejecutar(idSuscripcion);
+				return Ok(mCreado);
+			}
+			catch (DomainException ex)
+			{
+				return StatusCode(400, ex.Message);
+			}
+			catch (ArgumentException ex)
+			{
+				return StatusCode(500, "Hupp" + ex.Message);
+			}
+			catch (Exception ex)
+			{
+				return StatusCode(500, "Hupps hubo un error intente nuevamente mas tarde");
+			}
+		}
 	}
 }

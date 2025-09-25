@@ -37,7 +37,7 @@ namespace Infraestructura.LogicaAccesoDatos.EF
 
 		public IEnumerable<Empresa> GetAll()
 		{
-			return _context.Empresas.Include(e => e.Plan)
+			return _context.Empresas.Include(e => e.Plan).Include(e=> e.Suscripcion)
 				.Where(c => !c.Eliminado).ToList();
 		}
 

@@ -77,7 +77,7 @@ namespace Infraestructura.Migrations
                         .HasMaxLength(100)
                         .HasColumnType("character varying(100)");
 
-                    b.Property<int>("SuscripcionId")
+                    b.Property<int?>("SuscripcionId")
                         .HasColumnType("integer");
 
                     b.Property<int>("TipoPlanId")
@@ -109,20 +109,11 @@ namespace Infraestructura.Migrations
                         .HasMaxLength(20)
                         .HasColumnType("character varying(20)");
 
-                    b.Property<DateTime>("FechaGeneracion")
-                        .HasColumnType("timestamp with time zone");
+                    b.Property<DateOnly>("PeriodoDesde")
+                        .HasColumnType("date");
 
-                    b.Property<DateTime?>("FechaPago")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<decimal>("Monto")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<DateTime>("PeriodoDesde")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<DateTime>("PeriodoHasta")
-                        .HasColumnType("timestamp with time zone");
+                    b.Property<DateOnly>("PeriodoHasta")
+                        .HasColumnType("date");
 
                     b.Property<int>("SubscriptionId")
                         .HasColumnType("integer");
@@ -205,14 +196,14 @@ namespace Infraestructura.Migrations
                         .HasMaxLength(20)
                         .HasColumnType("character varying(20)");
 
-                    b.Property<DateTime>("FechaInicio")
-                        .HasColumnType("timestamp with time zone");
+                    b.Property<DateOnly>("FechaInicio")
+                        .HasColumnType("date");
 
                     b.Property<int>("PlanId")
                         .HasColumnType("integer");
 
-                    b.Property<DateTime>("ProximoCobro")
-                        .HasColumnType("timestamp with time zone");
+                    b.Property<DateOnly>("ProximoCobro")
+                        .HasColumnType("date");
 
                     b.Property<int?>("TipoPlanId")
                         .HasColumnType("integer");
@@ -447,8 +438,7 @@ namespace Infraestructura.Migrations
                     b.HasOne("LogicaNegocio.Entidades.Suscripcion", "Suscripcion")
                         .WithMany()
                         .HasForeignKey("SuscripcionId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.SetNull);
 
                     b.HasOne("LogicaNegocio.Entidades.TipoPlan", "Plan")
                         .WithOne("Empresa")

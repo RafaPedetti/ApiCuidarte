@@ -7,7 +7,7 @@ using LogicaNegocio.InterfacesRepocitorio;
 using LogicaNegocio.InterfazServicios;
 namespace LogicaAplicacion.Tareas
 {
-	public class AltaTarea : IAlta<TareaDto,Tarea>
+	public class AltaTarea : IAlta<TareaDto>
 	{
 		private readonly IRepositorioTarea _context;
 		private readonly IRepositorioCliente _contextClient;
@@ -20,7 +20,7 @@ namespace LogicaAplicacion.Tareas
 			_contextFuncionario = contextFuncionario;
 			_contextTipoServicio = contextTipoServicio;
 		}
-		public Tarea Ejecutar(TareaDto obj)
+		public TareaDto Ejecutar(TareaDto obj)
 		{
 			if (obj == null)
 			{
@@ -32,13 +32,18 @@ namespace LogicaAplicacion.Tareas
 			Usuario u = _contextFuncionario.GetById(obj.responsableId);
 			t.Cliente = c;
 			t.EmpleadoResponsable = u;
-			foreach (ServicioDto s in obj.servicios)
+			if (obj.servicios != null)
 			{
-				TipoServicio ts = _contextTipoServicio.GetById(s.tipoServicio.id);
-				Servicio servicio = new Servicio(0, ts, s.cantServicios);
-				t.serviciosUsados.Add(servicio);
+				foreach (ServicioDto s in obj.servicios)
+				{
+					TipoServicio ts = _contextTipoServicio.GetById(s.tipoServicio.id);
+					Servicio servicio = new Servicio(0, ts, s.cantServicios);
+					t.serviciosUsados.Add(servicio);
+				}
 			}
-			return _context.Add(t);
+			Tarea tCreada = _context.Add(t);
+			TareaDto tDto = TareaMapper.ToDto(tCreada);
+			return tDto;
 		}
 	}
 }

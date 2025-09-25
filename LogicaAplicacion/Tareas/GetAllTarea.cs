@@ -1,25 +1,24 @@
 ﻿using LogicaAplicacion.Dtos;
+using LogicaAplicacion.Dtos.MapeosDto;
+using LogicaAplicacion.Dtos.Tareas;
 using LogicaNegocio.Entidades;
 using LogicaNegocio.InterfacesRepocitorio;
 using LogicaNegocio.InterfacesServicios;
 
 namespace LogicaAplicacion.Tareas
 {
-	public class GetAllTarea : IObtenerPaginado<PaginadoResultado<Tarea>>
+	public class GetAllTarea : IObtenerPaginado<PaginadoResultado<TareaDto>>
 	{
 		private readonly IRepositorioTarea _context;
 		public GetAllTarea(IRepositorioTarea context)
 		{
 			_context = context;
 		}
-		public PaginadoResultado<Tarea> Ejecutar(int pagina)
+		public PaginadoResultado<TareaDto> Ejecutar(int pagina)
 		{
-
 			var totalItems = _context.TotalItemsAsync();
-
 			var tareas =  _context.GetAll(pagina);
-
-			return new PaginadoResultado<Tarea>(tareas, totalItems);
+			return new PaginadoResultado<TareaDto>(TareaMapper.ToListaDto(tareas), totalItems);
 
 		}
 

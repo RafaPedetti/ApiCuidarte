@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace LogicaAplicacion.TiposServicio
 {
-	public class EditarTipoServicio : IEditar<TipoServicio,TipoServicio>
+	public class EditarTipoServicio : IEditar<TipoServicio>
 	{
 		private IRepositorioTipoServicio _context;
 

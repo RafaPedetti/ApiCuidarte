@@ -1,4 +1,5 @@
-﻿using LogicaNegocio.Entidades;
+﻿using LogicaAplicacion.Dtos.TipoPlanes;
+using LogicaNegocio.Entidades;
 using LogicaNegocio.InterfacesRepocitorio;
 using LogicaNegocio.InterfazServicios;
 using System;
@@ -9,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace LogicaAplicacion.TiposPlan
 {
-	public class EliminarTipoPlan : IEliminar<TipoPlan>
+	public class EliminarTipoPlan : IEliminar<TipoPlanDto>
 	{
 		public readonly IRepositorioTipoPlan _context;
 

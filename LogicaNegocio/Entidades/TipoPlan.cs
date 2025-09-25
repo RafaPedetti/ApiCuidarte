@@ -53,8 +53,7 @@ namespace LogicaNegocio.Entidades
 		public void Update(TipoPlan obj)
 		{
 			this.Nombre = obj.Nombre;
-
-			// Eliminar servicios que ya no están
+			this.Precio = obj.Precio;
 			this.Servicios.RemoveAll(s => !obj.Servicios.Any(ns => ns.Id == s.Id));
 
 			foreach (var nuevo in obj.Servicios)
@@ -63,13 +62,11 @@ namespace LogicaNegocio.Entidades
 
 				if (existente != null)
 				{
-					// Actualizar propiedades
 					existente.cantServicios = nuevo.cantServicios;
 					existente.tipoServicio = nuevo.tipoServicio;
 				}
 				else
 				{
-					// Agregar nuevo servicio
 					this.Servicios.Add(new Servicio
 					{
 						cantServicios = nuevo.cantServicios,

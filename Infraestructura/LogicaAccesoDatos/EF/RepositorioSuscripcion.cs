@@ -67,7 +67,7 @@ namespace Infraestructura.LogicaAccesoDatos.EF
 				.Include(s => s.Clientes)
 				.Include(s => s.Empresa)
 			    .Include(s => s.Mensualidades)
-				.FirstOrDefault(tp => tp.Id == id);
+				.FirstOrDefault(s => s.Id == id);
 
 			if (suscripcion == null)
 			{

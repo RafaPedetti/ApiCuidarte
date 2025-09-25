@@ -16,20 +16,21 @@ namespace ApiCuidarte.Controllers
 	[Authorize]
 	public class TareaController : ControllerBase
 	{
-		IAlta<TareaDto, Tarea> _alta;
-		IEditar<TareaDto, Tarea> _editar;
-		IEliminar<Tarea> _eliminar;
-		IObtenerPaginado<PaginadoResultado<Tarea>> _getAll;
-		IObtener<Tarea> _obtener;
-		IObtenerPorTexto<Tarea> _obtenerPorTexto;
+		IAlta<TareaDto> _alta;
+		IEditar<TareaDto> _editar;
+		IEliminar<TareaDto> _eliminar;
+		IObtenerPaginado<PaginadoResultado<TareaDto>> _getAll;
+		IObtener<TareaDto> _obtener;
+		IObtenerPorTexto<TareaDto> _obtenerPorTexto;
+
 
 		public TareaController(
-			IAlta<TareaDto, Tarea> alta,
-			IEditar<TareaDto, Tarea> editar,
-			IEliminar<Tarea> eliminar,
-			IObtenerPaginado<PaginadoResultado<Tarea>> getAll,
-			IObtener<Tarea> obtener,
-			IObtenerPorTexto<Tarea> obtenerPorTexto
+			IAlta<TareaDto> alta,
+			IEditar<TareaDto> editar,
+			IEliminar<TareaDto> eliminar,
+			IObtenerPaginado<PaginadoResultado<TareaDto>> getAll,
+			IObtener<TareaDto> obtener,
+			IObtenerPorTexto<TareaDto> obtenerPorTexto
 		)
 		{
 			_alta = alta;
@@ -44,11 +45,11 @@ namespace ApiCuidarte.Controllers
 		[ProducesResponseType(StatusCodes.Status500InternalServerError)]
 		[HttpPost]
 		[Route("Crear")]
-		public IActionResult Crear(TareaDto c)
+		public IActionResult Crear(TareaDto t)
 		{
 			try
 			{
-				Tarea tCreado = _alta.Ejecutar(c);
+				TareaDto tCreado = _alta.Ejecutar(t);
 				return Ok(tCreado);
 			}
 			catch (DomainException ex)
@@ -72,7 +73,7 @@ namespace ApiCuidarte.Controllers
 		{
 			try
 			{
-				Tarea tCreado = _editar.Ejecutar(c);
+				TareaDto tCreado = _editar.Ejecutar(c);
 				return Ok(tCreado);
 			}
 			catch (DomainException ex)
@@ -122,7 +123,7 @@ namespace ApiCuidarte.Controllers
 		{
 			try
 			{
-				Tarea c = _obtener.Ejecutar(id);
+				TareaDto c = _obtener.Ejecutar(id);
 				if (c == null)
 				{
 					throw new TareaException("No se encontro la tarea");
@@ -152,7 +153,7 @@ namespace ApiCuidarte.Controllers
 		{
 			try
 			{
-				IEnumerable<Tarea> c = _obtenerPorTexto.Ejecutar(texto);
+				IEnumerable<TareaDto> c = _obtenerPorTexto.Ejecutar(texto);
 				if (c == null)
 				{
 					throw new TareaException("No se encontro la tarea");
@@ -183,7 +184,7 @@ namespace ApiCuidarte.Controllers
 		{
 			try
 			{
-				PaginadoResultado<Tarea> c = _getAll.Ejecutar(pagina);
+				PaginadoResultado<TareaDto> c = _getAll.Ejecutar(pagina);
 				if (c == null)
 				{
 					throw new TareaException("No se encontraron tareas");

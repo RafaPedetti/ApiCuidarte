@@ -13,16 +13,16 @@ namespace ApiCuidarte.Controllers
 	[Authorize]
 	public class EmpresaController : ControllerBase
 	{
-		IAlta<EmpresaDto, Empresa> _alta;
-		IEditar<EmpresaDto, Empresa> _editar;
-		IEliminar<Empresa> _eliminar;
-		IObtenerTodos<Empresa> _getAll;
+		IAlta<EmpresaDto> _alta;
+		IEditar<EmpresaDto> _editar;
+		IEliminar<EmpresaDto> _eliminar;
+		IObtenerTodos<EmpresaDto> _getAll;
 
 		public EmpresaController(
-			IAlta<EmpresaDto, Empresa> alta,
-			IEditar<EmpresaDto, Empresa> editar,
-			IEliminar<Empresa> eliminar,
-			IObtenerTodos<Empresa> getAll
+			IAlta<EmpresaDto> alta,
+			IEditar<EmpresaDto> editar,
+			IEliminar<EmpresaDto> eliminar,
+			IObtenerTodos<EmpresaDto> getAll
 		)
 		{
 			_alta = alta;
@@ -39,7 +39,7 @@ namespace ApiCuidarte.Controllers
 		{
 			try
 			{
-				Empresa eCreado = _alta.Ejecutar(e);
+				EmpresaDto eCreado = _alta.Ejecutar(e);
 				return Ok(eCreado);
 			}
 			catch (DomainException ex)
@@ -63,7 +63,7 @@ namespace ApiCuidarte.Controllers
 		{
 			try
 			{
-				Empresa eCreado = _editar.Ejecutar(e);
+				EmpresaDto eCreado = _editar.Ejecutar(e);
 				return Ok(eCreado);
 			}
 			catch (DomainException ex)
@@ -112,7 +112,7 @@ namespace ApiCuidarte.Controllers
 		{
 			try
 			{
-				IEnumerable<Empresa> e = _getAll.Ejecutar();
+				IEnumerable<EmpresaDto> e = _getAll.Ejecutar();
 				if (e == null)
 				{
 					throw new ClienteException("No se encontraron cliente");

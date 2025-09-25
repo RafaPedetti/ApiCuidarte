@@ -22,19 +22,21 @@ namespace LogicaNegocio.Entidades
 		public int PlanId { get; set; }
 		public TipoPlan Plan { get; set; }
 
-		public DateTime FechaInicio { get; set; }
-		public DateTime ProximoCobro { get; set; }
+		public DateOnly FechaInicio { get; set; }
+		public DateOnly ProximoCobro { get; set; }
 		public SuscripcionEstado Estado { get; set; }
 
 		public ICollection<Mensualidad> Mensualidades { get; set; }
 			= new List<Mensualidad>();
 
+
 		public bool Eliminado { get; set; } = false;
 
 		public Suscripcion() { }
 
-		public Suscripcion(int? clienteId, int? empresaId, int planId, DateTime fechaInicio, DateTime proximoCobro)
+		public Suscripcion(int id, int? clienteId, int? empresaId, int planId, DateOnly fechaInicio, DateOnly proximoCobro)
 		{
+			Id = id;
 			if ((clienteId is null && empresaId is null) || (clienteId != null && empresaId != null))
 				throw new ArgumentException("Una suscripción debe tener un cliente o una empresa, pero no ambos.");
 			if (clienteId is null && clienteId != null)  ClienteId = clienteId;
@@ -52,13 +54,14 @@ namespace LogicaNegocio.Entidades
 			if (clienteId != null) ClienteId = clienteId;
 			if (empresaId != null) EmpresaId = empresaId;
 			PlanId = planId;
-			FechaInicio = DateTime.UtcNow;
-			ProximoCobro = DateTime.UtcNow.AddMonths(1);
+			FechaInicio = DateOnly.FromDateTime(DateTime.UtcNow);
+			ProximoCobro = DateOnly.FromDateTime(DateTime.UtcNow.AddMonths(1));
 			Estado = SuscripcionEstado.Activa;
 		}
 
-		public Suscripcion(Cliente cliente, TipoPlan plan)
+		public Suscripcion(int id, Cliente cliente, TipoPlan plan)
 		{
+			Id = id;
 			if (cliente != null)
 			{
 				this.Clientes.Add(cliente);
@@ -66,15 +69,34 @@ namespace LogicaNegocio.Entidades
 			}
 			PlanId = plan.Id;
 			Plan = plan;
-			FechaInicio = DateTime.UtcNow;
-			ProximoCobro = DateTime.UtcNow.AddMonths(1);
+			FechaInicio = DateOnly.FromDateTime(DateTime.UtcNow);
+			ProximoCobro = DateOnly.FromDateTime(DateTime.UtcNow.AddMonths(1));
 			Estado = SuscripcionEstado.Activa;
-			Mensualidad mensualidad = new Mensualidad(this.Id, this.FechaInicio, this.ProximoCobro, plan.Precio);
+			Mensualidad mensualidad = new Mensualidad(this.Id, this.FechaInicio, this.ProximoCobro);
 			Mensualidades.Add(mensualidad);
 		}
 
-		public Suscripcion(Empresa empresa, TipoPlan plan)
+		public Suscripcion(int? id, Cliente cliente, TipoPlan plan)
 		{
+			if(id != null ) Id = (int)id;
+			if (cliente != null)
+			{
+				this.Clientes.Add(cliente);
+				ClienteId = cliente.Id;
+			}
+			PlanId = plan.Id;
+			Plan = plan;
+			FechaInicio = DateOnly.FromDateTime(DateTime.UtcNow);
+			ProximoCobro = DateOnly.FromDateTime(DateTime.UtcNow.AddMonths(1));
+			Estado = SuscripcionEstado.Activa;
+			Mensualidad mensualidad = new Mensualidad(this.Id, this.FechaInicio, this.ProximoCobro);
+			Mensualidades.Add(mensualidad);
+		}
+
+
+		public Suscripcion(int? id, Empresa empresa, TipoPlan plan)
+		{
+			if (id != null) Id = (int)id;
 			if (empresa != null)
 			{
 				this.Empresa = empresa;
@@ -82,10 +104,10 @@ namespace LogicaNegocio.Entidades
 			}
 			PlanId = plan.Id;
 			Plan = plan;
-			FechaInicio = DateTime.UtcNow;
-			ProximoCobro = DateTime.UtcNow.AddMonths(1);
+			FechaInicio = DateOnly.FromDateTime(DateTime.UtcNow);
+			ProximoCobro = DateOnly.FromDateTime(DateTime.UtcNow.AddMonths(1));
 			Estado = SuscripcionEstado.Activa;
-			Mensualidad mensualidad = new Mensualidad(this.Id, this.FechaInicio, this.ProximoCobro, plan.Precio);
+			Mensualidad mensualidad = new Mensualidad(this.Id, this.FechaInicio, this.ProximoCobro);
 			Mensualidades.Add(mensualidad);
 		}
 		public void Update(Suscripcion suscripcionUpdate)

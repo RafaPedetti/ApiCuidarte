@@ -15,15 +15,15 @@ namespace ApiCuidarte.Controllers
 	[Authorize]
 	public class TipoServicioController : ControllerBase
 	{
-		IAlta<TipoServicio, TipoServicio> _alta;
-		IEditar<TipoServicio, TipoServicio> _editar;
+		IAlta<TipoServicio> _alta;
+		IEditar<TipoServicio> _editar;
 		IEliminar<TipoServicio> _eliminar;
 		IObtenerTodos<TipoServicio> _getAll;
 		IObtener<TipoServicio> _obtener;
 
 		public TipoServicioController(
-			IAlta<TipoServicio, TipoServicio> alta,
-			IEditar<TipoServicio, TipoServicio> editar,
+			IAlta<TipoServicio> alta,
+			IEditar<TipoServicio> editar,
 			IEliminar<TipoServicio> eliminar,
 			IObtenerTodos<TipoServicio> getAll,
 			IObtener<TipoServicio> obtener

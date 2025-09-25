@@ -6,7 +6,7 @@ using LogicaNegocio.InterfazServicios;
 
 namespace LogicaAplicacion.Empresas
 {
-	public class EditarEmpresa : IEditar<EmpresaDto, Empresa>
+	public class EditarEmpresa : IEditar<EmpresaDto>
 	{
 		public readonly IRepositorioEmpresa _context;
 
@@ -14,7 +14,7 @@ namespace LogicaAplicacion.Empresas
 		{
 			_context = context;
 		}
-		public Empresa Ejecutar(EmpresaDto obj)
+		public EmpresaDto Ejecutar(EmpresaDto obj)
 		{
 			if (obj == null)
 			{
@@ -25,7 +25,8 @@ namespace LogicaAplicacion.Empresas
 				throw new ArgumentException("El Id del cliente debe ser mayor a 0");
 			}
 			Empresa empresa = EmpresaMapper.FromDto(obj);
-			return _context.Update(empresa);
+			EmpresaDto empresaDto = EmpresaMapper.ToDto(_context.Update(empresa));
+			return empresaDto;
 
 		}
 	}

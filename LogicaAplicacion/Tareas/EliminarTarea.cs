@@ -1,11 +1,12 @@
-﻿using LogicaNegocio.Entidades;
+﻿using LogicaAplicacion.Dtos.Tareas;
+using LogicaNegocio.Entidades;
 using LogicaNegocio.InterfacesRepocitorio;
 using LogicaNegocio.InterfazServicios;
 
 
 namespace LogicaAplicacion.Tareas
 {
-	public class EliminarTarea : IEliminar<Tarea>
+	public class EliminarTarea : IEliminar<TareaDto>
 	{
 		public readonly IRepositorioTarea _context;
 

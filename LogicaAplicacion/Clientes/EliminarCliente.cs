@@ -1,15 +1,9 @@
-﻿using LogicaNegocio.Entidades;
+﻿using LogicaAplicacion.Dtos.Clientes;
 using LogicaNegocio.InterfacesRepocitorio;
 using LogicaNegocio.InterfazServicios;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
 namespace LogicaAplicacion.Clientes
 {
-	public class EliminarCliente : IEliminar<Cliente>
+	public class EliminarCliente : IEliminar<ClienteDto>
 	{
 		public readonly IRepositorioCliente _context;
 

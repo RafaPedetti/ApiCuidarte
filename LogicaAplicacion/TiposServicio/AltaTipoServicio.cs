@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace LogicaAplicacion.TiposServicio
 {
-	public class AltaTipoServicio : IAlta<TipoServicio,TipoServicio>
+	public class AltaTipoServicio : IAlta<TipoServicio>
 	{
 		private readonly IRepositorioTipoServicio _context;
 		public AltaTipoServicio(IRepositorioTipoServicio context)

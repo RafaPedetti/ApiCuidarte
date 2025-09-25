@@ -1,26 +1,21 @@
-﻿using LogicaAplicacion.Dtos;
+﻿using LogicaAplicacion.Dtos.Empresas;
+using LogicaAplicacion.Dtos.MapeosDto;
 using LogicaNegocio.Entidades;
 using LogicaNegocio.InterfacesRepocitorio;
-using LogicaNegocio.InterfacesServicios;
 using LogicaNegocio.InterfazServicios;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace LogicaAplicacion.Empresas
 {
-	public class GetAllEmpresa : IObtenerTodos<Empresa>
+	public class GetAllEmpresa : IObtenerTodos<EmpresaDto>
 	{
 		private readonly IRepositorioEmpresa _context;
 		public GetAllEmpresa(IRepositorioEmpresa context)
 		{
 			_context = context;
 		}
-		public IEnumerable<Empresa> Ejecutar()
+		public IEnumerable<EmpresaDto> Ejecutar()
 		{
-			var empresas = _context.GetAll();
+			var empresas = EmpresaMapper.ToListaDto(_context.GetAll());
 			return empresas;
 
 		}

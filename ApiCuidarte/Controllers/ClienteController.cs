@@ -16,20 +16,20 @@ namespace ApiCuidarte.Controllers
 	[Authorize]
 	public class ClienteController : ControllerBase
 	{
-		IAlta<ClienteDto, Cliente> _alta;
-		IEditar<ClienteDto, Cliente> _editar;
-		IEliminar<Cliente> _eliminar;
-		IObtenerPaginado<PaginadoResultado<Cliente>> _getAll;
-		IObtener<Cliente> _obtener;
-		IObtenerPorTexto<Cliente> _obtenerPorTexto;
+		IAlta<ClienteDto> _alta;
+		IEditar<ClienteDto> _editar;
+		IEliminar<ClienteDto> _eliminar;
+		IObtenerPaginado<PaginadoResultado<ClienteDto>> _getAll;
+		IObtener<ClienteDto> _obtener;
+		IObtenerPorTexto<ClienteDto> _obtenerPorTexto;
 
 		public ClienteController(
-			IAlta<ClienteDto, Cliente> alta,
-			IEditar<ClienteDto, Cliente> editar,
-			IEliminar<Cliente> eliminar,
-			IObtenerPaginado<PaginadoResultado<Cliente>> getAll,
-			IObtener<Cliente> obtener,
-			IObtenerPorTexto<Cliente> obtenerPorTexto
+			IAlta<ClienteDto> alta,
+			IEditar<ClienteDto> editar,
+			IEliminar<ClienteDto> eliminar,
+			IObtenerPaginado<PaginadoResultado<ClienteDto>> getAll,
+			IObtener<ClienteDto> obtener,
+			IObtenerPorTexto<ClienteDto> obtenerPorTexto
 		)
 		{
 			_alta = alta;
@@ -44,11 +44,11 @@ namespace ApiCuidarte.Controllers
 		[ProducesResponseType(StatusCodes.Status500InternalServerError)]
 		[HttpPost]
 		[Route("Crear")]
-		public IActionResult Crear(ClienteDto c)
+		public IActionResult Crear(ClienteDto cliente)
 		{
 			try
 			{
-				Cliente cCreado = _alta.Ejecutar(c);
+				ClienteDto cCreado = _alta.Ejecutar(cliente);
 				return Ok(cCreado);
 			}
 			catch (DomainException ex)
@@ -72,7 +72,7 @@ namespace ApiCuidarte.Controllers
 		{
 			try
 			{
-				Cliente cCreado = _editar.Ejecutar(c);
+				ClienteDto cCreado = _editar.Ejecutar(c);
 				return Ok(cCreado);
 			}
 			catch (DomainException ex)
@@ -122,7 +122,7 @@ namespace ApiCuidarte.Controllers
 		{
 			try
 			{
-				Cliente c = _obtener.Ejecutar(id);
+				ClienteDto c = _obtener.Ejecutar(id);
 				if (c == null)
 				{
 					throw new ClienteException("No se encontro el cliente");
@@ -152,7 +152,7 @@ namespace ApiCuidarte.Controllers
 		{
 			try
 			{
-				IEnumerable<Cliente> c = _obtenerPorTexto.Ejecutar(texto);
+				IEnumerable<ClienteDto> c = _obtenerPorTexto.Ejecutar(texto);
 				if (c == null)
 				{
 					throw new ClienteException("No se encontro el cliente");
@@ -182,7 +182,7 @@ namespace ApiCuidarte.Controllers
 		{
 			try
 			{
-				PaginadoResultado<Cliente> c = _getAll.Ejecutar(pagina);
+				PaginadoResultado<ClienteDto> c = _getAll.Ejecutar(pagina);
 				if (c == null)
 				{
 					throw new ClienteException("No se encontraron cliente");

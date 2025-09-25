@@ -1,10 +1,11 @@
-﻿using LogicaNegocio.Entidades;
+﻿using LogicaAplicacion.Dtos.MapeosDto;
+using LogicaAplicacion.Dtos.Tareas;
 using LogicaNegocio.InterfacesRepocitorio;
 using LogicaNegocio.InterfazServicios;
 
 namespace LogicaAplicacion.Tareas
 {
-	public class GetByIdTarea : IObtener<Tarea>
+	public class GetByIdTarea : IObtener<TareaDto>
 	{
 		private readonly IRepositorioTarea _context;
 		public GetByIdTarea(IRepositorioTarea context)
@@ -12,9 +13,10 @@ namespace LogicaAplicacion.Tareas
 			_context = context;
 		}
 
-		public Tarea Ejecutar(int id)
+		public TareaDto Ejecutar(int id)
 		{
-			return _context.GetById(id);
+			TareaDto tDto = TareaMapper.ToDto(_context.GetById(id));
+			return tDto;
 		}
 
 	}

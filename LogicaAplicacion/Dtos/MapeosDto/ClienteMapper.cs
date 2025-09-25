@@ -15,14 +15,31 @@ namespace LogicaAplicacion.Dtos.MapeosDto
 	{
 		public static Cliente FromDto(ClienteDto cDto)
 		{
-			var cliente = new Cliente(cDto.id, new NombreCompleto(cDto.nombre, cDto.apellido),cDto.ci, DateOnly.FromDateTime(cDto.fechaNacimiento), cDto.direccion, new Telefono(cDto.telefono),cDto.TipoPlanId,new Email(cDto.Email));
-			return cliente;
+			Cliente cliente;
+			if (cDto.suscripcion != null)
+			{
+				cliente = new Cliente(cDto.id, new NombreCompleto(cDto.nombre, cDto.apellido), cDto.ci, DateOnly.FromDateTime(cDto.fechaNacimiento), cDto.direccion, new Telefono(cDto.telefono), cDto.TipoPlanId, new Email(cDto.Email), SuscripcionMapper.FromDto(cDto.suscripcion));
+			}
+			else 
+			{ 
+				cliente = new Cliente(cDto.id, new NombreCompleto(cDto.nombre, cDto.apellido), cDto.ci, DateOnly.FromDateTime(cDto.fechaNacimiento), cDto.direccion, new Telefono(cDto.telefono), cDto.TipoPlanId, new Email(cDto.Email));
+			}
+
+				return cliente;
 		}
 
 		public static ClienteDto ToDto(Cliente cliente)
 		{
-			var clienteDto = new ClienteDto(cliente.Id,cliente.NombreCompleto.Nombre, cliente.NombreCompleto.Apellido,cliente.CI, cliente.Email.Value, cliente.FechaNacimiento.ToDateTime(TimeOnly.MinValue), cliente.Direccion, cliente.Telefono.Value,cliente.TipoPlanId);
-			return clienteDto;
+			ClienteDto clienteDto;
+			if (cliente.Suscripcion != null)
+			{
+			 clienteDto = new ClienteDto(cliente.Id,cliente.NombreCompleto.Nombre, cliente.NombreCompleto.Apellido,cliente.CI, cliente.Email.Value, cliente.FechaNacimiento.ToDateTime(TimeOnly.MinValue), cliente.Direccion, cliente.Telefono.Value,cliente.TipoPlanId,SuscripcionMapper.ToDto(cliente.Suscripcion));
+			}
+			else
+			{
+				clienteDto = new ClienteDto(cliente.Id, cliente.NombreCompleto.Nombre, cliente.NombreCompleto.Apellido, cliente.CI, cliente.Email.Value, cliente.FechaNacimiento.ToDateTime(TimeOnly.MinValue), cliente.Direccion, cliente.Telefono.Value, cliente.TipoPlanId,null);
+			}
+				return clienteDto;
 		}
 
 		public static IEnumerable<ClienteDto> ToListaDto(IEnumerable<Cliente> clientes)

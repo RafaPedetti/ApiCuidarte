@@ -1,25 +1,22 @@
-﻿using LogicaNegocio.Entidades;
+﻿using LogicaAplicacion.Dtos.Suscripciones;
+using LogicaNegocio.Entidades;
 using LogicaNegocio.InterfacesRepocitorio;
 using LogicaNegocio.InterfacesServicios.Mensualidades;
 using LogicaNegocio.ValueObject.Suscripcion;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
 namespace LogicaAplicacion.Mensualidades
 {
-	public class PagarMensualidad : IPagarMensualidades<Suscripcion>
+	public class PagarMensualidad : IPagarMensualidades<SuscripcionDto>
 	{
 		IRepositorioMensualidad _repositorioMensualidad;
 
 		IRepositorioSuscripcion _repositorioSuscripcion;
+		IRepositorioCliente _repositorioCliente;
 
-		public PagarMensualidad(IRepositorioMensualidad repositorioMensualidad,IRepositorioSuscripcion repositorioSuscripcion)
+		public PagarMensualidad(IRepositorioMensualidad repositorioMensualidad,IRepositorioSuscripcion repositorioSuscripcion, IRepositorioCliente repositorioCliente)
 		{
 			_repositorioMensualidad = repositorioMensualidad;
 			_repositorioSuscripcion = repositorioSuscripcion;
+			_repositorioCliente = repositorioCliente;
 		}
 
 		public Mensualidad Ejecutar(int id)
@@ -29,19 +26,26 @@ namespace LogicaAplicacion.Mensualidades
 			if (suscripcion.Estado == SuscripcionEstado.Cancelada)
 				throw new InvalidOperationException("La suscripción no está activa.");
 			var hoy = DateTime.UtcNow;
-			var desde = new DateTime(hoy.Year, hoy.Month, 1);
-			var hasta = desde.AddMonths(1).AddDays(-1); 
+			var desde =new DateTime(hoy.Year, hoy.Month, 1);
+			var hasta = DateOnly.FromDateTime(desde.AddMonths(1).AddDays(-1)); 
 			var mensualidad = new Mensualidad
 			{
 				SubscriptionId = suscripcion.Id,
-				FechaGeneracion = hoy,
-				PeriodoDesde = desde,
+				PeriodoDesde = DateOnly.FromDateTime(desde),
 				PeriodoHasta = hasta,
-				Monto = suscripcion.Plan.Precio,
 				Estado = MensualidadEstado.Pagada,
 			};
 			suscripcion.PagarMensualidad(mensualidad);
 			_repositorioMensualidad.Add(mensualidad);
+			if (hoy.Month == 1)
+			{
+				foreach(var cliente in suscripcion.Clientes)
+				{
+					cliente.ResetearServicios();
+					_repositorioCliente.Update(cliente);
+				}
+			}
+
 			return mensualidad;
 
 		}

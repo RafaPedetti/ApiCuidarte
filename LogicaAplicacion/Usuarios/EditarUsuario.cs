@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace LogicaAplicacion.Usuarios
 {
-	public class EditarUsuario : IEditar<EditarUsuarioDto,Usuario>
+	public class EditarUsuario : IEditar<UsuarioDto>
 	{
 		private readonly IRepositorioUsuario _repositorioUsuario;
 		public EditarUsuario(IRepositorioUsuario repositorioUsuario)
@@ -19,19 +19,20 @@ namespace LogicaAplicacion.Usuarios
 			_repositorioUsuario = repositorioUsuario;
 		}
 
-		public Usuario Ejecutar(EditarUsuarioDto obj)
+		public UsuarioDto Ejecutar(UsuarioDto obj)
 		{
 			if (obj == null)
 			{
 				throw new ArgumentNullException(nameof(obj), "El usuario no puede ser nulo.");
 			}
-			Usuario usuarioExistente = _repositorioUsuario.GetById(obj.id);
+			Usuario usuarioExistente = _repositorioUsuario.GetById(obj.Id);
 			if (usuarioExistente == null)
 			{
-				throw new KeyNotFoundException($"Usuario con ID {obj.id} no encontrado.");
+				throw new KeyNotFoundException($"Usuario con ID {obj.Id} no encontrado.");
 			}
-			usuarioExistente.Update(obj.email,obj.nombre,obj.apellido,obj.password);
-			return _repositorioUsuario.Update(usuarioExistente);
+			usuarioExistente.Update(obj.Email,obj.Nombre,obj.Apellido,obj.password);
+			UsuarioDto uDto = UsuarioMapper.ToDto(_repositorioUsuario.Update(usuarioExistente));
+			return uDto;
 		}
 	}
 }

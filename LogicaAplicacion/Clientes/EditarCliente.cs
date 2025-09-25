@@ -13,7 +13,7 @@ using System.Threading.Tasks;
 
 namespace LogicaAplicacion.Clientes
 {
-	public class EditarCliente : IEditar<ClienteDto,Cliente>
+	public class EditarCliente : IEditar<ClienteDto>
 	{
 		public readonly IRepositorioCliente _context;
 		public readonly IRepositorioTipoPlan _contextTP;
@@ -24,7 +24,7 @@ namespace LogicaAplicacion.Clientes
 			_context = context;
 			_contextTP = contextTP;
 		}
-		public Cliente Ejecutar(ClienteDto obj)
+		public ClienteDto Ejecutar(ClienteDto obj)
 		{
 			if (obj == null)
 			{
@@ -40,7 +40,8 @@ namespace LogicaAplicacion.Clientes
 			c.Plan = tp;
 			suscripcion.Plan = tp;
 			_contextSuscripcion.Update(suscripcion);
-			return _context.Update(c);
+			ClienteDto cDto = ClienteMapper.ToDto(_context.Update(c));
+			return cDto;
 
 		}
 	}

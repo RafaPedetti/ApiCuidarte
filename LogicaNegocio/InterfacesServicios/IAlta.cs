@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace LogicaNegocio.InterfazServicios
 {
-    public interface IAlta<TDto, TRespuesta>
+    public interface IAlta<T>
 
 	{
-		TRespuesta Ejecutar(TDto obj);
+		T Ejecutar(T obj);
 	}
 }

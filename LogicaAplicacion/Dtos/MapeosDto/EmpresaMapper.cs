@@ -8,13 +8,15 @@ namespace LogicaAplicacion.Dtos.MapeosDto
 	{
 		public static Empresa FromDto(EmpresaDto eDto)
 		{
-			var empresa = new Empresa(eDto.id, eDto.nombre, eDto.TipoPlanId, eDto.telefonoContacto);
+			Empresa empresa;
+			if(eDto.suscripcion != null) empresa = new Empresa(eDto.id, eDto.nombre, eDto.TipoPlanId, eDto.telefonoContacto, SuscripcionMapper.FromDto(eDto.suscripcion));
+			else empresa = new Empresa(eDto.id, eDto.nombre, eDto.TipoPlanId, eDto.telefonoContacto);
 			return empresa;
 		}
 
 		public static EmpresaDto ToDto(Empresa empresa)
 		{
-			var empresaDto = new EmpresaDto(empresa.Id, empresa.Nombre, empresa.TelefonoContacto.Value, empresa.TipoPlanId);
+			var empresaDto = new EmpresaDto(empresa.Id, empresa.Nombre, empresa.TelefonoContacto.Value, empresa.TipoPlanId, SuscripcionMapper.ToDto(empresa.Suscripcion) ?? null);
 			return empresaDto;
 		}
 

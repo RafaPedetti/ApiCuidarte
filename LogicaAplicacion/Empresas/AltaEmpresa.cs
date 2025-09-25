@@ -7,7 +7,7 @@ using LogicaNegocio.InterfazServicios;
 
 namespace LogicaAplicacion.EmpresaS
 {
-	public class AltaEmpresa : IAlta<EmpresaDto, Empresa>
+	public class AltaEmpresa : IAlta<EmpresaDto>
 	{
 		private readonly IRepositorioEmpresa _context;
 		private readonly IRepositorioTipoPlan _contextTipoPlan;
@@ -18,7 +18,7 @@ namespace LogicaAplicacion.EmpresaS
 			_contextTipoPlan = contextTipoPlan;
 			_contextSuscripcion = contextSuscripcion;
 		}
-		public Empresa Ejecutar(EmpresaDto obj)
+		public EmpresaDto Ejecutar(EmpresaDto obj)
 		{
 			if (obj == null)
 			{
@@ -28,11 +28,11 @@ namespace LogicaAplicacion.EmpresaS
 			TipoPlan plan = _contextTipoPlan.GetById(obj.TipoPlanId);
 			empresa.Plan = plan;
 			Empresa eCreada = _context.Add(empresa);
-			var suscripcion = new Suscripcion(eCreada, eCreada.Plan);
+			var suscripcion = new Suscripcion(null,eCreada, eCreada.Plan);
 			_contextSuscripcion.Add(suscripcion);
 			eCreada.SuscripcionId = suscripcion.Id;
-			_context.Update(eCreada);
-			return eCreada;
+			EmpresaDto eDto = EmpresaMapper.ToDto(_context.Update(eCreada));
+			return eDto;
 		}
 	}
 }

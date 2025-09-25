@@ -1,11 +1,12 @@
-﻿using LogicaNegocio.Entidades;
+﻿using LogicaAplicacion.Dtos.Clientes;
+using LogicaAplicacion.Dtos.MapeosDto;
+using LogicaNegocio.Entidades;
 using LogicaNegocio.InterfacesRepocitorio;
 using LogicaNegocio.InterfacesServicios;
-using LogicaNegocio.InterfazServicios;
 
 namespace LogicaAplicacion.Clientes
 {
-	public class GetByTextoCliente : IObtenerPorTexto<Cliente>
+	public class GetByTextoCliente : IObtenerPorTexto<ClienteDto>
 	{
 		private readonly IRepositorioCliente _context;
 		public GetByTextoCliente(IRepositorioCliente repositorioCliente)
@@ -13,9 +14,10 @@ namespace LogicaAplicacion.Clientes
 			_context = repositorioCliente;
 		}
 
-		public IEnumerable<Cliente> Ejecutar(string texto)
+		public IEnumerable<ClienteDto> Ejecutar(string texto)
 		{
-			return _context.GetByTexto(texto);
+			IEnumerable<ClienteDto> cDto = ClienteMapper.ToListaDto(_context.GetByTexto(texto));
+			return cDto;
 		}
 
 	}

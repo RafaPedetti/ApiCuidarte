@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace LogicaAplicacion.TiposPlan
 {
-	public class EditarTipoPlan : IEditar<TipoPlanDto,TipoPlan>
+	public class EditarTipoPlan : IEditar<TipoPlanDto>
 	{
 		public readonly IRepositorioTipoPlan _context;
 		public readonly IRepositorioTipoServicio _contextTS;
@@ -21,7 +21,7 @@ namespace LogicaAplicacion.TiposPlan
 			_context = context;
 			_contextTS = contextTS;
 		}
-		public TipoPlan Ejecutar(TipoPlanDto obj)
+		public TipoPlanDto Ejecutar(TipoPlanDto obj)
 		{
 			if (obj == null)
 			{
@@ -37,7 +37,8 @@ namespace LogicaAplicacion.TiposPlan
 				TipoServicio ts = _contextTS.GetById(s.tipoServicio.id);
 				tp.AddServicio(new Servicio(s.id, ts, s.cantServicios));
 			}
-			return _context.Update(tp);
+			TipoPlanDto tpDto = TipoPlanMapper.ToDto(_context.Update(tp));
+			return tpDto;
 
 		}
 	}

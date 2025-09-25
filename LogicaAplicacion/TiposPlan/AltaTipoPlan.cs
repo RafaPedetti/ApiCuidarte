@@ -5,7 +5,7 @@ using LogicaAplicacion.Dtos.TipoPlanes;
 using LogicaAplicacion.Dtos.MapeosDto;
 namespace LogicaAplicacion.TiposPlan
 {
-	public class AltaTipoPlan : IAlta<TipoPlanDto, TipoPlan>
+	public class AltaTipoPlan : IAlta<TipoPlanDto>
 	{
 		private readonly IRepositorioTipoPlan _context;
 		private readonly IRepositorioTipoServicio _contextTS;
@@ -14,7 +14,7 @@ namespace LogicaAplicacion.TiposPlan
 			_context = context;
 			_contextTS = contextTs;
 		}
-		public TipoPlan Ejecutar(TipoPlanDto obj)
+		public TipoPlanDto Ejecutar(TipoPlanDto obj)
 		{
 			if (obj == null)
 			{
@@ -27,7 +27,8 @@ namespace LogicaAplicacion.TiposPlan
 				Servicio servicio = new Servicio(0,ts,s.cantServicios);
 				tp.AddServicio(servicio);
 			}
-			return _context.Add(tp);
+			TipoPlanDto tDto = TipoPlanMapper.ToDto(_context.Add(tp));
+			return tDto;
 		}
 	}
 }

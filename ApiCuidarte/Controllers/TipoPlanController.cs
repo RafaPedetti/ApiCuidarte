@@ -14,18 +14,18 @@ namespace ApiCuidarte.Controllers
 	[Authorize]
 	public class TipoPlanController : ControllerBase
 	{
-		IAlta<TipoPlanDto, TipoPlan> _alta;
-		IEditar<TipoPlanDto, TipoPlan> _editar;
-		IEliminar<TipoPlan> _eliminar;
-		IObtenerTodos<TipoPlan> _getAll;
-		IObtener<TipoPlan> _obtener;
+		IAlta<TipoPlanDto> _alta;
+		IEditar<TipoPlanDto> _editar;
+		IEliminar<TipoPlanDto> _eliminar;
+		IObtenerTodos<TipoPlanDto> _getAll;
+		IObtener<TipoPlanDto> _obtener;
 
 		public TipoPlanController(
-			IAlta<TipoPlanDto, TipoPlan> alta,
-			IEditar<TipoPlanDto, TipoPlan> editar,
-			IEliminar<TipoPlan> eliminar,
-			IObtenerTodos<TipoPlan> getAll,
-			IObtener<TipoPlan> obtener
+			IAlta<TipoPlanDto> alta,
+			IEditar<TipoPlanDto> editar,
+			IEliminar<TipoPlanDto> eliminar,
+			IObtenerTodos<TipoPlanDto> getAll,
+			IObtener<TipoPlanDto> obtener
 		)
 		{
 			_alta = alta;
@@ -43,7 +43,7 @@ namespace ApiCuidarte.Controllers
 		{
 			try
 			{
-				TipoPlan tipoPlanCreado = _alta.Ejecutar(tp);
+				TipoPlanDto tipoPlanCreado = _alta.Ejecutar(tp);
 				return Ok(tipoPlanCreado);
 			}
 			catch (DomainException ex)
@@ -117,8 +117,8 @@ namespace ApiCuidarte.Controllers
 		{
 			try
 			{
-				TipoPlan tp = _obtener.Ejecutar(id);
-				if (tp == null || tp.Eliminado)
+				TipoPlanDto tp = _obtener.Ejecutar(id);
+				if (tp == null)
 				{
 					throw new DomainException("No se encontro el tipo plan");
 				}
@@ -147,7 +147,7 @@ namespace ApiCuidarte.Controllers
 		{
 			try
 			{
-				IEnumerable<TipoPlan> tp = _getAll.Ejecutar();
+				IEnumerable<TipoPlanDto> tp = _getAll.Ejecutar();
 				if (tp == null || !tp.Any())
 				{
 					throw new DomainException("No se encontraron usuarios");

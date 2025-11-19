@@ -1,9 +1,10 @@
 ﻿using LogicaAplicacion.Dtos.Clientes;
 using LogicaAplicacion.Dtos.MapeosDto;
 using LogicaNegocio.Entidades;
+using LogicaNegocio.Excepciones;
 using LogicaNegocio.InterfacesRepocitorio;
 using LogicaNegocio.InterfazServicios;
-using System.Numerics;
+using LogicaNegocio.ValueObject.TipoPlan;
 namespace LogicaAplicacion.Clientes
 {
 	public class AltaCliente : IAlta<ClienteDto>
@@ -25,6 +26,10 @@ namespace LogicaAplicacion.Clientes
 				throw new ArgumentNullException("El tipo de objeto está vacío");
 			Cliente c = ClienteMapper.FromDto(obj);
 			TipoPlan plan = _contextTipoPlan.GetById(obj.TipoPlanId);
+			if (plan.Destino.Equals(PlanDestino.Empresa))
+			{
+				throw new DomainException("El plan seleccionado no es valido para un cliente");
+			}
 			Cliente cCreado = _context.Add(c);
 			_context.CambiarPlan(cCreado.Id, plan);
 			var suscripcion = new Suscripcion(null,cCreado, cCreado.Plan);

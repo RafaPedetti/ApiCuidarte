@@ -115,7 +115,7 @@ namespace Infraestructura.LogicaAccesoDatos.EF
 				throw new ArgumentNullException(nameof(obj), "El objeto no puede ser nulo.");
 			}
 			Tarea tarea = GetById(obj.Id);
-			tarea.Update(obj.Cliente, obj.EmpleadoResponsable, obj.fecha, obj.Descripcion, obj.Estado);
+			tarea.Update(obj.Cliente, obj.EmpleadoResponsable, obj.fecha, obj.Descripcion, obj.Estado, obj.Calificación ?? null,obj.serviciosUsados,obj.ServiciosExtras);
 			_context.Tareas.Update(tarea);
 			_context.SaveChanges();
 			return tarea;

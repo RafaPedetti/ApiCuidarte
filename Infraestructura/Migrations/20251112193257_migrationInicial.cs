@@ -7,23 +7,38 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Infraestructura.Migrations
 {
     /// <inheritdoc />
-    public partial class inicioMigracion : Migration
+    public partial class migrationInicial : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
-                name: "Empresas",
+                name: "FondosPortada",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    Nombre = table.Column<string>(type: "text", nullable: false),
+                    Url = table.Column<string>(type: "text", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_FondosPortada", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Planes",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    Nombre = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
+                    EmpresaId = table.Column<int>(type: "integer", nullable: true),
+                    Precio = table.Column<decimal>(type: "numeric(18,2)", nullable: false),
                     Eliminado = table.Column<bool>(type: "boolean", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Empresas", x => x.Id);
+                    table.PrimaryKey("PK_Planes", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -61,64 +76,6 @@ namespace Infraestructura.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "TiposPlanes",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "integer", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    Nombre = table.Column<string>(type: "text", nullable: false),
-                    EmpresaId = table.Column<int>(type: "integer", nullable: true),
-                    Precio = table.Column<decimal>(type: "numeric", nullable: false),
-                    Eliminado = table.Column<bool>(type: "boolean", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_TiposPlanes", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_TiposPlanes_Empresas_EmpresaId",
-                        column: x => x.EmpresaId,
-                        principalTable: "Empresas",
-                        principalColumn: "Id");
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Suscripciones",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "integer", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    ClienteId = table.Column<int>(type: "integer", nullable: true),
-                    EmpresaId = table.Column<int>(type: "integer", nullable: true),
-                    PlanId = table.Column<int>(type: "integer", nullable: false),
-                    FechaInicio = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    FechaFin = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
-                    ProximoCobro = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    Estado = table.Column<string>(type: "character varying(20)", maxLength: 20, nullable: false),
-                    Eliminado = table.Column<bool>(type: "boolean", nullable: false),
-                    TipoPlanId = table.Column<int>(type: "integer", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Suscripciones", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Suscripciones_Empresas_EmpresaId",
-                        column: x => x.EmpresaId,
-                        principalTable: "Empresas",
-                        principalColumn: "Id");
-                    table.ForeignKey(
-                        name: "FK_Suscripciones_TiposPlanes_PlanId",
-                        column: x => x.PlanId,
-                        principalTable: "TiposPlanes",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_Suscripciones_TiposPlanes_TipoPlanId",
-                        column: x => x.TipoPlanId,
-                        principalTable: "TiposPlanes",
-                        principalColumn: "Id");
-                });
-
-            migrationBuilder.CreateTable(
                 name: "Clientes",
                 columns: table => new
                 {
@@ -130,7 +87,11 @@ namespace Infraestructura.Migrations
                     FechaNacimiento = table.Column<DateOnly>(type: "date", nullable: false),
                     Direccion = table.Column<string>(type: "text", nullable: false),
                     Telefono = table.Column<string>(type: "text", nullable: false),
+                    Celular = table.Column<string>(type: "text", nullable: false),
                     Email = table.Column<string>(type: "text", nullable: false),
+                    ResponsablePago = table.Column<string>(type: "text", nullable: false),
+                    FormaPago = table.Column<string>(type: "text", nullable: false),
+                    Observaciones = table.Column<string>(type: "text", nullable: false),
                     TipoPlanId = table.Column<int>(type: "integer", nullable: false),
                     SuscripcionId = table.Column<int>(type: "integer", nullable: true),
                     Eliminado = table.Column<bool>(type: "boolean", nullable: false)
@@ -139,41 +100,9 @@ namespace Infraestructura.Migrations
                 {
                     table.PrimaryKey("PK_Clientes", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Clientes_Suscripciones_SuscripcionId",
-                        column: x => x.SuscripcionId,
-                        principalTable: "Suscripciones",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.SetNull);
-                    table.ForeignKey(
-                        name: "FK_Clientes_TiposPlanes_TipoPlanId",
+                        name: "FK_Clientes_Planes_TipoPlanId",
                         column: x => x.TipoPlanId,
-                        principalTable: "TiposPlanes",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Mensualidades",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "integer", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    SubscriptionId = table.Column<int>(type: "integer", nullable: false),
-                    FechaGeneracion = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    PeriodoDesde = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    PeriodoHasta = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    Monto = table.Column<decimal>(type: "numeric(18,2)", nullable: false),
-                    FechaPago = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
-                    Estado = table.Column<string>(type: "character varying(20)", maxLength: 20, nullable: false),
-                    Eliminado = table.Column<bool>(type: "boolean", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Mensualidades", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Mensualidades_Suscripciones_SubscriptionId",
-                        column: x => x.SubscriptionId,
-                        principalTable: "Suscripciones",
+                        principalTable: "Planes",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -188,7 +117,9 @@ namespace Infraestructura.Migrations
                     EmpleadoResponsableId = table.Column<int>(type: "integer", nullable: false),
                     fecha = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     Estado = table.Column<int>(type: "integer", nullable: false),
-                    Descripcion = table.Column<string>(type: "text", nullable: false),
+                    Descripcion = table.Column<string>(type: "character varying(500)", maxLength: 500, nullable: false),
+                    CalificacionTexto = table.Column<string>(type: "character varying(1000)", maxLength: 1000, nullable: true),
+                    CalificacionNota = table.Column<int>(type: "integer", nullable: true),
                     Eliminado = table.Column<bool>(type: "boolean", nullable: false)
                 },
                 constraints: table =>
@@ -236,26 +167,105 @@ namespace Infraestructura.Migrations
                         principalTable: "Clientes",
                         principalColumn: "Id");
                     table.ForeignKey(
+                        name: "FK_Servicios_Planes_TipoPlanId",
+                        column: x => x.TipoPlanId,
+                        principalTable: "Planes",
+                        principalColumn: "Id");
+                    table.ForeignKey(
                         name: "FK_Servicios_Tareas_TareaId",
                         column: x => x.TareaId,
                         principalTable: "Tareas",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_Servicios_Tareas_TareaId1",
                         column: x => x.TareaId1,
                         principalTable: "Tareas",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_Servicios_TipoServicios_tipoServicioId",
                         column: x => x.tipoServicioId,
                         principalTable: "TipoServicios",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Empresas",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    Nombre = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
+                    TelefonoContacto = table.Column<string>(type: "text", nullable: false),
+                    TipoPlanId = table.Column<int>(type: "integer", nullable: false),
+                    SuscripcionId = table.Column<int>(type: "integer", nullable: true),
+                    Eliminado = table.Column<bool>(type: "boolean", nullable: false, defaultValue: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Empresas", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Servicios_TiposPlanes_TipoPlanId",
+                        name: "FK_Empresas_Planes_TipoPlanId",
                         column: x => x.TipoPlanId,
-                        principalTable: "TiposPlanes",
+                        principalTable: "Planes",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Suscripciones",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    ClienteId = table.Column<int>(type: "integer", nullable: true),
+                    EmpresaId = table.Column<int>(type: "integer", nullable: true),
+                    EmpresaId1 = table.Column<int>(type: "integer", nullable: true),
+                    PlanId = table.Column<int>(type: "integer", nullable: false),
+                    FechaInicio = table.Column<DateOnly>(type: "date", nullable: false),
+                    ProximoCobro = table.Column<DateOnly>(type: "date", nullable: false),
+                    Estado = table.Column<string>(type: "character varying(20)", maxLength: 20, nullable: false),
+                    Eliminado = table.Column<bool>(type: "boolean", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Suscripciones", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Suscripciones_Empresas_EmpresaId1",
+                        column: x => x.EmpresaId1,
+                        principalTable: "Empresas",
                         principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_Suscripciones_Planes_PlanId",
+                        column: x => x.PlanId,
+                        principalTable: "Planes",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Mensualidades",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    SubscriptionId = table.Column<int>(type: "integer", nullable: false),
+                    PeriodoDesde = table.Column<DateOnly>(type: "date", nullable: false),
+                    PeriodoHasta = table.Column<DateOnly>(type: "date", nullable: false),
+                    Estado = table.Column<string>(type: "character varying(20)", maxLength: 20, nullable: false),
+                    Eliminado = table.Column<bool>(type: "boolean", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Mensualidades", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Mensualidades_Suscripciones_SubscriptionId",
+                        column: x => x.SubscriptionId,
+                        principalTable: "Suscripciones",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateIndex(
@@ -267,6 +277,17 @@ namespace Infraestructura.Migrations
                 name: "IX_Clientes_TipoPlanId",
                 table: "Clientes",
                 column: "TipoPlanId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Empresas_SuscripcionId",
+                table: "Empresas",
+                column: "SuscripcionId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Empresas_TipoPlanId",
+                table: "Empresas",
+                column: "TipoPlanId",
+                unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "IX_Mensualidades_SubscriptionId",
@@ -304,19 +325,14 @@ namespace Infraestructura.Migrations
                 column: "tipoServicioId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Suscripciones_EmpresaId",
+                name: "IX_Suscripciones_EmpresaId1",
                 table: "Suscripciones",
-                column: "EmpresaId");
+                column: "EmpresaId1");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Suscripciones_PlanId",
                 table: "Suscripciones",
                 column: "PlanId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Suscripciones_TipoPlanId",
-                table: "Suscripciones",
-                column: "TipoPlanId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Tareas_ClienteId",
@@ -329,20 +345,46 @@ namespace Infraestructura.Migrations
                 column: "EmpleadoResponsableId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_TiposPlanes_EmpresaId",
-                table: "TiposPlanes",
-                column: "EmpresaId");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_Usuarios_Email",
                 table: "Usuarios",
                 column: "Email",
                 unique: true);
+
+            migrationBuilder.AddForeignKey(
+                name: "FK_Clientes_Suscripciones_SuscripcionId",
+                table: "Clientes",
+                column: "SuscripcionId",
+                principalTable: "Suscripciones",
+                principalColumn: "Id",
+                onDelete: ReferentialAction.SetNull);
+
+            migrationBuilder.AddForeignKey(
+                name: "FK_Empresas_Suscripciones_SuscripcionId",
+                table: "Empresas",
+                column: "SuscripcionId",
+                principalTable: "Suscripciones",
+                principalColumn: "Id",
+                onDelete: ReferentialAction.SetNull);
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.DropForeignKey(
+                name: "FK_Empresas_Planes_TipoPlanId",
+                table: "Empresas");
+
+            migrationBuilder.DropForeignKey(
+                name: "FK_Suscripciones_Planes_PlanId",
+                table: "Suscripciones");
+
+            migrationBuilder.DropForeignKey(
+                name: "FK_Empresas_Suscripciones_SuscripcionId",
+                table: "Empresas");
+
+            migrationBuilder.DropTable(
+                name: "FondosPortada");
+
             migrationBuilder.DropTable(
                 name: "Mensualidades");
 
@@ -362,10 +404,10 @@ namespace Infraestructura.Migrations
                 name: "Usuarios");
 
             migrationBuilder.DropTable(
-                name: "Suscripciones");
+                name: "Planes");
 
             migrationBuilder.DropTable(
-                name: "TiposPlanes");
+                name: "Suscripciones");
 
             migrationBuilder.DropTable(
                 name: "Empresas");

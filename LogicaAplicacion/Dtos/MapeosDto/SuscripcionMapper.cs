@@ -7,7 +7,7 @@ namespace LogicaAplicacion.Dtos.MapeosDto
 	{
 		public static Suscripcion FromDto(SuscripcionDto sDto)
 		{
-			Suscripcion suscripcion = new Suscripcion(sDto.id, sDto.clienteId, sDto.responsableId, sDto.tipoPlanId, sDto.fechaInicio, (DateOnly)sDto.fechaFin);
+			Suscripcion suscripcion = new Suscripcion(sDto.id, sDto.clienteId,null, sDto.tipoPlanId, sDto.fechaInicio, (DateOnly)sDto.fechaFin);
 			return suscripcion;
 		}
 

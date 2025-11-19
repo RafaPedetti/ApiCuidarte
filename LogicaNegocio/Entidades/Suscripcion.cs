@@ -1,4 +1,5 @@
-﻿using LogicaNegocio.IntefacesDominio;
+﻿using LogicaNegocio.Excepciones;
+using LogicaNegocio.IntefacesDominio;
 using LogicaNegocio.ValueObject.Suscripcion;
 using System;
 using System.Collections.Generic;
@@ -50,7 +51,7 @@ namespace LogicaNegocio.Entidades
 		public Suscripcion(int? clienteId, int? empresaId, int planId)
 		{
 			if ((clienteId is null && empresaId is null) || (clienteId != null && empresaId != null))
-				throw new ArgumentException("Una suscripción debe tener un cliente o una empresa, pero no ambos.");
+				throw new DomainException("Una suscripción debe tener un cliente o una empresa, pero no ambos.");
 			if (clienteId != null) ClienteId = clienteId;
 			if (empresaId != null) EmpresaId = empresaId;
 			PlanId = planId;

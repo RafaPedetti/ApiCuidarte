@@ -1,12 +1,6 @@
 ﻿using LogicaNegocio.IntefacesDominio;
-using System;
-using System.Collections;
-using System.Collections.Generic;
+using LogicaNegocio.ValueObject.TipoPlan;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
 namespace LogicaNegocio.Entidades
 {
 	public class TipoPlan : IEntity
@@ -17,7 +11,7 @@ namespace LogicaNegocio.Entidades
 		public string Nombre { get; set; }
 
 		[Required]
-		public List<Servicio> Servicios{ get; set;} = new List<Servicio>();
+		public List<Servicio> Servicios { get; set; } = new List<Servicio>();
 
 		public int? EmpresaId { get; set; }
 		public Empresa? Empresa { get; set; }
@@ -28,6 +22,8 @@ namespace LogicaNegocio.Entidades
 		public ICollection<Suscripcion> Suscripciones { get; set; }
 		  = new List<Suscripcion>();
 
+		public PlanDestino Destino { get; set; }
+
 		public bool Eliminado { get; set; }
 
 
@@ -35,25 +31,37 @@ namespace LogicaNegocio.Entidades
 		{
 		}
 
-		public TipoPlan(int id, string nombre, List<Servicio> servicios, decimal precio)
+		public TipoPlan(int id, string nombre, List<Servicio> servicios, decimal precio, PlanDestino destino)
 		{
 			Id = id;
 			Nombre = nombre;
 			Servicios = servicios;
 			Precio = precio;
+			Destino = destino;
 		}
 
-		public TipoPlan(string nombre, List<Servicio> servicios, decimal precio)
+		public TipoPlan(string nombre, List<Servicio> servicios, decimal precio, PlanDestino destino)
 		{
 			Nombre = nombre;
 			Servicios = servicios;
 			Precio = precio;
+			Destino = destino;
 		}
+
+		public TipoPlan(int id, string nombre, decimal precio, PlanDestino destino)
+		{
+			Id = id;
+			Nombre = nombre;
+			Precio = precio;
+			Destino = destino;
+		}
+
 
 		public void Update(TipoPlan obj)
 		{
 			this.Nombre = obj.Nombre;
 			this.Precio = obj.Precio;
+			this.Destino = obj.Destino;
 			this.Servicios.RemoveAll(s => !obj.Servicios.Any(ns => ns.Id == s.Id));
 
 			foreach (var nuevo in obj.Servicios)

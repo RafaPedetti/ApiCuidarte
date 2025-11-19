@@ -4,10 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace LogicaNegocio.InterfazServicios
+namespace LogicaNegocio.InterfacesServicios
 {
-    public interface IAlta<T>
+	public interface IFormularioNuevoCliente<T>
 	{
-		T Ejecutar(T obj);
+		void Ejecutar(T obj);
 	}
 }

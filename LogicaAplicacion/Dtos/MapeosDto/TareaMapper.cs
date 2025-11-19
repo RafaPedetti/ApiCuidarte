@@ -11,15 +11,34 @@ namespace LogicaAplicacion.Dtos.MapeosDto
 	{
 		public static Tarea FromDto(TareaDto tDto)
 		{
-			var tarea = new Tarea(tDto.id,tDto.fecha,tDto.descripcion,tDto.estado);
+			var calificacionDto = tDto.calificacion != null
+		? CalificacionMapper.FromDto(tDto.calificacion)
+		: null;
+			var tarea = new Tarea(tDto.id, tDto.fecha, tDto.descripcion, tDto.estado, calificacionDto);
 			return tarea;
 		}
 		public static TareaDto ToDto(Tarea tarea)
 		{
-			
+
 			UsuarioDto responsable = UsuarioMapper.ToDto(tarea.EmpleadoResponsable);
 			ClienteDto cliente = ClienteMapper.ToDto(tarea.Cliente);
-			var tareaDto = new TareaDto(tarea.Id, tarea.Cliente.Id,cliente, tarea.EmpleadoResponsable.Id, responsable, tarea.fecha, tarea.Estado, tarea.Descripcion, ServicioMapper.ToListaDto(tarea.serviciosUsados).ToList(), ServicioMapper.ToListaDto(tarea.ServiciosExtras).ToList(),tarea.CostoTotal);
+			var calificacionDto = tarea.Calificación != null
+			? CalificacionMapper.ToDto(tarea.Calificación)
+			: null;
+			var tareaDto = new TareaDto(
+				tarea.Id,
+				tarea.Cliente.Id,
+				cliente,
+				tarea.EmpleadoResponsable.Id,
+				responsable,
+				tarea.fecha,
+				tarea.Estado,
+				tarea.Descripcion,
+				ServicioMapper.ToListaDto(tarea.serviciosUsados).ToList(),
+				ServicioMapper.ToListaDto(tarea.ServiciosExtras).ToList(),
+				tarea.CostoTotal,
+				calificacionDto
+			);
 			return tareaDto;
 		}
 

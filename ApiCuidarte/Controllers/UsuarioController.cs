@@ -88,7 +88,6 @@ namespace ApiCuidarte.Controllers
 		[ProducesResponseType(StatusCodes.Status500InternalServerError)]
 		[HttpPost]
 		[Route("Crear")]
-		[Authorize]
 		public IActionResult Crear(UsuarioDto user)
 		{
 			try

@@ -4,10 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace LogicaNegocio.InterfazServicios
+namespace LogicaAplicacion.Dtos.Clientes
 {
-    public interface IAlta<T>
+	public record ServicioFormularioDto(string servicio,int horas)
 	{
-		T Ejecutar(T obj);
 	}
 }

@@ -22,6 +22,7 @@ namespace ApiCuidarte.Controllers
 		IObtenerPaginado<PaginadoResultado<ClienteDto>> _getAll;
 		IObtener<ClienteDto> _obtener;
 		IObtenerPorTexto<ClienteDto> _obtenerPorTexto;
+		IFormularioNuevoCliente<ClienteFormularioDto> _formularioNuevoCliente;
 
 		public ClienteController(
 			IAlta<ClienteDto> alta,
@@ -29,7 +30,8 @@ namespace ApiCuidarte.Controllers
 			IEliminar<ClienteDto> eliminar,
 			IObtenerPaginado<PaginadoResultado<ClienteDto>> getAll,
 			IObtener<ClienteDto> obtener,
-			IObtenerPorTexto<ClienteDto> obtenerPorTexto
+			IObtenerPorTexto<ClienteDto> obtenerPorTexto,
+			IFormularioNuevoCliente<ClienteFormularioDto> formularioNuevoCliente
 		)
 		{
 			_alta = alta;
@@ -38,6 +40,7 @@ namespace ApiCuidarte.Controllers
 			_getAll = getAll;
 			_obtener = obtener;
 			_obtenerPorTexto = obtenerPorTexto;
+			_formularioNuevoCliente = formularioNuevoCliente;
 		}
 
 		[ProducesResponseType(StatusCodes.Status200OK)]
@@ -48,8 +51,8 @@ namespace ApiCuidarte.Controllers
 		{
 			try
 			{
-				ClienteDto cCreado = _alta.Ejecutar(cliente);
-				return Ok(cCreado);
+				 _alta.Ejecutar(cliente);
+				return Ok();
 			}
 			catch (DomainException ex)
 			{
@@ -188,6 +191,33 @@ namespace ApiCuidarte.Controllers
 					throw new ClienteException("No se encontraron cliente");
 				}
 				return Ok(c);
+			}
+			catch (DomainException ex)
+			{
+				return StatusCode(204, ex.Message);
+			}
+			catch (ArgumentException ex)
+			{
+				return StatusCode(500, "Hupp" + ex.Message);
+			}
+			catch (Exception ex)
+			{
+				return StatusCode(500, "Hupps hubo un error intente nuevamente mas tarde");
+			}
+		}
+
+		[ProducesResponseType(StatusCodes.Status200OK)]
+		[ProducesResponseType(StatusCodes.Status404NotFound)]
+		[ProducesResponseType(StatusCodes.Status500InternalServerError)]
+		[AllowAnonymous]
+		[HttpPost]
+		[Route("FormularioNuevoCliente")]
+		public IActionResult FormularioNuevoCliente(ClienteFormularioDto cliente)
+		{
+			try
+			{
+				_formularioNuevoCliente.Ejecutar(cliente);
+				return Ok();
 			}
 			catch (DomainException ex)
 			{

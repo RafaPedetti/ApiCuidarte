@@ -1,8 +1,10 @@
 ﻿using LogicaAplicacion.Dtos.Empresas;
 using LogicaAplicacion.Dtos.MapeosDto;
 using LogicaNegocio.Entidades;
+using LogicaNegocio.Excepciones;
 using LogicaNegocio.InterfacesRepocitorio;
 using LogicaNegocio.InterfazServicios;
+using LogicaNegocio.ValueObject.TipoPlan;
 
 
 namespace LogicaAplicacion.EmpresaS
@@ -26,6 +28,10 @@ namespace LogicaAplicacion.EmpresaS
 			}
 			Empresa empresa = EmpresaMapper.FromDto(obj);
 			TipoPlan plan = _contextTipoPlan.GetById(obj.TipoPlanId);
+			if(plan.Destino.Equals(PlanDestino.Cliente))
+			{
+				throw new DomainException("El plan seleccionado no es valido para una empresa");
+			}
 			empresa.Plan = plan;
 			Empresa eCreada = _context.Add(empresa);
 			var suscripcion = new Suscripcion(null,eCreada, eCreada.Plan);

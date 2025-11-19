@@ -19,10 +19,21 @@ namespace LogicaNegocio.Entidades
 		public string Direccion { get; set; }
 		[Required]
 		public Telefono Telefono { get; set; }
+		
+		[Required]
+		public Telefono Celular { get; set; }
 
 		[Required]
 		public Email Email { get; set; }
 
+		[Required]
+		public string ResponsablePago { get; set; }
+
+		[Required]
+		public string FormaPago { get; set; }
+
+		[Required]
+		public string Observaciones { get; set; }
 		public int TipoPlanId { get; set; }
 
 		public TipoPlan Plan { get; set; }
@@ -34,53 +45,75 @@ namespace LogicaNegocio.Entidades
 		public int? SuscripcionId { get; set; }
 		public bool Eliminado { get; set; }
 
-		public Cliente(int id, NombreCompleto nombreCompleto, string ci,DateOnly fechaNacimiento, string direccion, Telefono telefono, int plan,Email email,Suscripcion suscripcion)
+		public Cliente(int id, NombreCompleto nombreCompleto, string ci,DateOnly fechaNacimiento, string direccion, Telefono telefono,Telefono celular, int plan,Email email,string ResponsablePago,string FormaPago,string Observaciones ,Suscripcion suscripcion)
 		{
 			Id = id;
 			NombreCompleto = nombreCompleto;
 			FechaNacimiento = fechaNacimiento;
 			Direccion = direccion;
 			Telefono = telefono;
+			Celular = celular;
 			TipoPlanId = plan;
 			CI = ci;
 			Email = email;
 			Suscripcion = suscripcion;
-			//ValidarCedula(CI);
+			this.ResponsablePago= ResponsablePago;
+			this.FormaPago= FormaPago;
+			this.Observaciones= Observaciones;
+			ValidarCedula(CI);
 		}
 
-		public Cliente(int id, NombreCompleto nombreCompleto, string ci, DateOnly fechaNacimiento, string direccion, Telefono telefono, int plan, Email email)
+		public Cliente(int id, NombreCompleto nombreCompleto, string ci, DateOnly fechaNacimiento, string direccion, Telefono telefono,Telefono celular, int plan, Email email, string ResponsablePago, string FormaPago, string Observaciones)
 		{
 			Id = id;
 			NombreCompleto = nombreCompleto;
 			FechaNacimiento = fechaNacimiento;
 			Direccion = direccion;
 			Telefono = telefono;
+			Celular = celular;
 			TipoPlanId = plan;
 			CI = ci;
 			Email = email;
+			this.ResponsablePago = ResponsablePago;
+			this.FormaPago = FormaPago;
+			this.Observaciones = Observaciones;
 			ValidarCedula(CI);
 		}
 
 
-		public Cliente(int id, NombreCompleto nombreCompleto, string ci, DateOnly fechaNacimiento, string direccion, Telefono telefono,Email email)
+		public Cliente(int id, NombreCompleto nombreCompleto, string ci, DateOnly fechaNacimiento, string direccion, Telefono telefono, Telefono celular,Email email, string ResponsablePago, string FormaPago, string Observaciones)
 		{
 			Id = id;
 			NombreCompleto = nombreCompleto;
 			FechaNacimiento = fechaNacimiento;
 			Direccion = direccion;
 			Telefono = telefono;
+			Celular = celular;
 			CI = ci;
 			Email= email;
+			this.ResponsablePago = ResponsablePago;
+			this.FormaPago = FormaPago;
+			this.Observaciones = Observaciones;
 			ValidarCedula(CI);
 		}
 		public Cliente() { }
 
 		public void Update(Cliente c)
 		{
+			if(c.CI != null)
+			{
+				ValidarCedula(c.CI);
+				this.CI = c.CI;
+			}
 			if( c.NombreCompleto != null) this.NombreCompleto =c.NombreCompleto;
 			if (c.FechaNacimiento != null) this.FechaNacimiento = (DateOnly)c.FechaNacimiento;
 			if (c.Direccion != null) this.Direccion = c.Direccion;
 			if(c.Telefono != null) this.Telefono = c.Telefono;
+			if(c.Celular != null) this.Celular = c.Celular;
+			if ( c.Email != null) this.Email = c.Email;
+			if (c.ResponsablePago != null) this.ResponsablePago = c.ResponsablePago;
+			if (c.FormaPago != null) this.FormaPago = c.FormaPago;
+			if (c.Observaciones != null) this.Observaciones = c.Observaciones;
 		}
 
 		public void CambiarPlan(TipoPlan tipoPlan)

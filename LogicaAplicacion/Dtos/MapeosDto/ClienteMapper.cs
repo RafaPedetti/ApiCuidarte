@@ -18,11 +18,11 @@ namespace LogicaAplicacion.Dtos.MapeosDto
 			Cliente cliente;
 			if (cDto.suscripcion != null)
 			{
-				cliente = new Cliente(cDto.id, new NombreCompleto(cDto.nombre, cDto.apellido), cDto.ci, DateOnly.FromDateTime(cDto.fechaNacimiento), cDto.direccion, new Telefono(cDto.telefono), cDto.TipoPlanId, new Email(cDto.Email), SuscripcionMapper.FromDto(cDto.suscripcion));
+				cliente = new Cliente(cDto.id, new NombreCompleto(cDto.nombre, cDto.apellido), cDto.ci, DateOnly.FromDateTime(cDto.fechaNacimiento), cDto.direccion, new Telefono(cDto.telefono), new Telefono(cDto.celular),cDto.TipoPlanId, new Email(cDto.Email),cDto.responsablePago,cDto.formaPago,cDto.observaciones, SuscripcionMapper.FromDto(cDto.suscripcion));
 			}
 			else 
 			{ 
-				cliente = new Cliente(cDto.id, new NombreCompleto(cDto.nombre, cDto.apellido), cDto.ci, DateOnly.FromDateTime(cDto.fechaNacimiento), cDto.direccion, new Telefono(cDto.telefono), cDto.TipoPlanId, new Email(cDto.Email));
+				cliente = new Cliente(cDto.id, new NombreCompleto(cDto.nombre, cDto.apellido), cDto.ci, DateOnly.FromDateTime(cDto.fechaNacimiento), cDto.direccion, new Telefono(cDto.telefono), new Telefono(cDto.celular), cDto.TipoPlanId, new Email(cDto.Email), cDto.responsablePago, cDto.formaPago, cDto.observaciones);
 			}
 
 				return cliente;
@@ -33,11 +33,11 @@ namespace LogicaAplicacion.Dtos.MapeosDto
 			ClienteDto clienteDto;
 			if (cliente.Suscripcion != null)
 			{
-			 clienteDto = new ClienteDto(cliente.Id,cliente.NombreCompleto.Nombre, cliente.NombreCompleto.Apellido,cliente.CI, cliente.Email.Value, cliente.FechaNacimiento.ToDateTime(TimeOnly.MinValue), cliente.Direccion, cliente.Telefono.Value,cliente.TipoPlanId,SuscripcionMapper.ToDto(cliente.Suscripcion));
+			 clienteDto = new ClienteDto(cliente.Id,cliente.NombreCompleto.Nombre, cliente.NombreCompleto.Apellido,cliente.CI, cliente.Email.Value, cliente.FechaNacimiento.ToDateTime(TimeOnly.MinValue), cliente.Direccion, cliente.Telefono.Value,cliente.Celular.Value ,cliente.ResponsablePago, cliente.FormaPago, cliente.Observaciones, cliente.TipoPlanId,SuscripcionMapper.ToDto(cliente.Suscripcion));
 			}
 			else
 			{
-				clienteDto = new ClienteDto(cliente.Id, cliente.NombreCompleto.Nombre, cliente.NombreCompleto.Apellido, cliente.CI, cliente.Email.Value, cliente.FechaNacimiento.ToDateTime(TimeOnly.MinValue), cliente.Direccion, cliente.Telefono.Value, cliente.TipoPlanId,null);
+				clienteDto = new ClienteDto(cliente.Id, cliente.NombreCompleto.Nombre, cliente.NombreCompleto.Apellido, cliente.CI, cliente.Email.Value, cliente.FechaNacimiento.ToDateTime(TimeOnly.MinValue), cliente.Direccion, cliente.Telefono.Value, cliente.Celular.Value, cliente.ResponsablePago, cliente.FormaPago, cliente.Observaciones, cliente.TipoPlanId,null);
 			}
 				return clienteDto;
 		}

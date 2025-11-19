@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace LogicaAplicacion.Dtos.Tareas
 {
-	public record TareaDto(int id,int clienteId, ClienteDto? cliente,int responsableId, UsuarioDto? responsable, DateTime fecha,EstadoTarea estado,string descripcion,List<ServicioDto>? servicios,List<ServicioDto>? serviciosExtra,decimal costo)
+	public record TareaDto(int id,int clienteId, ClienteDto? cliente,int responsableId, UsuarioDto? responsable, DateTime fecha,EstadoTarea estado,string descripcion,List<ServicioDto>? servicios,List<ServicioDto>? serviciosExtra,decimal costo,CalificacionDto? calificacion)
 	{
 	}
 }

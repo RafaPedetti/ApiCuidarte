@@ -4,10 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace LogicaNegocio.InterfazServicios
+namespace LogicaAplicacion.Dtos
 {
-    public interface IAlta<T>
+	public record FondoPortadaDto(string url)
 	{
-		T Ejecutar(T obj);
 	}
 }

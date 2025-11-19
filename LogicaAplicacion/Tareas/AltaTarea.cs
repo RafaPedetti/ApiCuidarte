@@ -29,6 +29,11 @@ namespace LogicaAplicacion.Tareas
 
 			Tarea t = TareaMapper.FromDto(obj);
 			Cliente c = _contextClient.GetById(obj.clienteId);
+			if(c.Suscripcion.ProximoCobro < DateOnly.FromDateTime(DateTime.Now))
+
+			{
+				throw new InvalidOperationException("El cliente no tiene una suscripcion activa");
+			}
 			Usuario u = _contextFuncionario.GetById(obj.responsableId);
 			t.Cliente = c;
 			t.EmpleadoResponsable = u;

@@ -9,6 +9,7 @@ using LogicaAplicacion.Dtos.TipoPlanes;
 using LogicaAplicacion.Dtos.Usuarios;
 using LogicaAplicacion.Empresas;
 using LogicaAplicacion.EmpresaS;
+using LogicaAplicacion.FondosPortada;
 using LogicaAplicacion.Mensualidades;
 using LogicaAplicacion.Tareas;
 using LogicaAplicacion.TiposPlan;
@@ -42,7 +43,7 @@ namespace ApiCuidarte
 			{
 				options.AddPolicy("PermitirFrontend", policy =>
 				{
-					policy.WithOrigins("http://localhost:3000")
+					policy.WithOrigins("http://localhost:3000", "http://localhost:3001")
 						  .AllowAnyHeader()
 						  .AllowAnyMethod();
 				});
@@ -129,6 +130,7 @@ namespace ApiCuidarte
 			builder.Services.AddScoped<IRepositorioEmpresa, RepositorioEmpresa>();
 			builder.Services.AddScoped<IRepositorioSuscripcion, RepositorioSuscripcion>();
 			builder.Services.AddScoped<IRepositorioMensualidad, RepositorioMensualidad>();
+			builder.Services.AddScoped<IRepositorioFondoPortada, RepositorioFondoPortada>();
 			// caso de uso -- Usuario --
 			builder.Services.AddScoped<IObtenerTodos<UsuarioDto>, GetAllUsuario>();
 			builder.Services.AddScoped<IAlta<UsuarioDto>, AltaUsuario>();
@@ -159,6 +161,7 @@ namespace ApiCuidarte
 			builder.Services.AddScoped<IEditar<ClienteDto>, EditarCliente>();
 			builder.Services.AddScoped<IEliminar<ClienteDto>, EliminarCliente>();
 			builder.Services.AddScoped<IObtenerPorTexto<ClienteDto>, GetByTextoCliente>();
+			builder.Services.AddScoped<IFormularioNuevoCliente<ClienteFormularioDto>, FormularioNuevoCliente>();
 
 			// caso de uso -- Tareas --
 			builder.Services.AddScoped<IObtenerPaginado<PaginadoResultado<TareaDto>>, GetAllTarea>();
@@ -167,6 +170,7 @@ namespace ApiCuidarte
 			builder.Services.AddScoped<IEditar<TareaDto>, EditarTarea>();
 			builder.Services.AddScoped<IEliminar<TareaDto>, EliminarTarea>();
 			builder.Services.AddScoped<IObtenerPorTexto<TareaDto>, GetByTextoTarea>();
+			builder.Services.AddScoped<ICalificar<CalificacionDto>, CalificarTarea>();
 
 			// caso de uso -- Empresa --
 			builder.Services.AddScoped<IObtenerTodos<EmpresaDto>, GetAllEmpresa>();
@@ -177,6 +181,10 @@ namespace ApiCuidarte
 			// caso de uso -- Mensualidad  --
 			builder.Services.AddScoped<IObtenerPorCliente<MensualidadDto>, GetAllMensualidad>();
 			builder.Services.AddScoped<IPagarMensualidades<SuscripcionDto>, PagarMensualidad>();
+
+			// caso de uso -- FondoPortada  --
+			builder.Services.AddScoped<IAlta<FondoPortadaDto>, AltaFondoPortada>();
+			builder.Services.AddScoped<IObtener<FondoPortadaDto>, GetFondoPortada>();
 
 			var config = new ConfigurationBuilder()
 			.AddJsonFile("parametos.json", optional: true, reloadOnChange: true)

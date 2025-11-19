@@ -82,6 +82,7 @@ namespace Infraestructura.LogicaAccesoDatos.EF
 				.ThenInclude(tp => tp.Servicios)
 				.ThenInclude(s => s.tipoServicio)
 				.Include(c => c.ServiciosDisponibles)
+				.Include(c => c.Suscripcion)
 				.FirstOrDefault(c => c.Id == id);
 
 			if (cliente == null)

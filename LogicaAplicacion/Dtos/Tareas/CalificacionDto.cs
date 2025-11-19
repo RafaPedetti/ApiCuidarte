@@ -4,10 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace LogicaNegocio.InterfazServicios
+namespace LogicaAplicacion.Dtos.Tareas
 {
-    public interface IAlta<T>
+	public record CalificacionDto(int nota,string comentario,int idTarea)
 	{
-		T Ejecutar(T obj);
 	}
 }

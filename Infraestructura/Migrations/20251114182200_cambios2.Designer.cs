@@ -12,8 +12,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Infraestructura.Migrations
 {
     [DbContext(typeof(CuidarteContext))]
-    [Migration("20250924184608_cambios-mensualidad")]
-    partial class cambiosmensualidad
+    [Migration("20251114182200_cambios2")]
+    partial class cambios2
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -34,18 +34,34 @@ namespace Infraestructura.Migrations
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<string>("CI")
-                        .IsRequired()
-                        .HasColumnType("text");
+                        .HasMaxLength(20)
+                        .HasColumnType("character varying(20)");
 
                     b.Property<string>("Direccion")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasMaxLength(200)
+                        .HasColumnType("character varying(200)");
 
                     b.Property<bool>("Eliminado")
                         .HasColumnType("boolean");
 
                     b.Property<DateOnly>("FechaNacimiento")
                         .HasColumnType("date");
+
+                    b.Property<string>("FormaPago")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
+
+                    b.Property<string>("Observaciones")
+                        .IsRequired()
+                        .HasMaxLength(1000)
+                        .HasColumnType("character varying(1000)");
+
+                    b.Property<string>("ResponsablePago")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
 
                     b.Property<int?>("SuscripcionId")
                         .HasColumnType("integer");
@@ -94,6 +110,23 @@ namespace Infraestructura.Migrations
                         .IsUnique();
 
                     b.ToTable("Empresas");
+                });
+
+            modelBuilder.Entity("LogicaNegocio.Entidades.FondoPortada", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Url")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("FondosPortada");
                 });
 
             modelBuilder.Entity("LogicaNegocio.Entidades.Mensualidad", b =>
@@ -208,16 +241,11 @@ namespace Infraestructura.Migrations
                     b.Property<DateOnly>("ProximoCobro")
                         .HasColumnType("date");
 
-                    b.Property<int?>("TipoPlanId")
-                        .HasColumnType("integer");
-
                     b.HasKey("Id");
 
                     b.HasIndex("EmpresaId1");
 
                     b.HasIndex("PlanId");
-
-                    b.HasIndex("TipoPlanId");
 
                     b.ToTable("Suscripciones", (string)null);
                 });
@@ -235,7 +263,8 @@ namespace Infraestructura.Migrations
 
                     b.Property<string>("Descripcion")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasMaxLength(500)
+                        .HasColumnType("character varying(500)");
 
                     b.Property<bool>("Eliminado")
                         .HasColumnType("boolean");
@@ -255,7 +284,7 @@ namespace Infraestructura.Migrations
 
                     b.HasIndex("EmpleadoResponsableId");
 
-                    b.ToTable("Tareas");
+                    b.ToTable("Tareas", (string)null);
                 });
 
             modelBuilder.Entity("LogicaNegocio.Entidades.TipoPlan", b =>
@@ -274,14 +303,15 @@ namespace Infraestructura.Migrations
 
                     b.Property<string>("Nombre")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
 
                     b.Property<decimal>("Precio")
-                        .HasColumnType("numeric");
+                        .HasColumnType("decimal(18,2)");
 
                     b.HasKey("Id");
 
-                    b.ToTable("TiposPlanes");
+                    b.ToTable("Planes", (string)null);
                 });
 
             modelBuilder.Entity("LogicaNegocio.Entidades.TipoServicio", b =>
@@ -360,8 +390,27 @@ namespace Infraestructura.Migrations
                     b.HasOne("LogicaNegocio.Entidades.TipoPlan", "Plan")
                         .WithMany()
                         .HasForeignKey("TipoPlanId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
+
+                    b.OwnsOne("LogicaNegocio.ValueObject.Telefono", "Celular", b1 =>
+                        {
+                            b1.Property<int>("ClienteId")
+                                .HasColumnType("integer");
+
+                            b1.Property<string>("Value")
+                                .IsRequired()
+                                .HasMaxLength(20)
+                                .HasColumnType("character varying(20)")
+                                .HasColumnName("Celular");
+
+                            b1.HasKey("ClienteId");
+
+                            b1.ToTable("Clientes");
+
+                            b1.WithOwner()
+                                .HasForeignKey("ClienteId");
+                        });
 
                     b.OwnsOne("LogicaNegocio.ValueObject.Email", "Email", b1 =>
                         {
@@ -370,7 +419,8 @@ namespace Infraestructura.Migrations
 
                             b1.Property<string>("Value")
                                 .IsRequired()
-                                .HasColumnType("text")
+                                .HasMaxLength(150)
+                                .HasColumnType("character varying(150)")
                                 .HasColumnName("Email");
 
                             b1.HasKey("ClienteId");
@@ -388,12 +438,14 @@ namespace Infraestructura.Migrations
 
                             b1.Property<string>("Apellido")
                                 .IsRequired()
-                                .HasColumnType("text")
+                                .HasMaxLength(100)
+                                .HasColumnType("character varying(100)")
                                 .HasColumnName("Apellido");
 
                             b1.Property<string>("Nombre")
                                 .IsRequired()
-                                .HasColumnType("text")
+                                .HasMaxLength(100)
+                                .HasColumnType("character varying(100)")
                                 .HasColumnName("Nombre");
 
                             b1.HasKey("ClienteId");
@@ -411,7 +463,8 @@ namespace Infraestructura.Migrations
 
                             b1.Property<string>("Value")
                                 .IsRequired()
-                                .HasColumnType("text")
+                                .HasMaxLength(20)
+                                .HasColumnType("character varying(20)")
                                 .HasColumnName("Telefono");
 
                             b1.HasKey("ClienteId");
@@ -421,6 +474,9 @@ namespace Infraestructura.Migrations
                             b1.WithOwner()
                                 .HasForeignKey("ClienteId");
                         });
+
+                    b.Navigation("Celular")
+                        .IsRequired();
 
                     b.Navigation("Email")
                         .IsRequired();
@@ -490,19 +546,23 @@ namespace Infraestructura.Migrations
                 {
                     b.HasOne("LogicaNegocio.Entidades.Cliente", null)
                         .WithMany("ServiciosDisponibles")
-                        .HasForeignKey("ClienteId");
+                        .HasForeignKey("ClienteId")
+                        .OnDelete(DeleteBehavior.Cascade);
 
                     b.HasOne("LogicaNegocio.Entidades.Cliente", null)
                         .WithMany("ServiciosExtras")
-                        .HasForeignKey("ClienteId1");
+                        .HasForeignKey("ClienteId1")
+                        .OnDelete(DeleteBehavior.Cascade);
 
                     b.HasOne("LogicaNegocio.Entidades.Tarea", null)
                         .WithMany("ServiciosExtras")
-                        .HasForeignKey("TareaId");
+                        .HasForeignKey("TareaId")
+                        .OnDelete(DeleteBehavior.Cascade);
 
                     b.HasOne("LogicaNegocio.Entidades.Tarea", null)
                         .WithMany("serviciosUsados")
-                        .HasForeignKey("TareaId1");
+                        .HasForeignKey("TareaId1")
+                        .OnDelete(DeleteBehavior.Cascade);
 
                     b.HasOne("LogicaNegocio.Entidades.TipoPlan", null)
                         .WithMany("Servicios")
@@ -524,14 +584,10 @@ namespace Infraestructura.Migrations
                         .HasForeignKey("EmpresaId1");
 
                     b.HasOne("LogicaNegocio.Entidades.TipoPlan", "Plan")
-                        .WithMany()
+                        .WithMany("Suscripciones")
                         .HasForeignKey("PlanId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
-
-                    b.HasOne("LogicaNegocio.Entidades.TipoPlan", null)
-                        .WithMany("Suscripciones")
-                        .HasForeignKey("TipoPlanId");
 
                     b.Navigation("Empresa");
 
@@ -551,6 +607,31 @@ namespace Infraestructura.Migrations
                         .HasForeignKey("EmpleadoResponsableId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.OwnsOne("LogicaNegocio.ValueObject.Tarea.Calificacion", "Calificación", b1 =>
+                        {
+                            b1.Property<int>("TareaId1")
+                                .HasColumnType("integer");
+
+                            b1.Property<string>("Comentario")
+                                .IsRequired()
+                                .HasMaxLength(1000)
+                                .HasColumnType("character varying(1000)")
+                                .HasColumnName("CalificacionTexto");
+
+                            b1.Property<int>("Nota")
+                                .HasColumnType("integer")
+                                .HasColumnName("CalificacionNota");
+
+                            b1.HasKey("TareaId1");
+
+                            b1.ToTable("Tareas");
+
+                            b1.WithOwner()
+                                .HasForeignKey("TareaId1");
+                        });
+
+                    b.Navigation("Calificación");
 
                     b.Navigation("Cliente");
 

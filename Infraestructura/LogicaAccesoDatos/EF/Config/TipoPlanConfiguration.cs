@@ -29,6 +29,8 @@ namespace Infraestructura.LogicaAccesoDatos.EF.Config
 			builder.HasMany(p => p.Suscripciones)
 				   .WithOne(s => s.Plan)
 				   .HasForeignKey(s => s.PlanId);
+
+			builder.Property(p => p.Destino).IsRequired();
 		}
 	}
 

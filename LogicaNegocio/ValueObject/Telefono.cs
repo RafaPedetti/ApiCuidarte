@@ -26,7 +26,7 @@ namespace LogicaNegocio.ValueObject
 		public void Validar()
 		{
 
-			if (Value.Trim().Length != 9)
+			if (Value.Trim().Length < 8 || Value.Trim().Length > 9)
 			{
 				throw new TelefonoInvalidoException("Numero de telefono invalido");
 			}

@@ -32,6 +32,9 @@ namespace LogicaNegocio.Entidades
 
 		public List<Servicio> ServiciosExtras { get; set; }
 
+		public Calificacion? Calificación { get; set; }
+
+
 		[NotMapped]
 		public decimal CostoTotal =>
 			ServiciosExtras?.Sum(s => s.cantServicios * s.tipoServicio.PrecioHora) ?? 0;
@@ -47,10 +50,9 @@ namespace LogicaNegocio.Entidades
 			this.Descripcion = desc ?? string.Empty;
 			this.serviciosUsados = servicios ?? new List<Servicio>();
 			this.ServiciosExtras = serviciosExtra ?? new List<Servicio>();
-
 		}
 
-		public Tarea(int id, DateTime f, string? desc, EstadoTarea estado)
+		public Tarea(int id, DateTime f, string? desc, EstadoTarea estado, Calificacion? calificacion)
 		{
 			this.Id = id;
 			this.fecha = f;
@@ -58,6 +60,7 @@ namespace LogicaNegocio.Entidades
 			this.Descripcion = desc ?? string.Empty;
 			this.serviciosUsados = new List<Servicio>();
 			this.ServiciosExtras = new List<Servicio>();
+			if(calificacion != null) this.Calificación = calificacion;
 		}
 
 
@@ -68,13 +71,16 @@ namespace LogicaNegocio.Entidades
 		}
 
 
-		public void Update(Cliente? c, Usuario? e, DateTime? f, string? d, EstadoTarea? et)
+		public void Update(Cliente? c, Usuario? e, DateTime? f, string? d, EstadoTarea? et,Calificacion? calificacion,List<Servicio> serviciosUsados, List<Servicio> serviciosExtras)
 		{
 			if (c != null) this.Cliente = c;
 			if (e != null) this.EmpleadoResponsable = e;
 			if (f != null) this.fecha = (DateTime)f;
 			if (d != null) this.Descripcion = d ?? string.Empty;
 			if (et != null) this.Estado = (EstadoTarea)et;
+			if(c!= null) this.Calificación = calificacion;
+			if(serviciosUsados != null) this.serviciosUsados = serviciosUsados;
+			if (serviciosExtras != null) this.ServiciosExtras = serviciosExtras;
 		}
 		public void AplicarConsumoServicios(Cliente cliente, List<Servicio> serviciosSolicitados)
 		{
@@ -122,6 +128,11 @@ namespace LogicaNegocio.Entidades
 					cantServicios = cantidad
 				});
 			}
+		}
+
+		public void Calificar(Calificacion calificacion)
+		{
+			this.Calificación = calificacion ?? throw new ArgumentNullException(nameof(calificacion));
 		}
 	}
 }

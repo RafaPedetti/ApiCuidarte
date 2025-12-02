@@ -15,7 +15,7 @@ namespace LogicaAplicacion.Dtos.MapeosDto
 	{
 		public static	ServicioDto ToDto(Servicio servicio)
 		{
-			var servicioDto = new ServicioDto(servicio.Id,new TiposServicioDto(servicio.tipoServicio.Id), servicio.cantServicios);
+			var servicioDto = new ServicioDto(servicio.Id,new TiposServicioDto(servicio.tipoServicio.Id,servicio.tipoServicio.Nombre,servicio.tipoServicio.PrecioHora), servicio.cantServicios);
 
 			return servicioDto;
 		}

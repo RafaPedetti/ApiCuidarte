@@ -3,6 +3,7 @@ using LogicaAplicacion.Dtos.MapeosDto;
 using LogicaAplicacion.Dtos.Tareas;
 using LogicaAplicacion.Dtos.TipoPlanes;
 using LogicaNegocio.Entidades;
+using LogicaNegocio.Excepciones;
 using LogicaNegocio.InterfacesRepocitorio;
 using LogicaNegocio.InterfazServicios;
 namespace LogicaAplicacion.Tareas
@@ -32,7 +33,7 @@ namespace LogicaAplicacion.Tareas
 			if(c.Suscripcion.ProximoCobro < DateOnly.FromDateTime(DateTime.Now))
 
 			{
-				throw new InvalidOperationException("El cliente no tiene una suscripcion activa");
+				throw new DomainException("El cliente no tiene una suscripcion activa");
 			}
 			Usuario u = _contextFuncionario.GetById(obj.responsableId);
 			t.Cliente = c;

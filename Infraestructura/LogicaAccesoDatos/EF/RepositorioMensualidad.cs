@@ -47,11 +47,14 @@ namespace Infraestructura.LogicaAccesoDatos.EF
 		{
 			return _context.Mensualidades
 				.Include(m => m.Subscription)
-					.ThenInclude(s => s.Clientes)
+	.ThenInclude(s => s.Clientes)
+.Include(m => m.Subscription)
+	.ThenInclude(s => s.Plan)
+
 				.Where(m => m.Subscription != null &&
 							m.Subscription.Id == id &&
 							!m.Eliminado)
-				.ToList().Take(12);
+				.Take(12).ToList();
 		}
 
 		public Mensualidad GetById(int id)

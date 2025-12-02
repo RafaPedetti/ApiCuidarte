@@ -37,7 +37,12 @@ namespace Infraestructura.LogicaAccesoDatos.EF
 
 		public IEnumerable<Empresa> GetAll()
 		{
-			return _context.Empresas.Include(e => e.Plan).Include(e=> e.Suscripcion)
+			return _context.Empresas
+				.Include(e => e.Plan)
+				.ThenInclude(tp => tp.Servicios)
+				.ThenInclude(s => s.tipoServicio)
+				.Include(e=> e.Suscripcion)
+				.ThenInclude(s => s.Plan)
 				.Where(c => !c.Eliminado).ToList();
 		}
 
@@ -49,6 +54,9 @@ namespace Infraestructura.LogicaAccesoDatos.EF
 			}
 			Empresa empresa = _context.Empresas
 				.Include(e => e.Plan)
+				.ThenInclude(tp => tp.Servicios)
+				.ThenInclude(s => s.tipoServicio)
+				.Include(c => c.Suscripcion)
 				.FirstOrDefault(e => e.Id == id);
 
 			if (empresa == null)

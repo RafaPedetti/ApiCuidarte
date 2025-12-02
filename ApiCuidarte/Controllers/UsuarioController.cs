@@ -114,8 +114,7 @@ namespace ApiCuidarte.Controllers
 		[HttpPut]
 		[Route("Editar")]
 		[Authorize]
-		public IActionResult Editar(int id, UsuarioDto user)
-		{
+		public IActionResult Editar(int id, UsuarioDto user)		{
 			try
 			{
 				UsuarioDto uEditado = _editar.Ejecutar(user);

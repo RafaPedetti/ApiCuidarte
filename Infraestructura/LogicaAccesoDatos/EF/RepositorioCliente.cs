@@ -1,11 +1,6 @@
 ﻿using LogicaNegocio.Entidades;
 using LogicaNegocio.InterfacesRepocitorio;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Infraestructura.LogicaAccesoDatos.EF
 {
@@ -73,10 +68,6 @@ namespace Infraestructura.LogicaAccesoDatos.EF
 
 		public Cliente GetById(int id)
 		{
-			if (id == null)
-			{
-				throw new ArgumentNullException(nameof(id), "El ID no puede ser nulo.");
-			}
 			Cliente cliente = _context.Clientes
 				.Include(c => c.Plan)
 				.ThenInclude(tp => tp.Servicios)
@@ -109,7 +100,11 @@ namespace Infraestructura.LogicaAccesoDatos.EF
 					(!string.IsNullOrEmpty(c.NombreCompleto.Apellido) && c.NombreCompleto.Apellido.ToLower().Contains(texto)) ||
 					(!string.IsNullOrEmpty(c.Email.Value) && c.Email.Value.ToLower().Contains(texto)) ||
 					(!string.IsNullOrEmpty(c.CI) && c.CI.Contains(texto)) ||
-					(!string.IsNullOrEmpty(c.Direccion) && c.Direccion.ToLower().Contains(texto))
+					(!string.IsNullOrEmpty(c.Direccion) && c.Direccion.ToLower().Contains(texto)) ||
+					(!string.IsNullOrEmpty(c.FormaPago) && c.FormaPago.ToLower().Contains(texto)) ||
+					(!string.IsNullOrEmpty(c.Celular.Value) && c.Celular.Value.ToLower().Contains(texto)) ||
+					(!string.IsNullOrEmpty(c.Telefono.Value) && c.Telefono.Value.ToLower().Contains(texto)) ||
+					(!string.IsNullOrEmpty(c.ResponsablePago) && c.ResponsablePago.ToLower().Contains(texto))
 				);
 
 			return query.ToList();

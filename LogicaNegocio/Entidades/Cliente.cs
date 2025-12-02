@@ -119,6 +119,7 @@ namespace LogicaNegocio.Entidades
 		public void CambiarPlan(TipoPlan tipoPlan)
 		{
 			this.Plan = tipoPlan;
+			this.ServiciosDisponibles.Clear();
 			foreach (var servicio in tipoPlan.Servicios)
 			{
 				this.ServiciosDisponibles.Add(new Servicio

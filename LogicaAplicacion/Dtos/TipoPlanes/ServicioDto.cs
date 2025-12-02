@@ -10,5 +10,5 @@ namespace LogicaAplicacion.Dtos.TipoPlanes
 	{
 	}
 
-	public record TiposServicioDto (int id) { }
+	public record TiposServicioDto (int id, string nombre, decimal precio) { }
 }

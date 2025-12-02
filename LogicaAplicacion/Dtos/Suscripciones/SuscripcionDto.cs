@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace LogicaAplicacion.Dtos.Suscripciones
 {
-	public record SuscripcionDto(int id, int? clienteId, int? responsableId,int tipoPlanId, DateOnly fechaInicio, DateOnly? fechaFin)
+	public record SuscripcionDto(int id, int? clienteId, int? responsableId,int tipoPlanId, DateOnly fechaInicio, DateOnly? fechaFin,decimal monto)
 	{
 	}
 }

@@ -33,11 +33,11 @@ namespace LogicaAplicacion.Dtos.MapeosDto
 			ClienteDto clienteDto;
 			if (cliente.Suscripcion != null)
 			{
-			 clienteDto = new ClienteDto(cliente.Id,cliente.NombreCompleto.Nombre, cliente.NombreCompleto.Apellido,cliente.CI, cliente.Email.Value, cliente.FechaNacimiento.ToDateTime(TimeOnly.MinValue), cliente.Direccion, cliente.Telefono.Value,cliente.Celular.Value ,cliente.ResponsablePago, cliente.FormaPago, cliente.Observaciones, cliente.TipoPlanId,SuscripcionMapper.ToDto(cliente.Suscripcion));
+			 clienteDto = new ClienteDto(cliente.Id,cliente.NombreCompleto.Nombre, cliente.NombreCompleto.Apellido,cliente.CI, cliente.Email.Value, cliente.FechaNacimiento.ToDateTime(TimeOnly.MinValue), cliente.Direccion, cliente.Telefono.Value,cliente.Celular.Value ,cliente.ResponsablePago, cliente.FormaPago, cliente.Observaciones, cliente.TipoPlanId,SuscripcionMapper.ToDto(cliente.Suscripcion), ServicioMapper.ToListaDto(cliente.ServiciosDisponibles));
 			}
 			else
 			{
-				clienteDto = new ClienteDto(cliente.Id, cliente.NombreCompleto.Nombre, cliente.NombreCompleto.Apellido, cliente.CI, cliente.Email.Value, cliente.FechaNacimiento.ToDateTime(TimeOnly.MinValue), cliente.Direccion, cliente.Telefono.Value, cliente.Celular.Value, cliente.ResponsablePago, cliente.FormaPago, cliente.Observaciones, cliente.TipoPlanId,null);
+				clienteDto = new ClienteDto(cliente.Id, cliente.NombreCompleto.Nombre, cliente.NombreCompleto.Apellido, cliente.CI, cliente.Email.Value, cliente.FechaNacimiento.ToDateTime(TimeOnly.MinValue), cliente.Direccion, cliente.Telefono.Value, cliente.Celular.Value, cliente.ResponsablePago, cliente.FormaPago, cliente.Observaciones, cliente.TipoPlanId,null, ServicioMapper.ToListaDto(cliente.ServiciosDisponibles));
 			}
 				return clienteDto;
 		}

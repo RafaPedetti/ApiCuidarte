@@ -24,9 +24,10 @@ namespace Infraestructura.LogicaAccesoDatos.EF
 		{
 			if (obj == null) throw new ArgumentNullException(nameof(obj), "El objeto no puede ser nulo.");
 
-			obj.AplicarConsumoServicios(obj.Cliente,obj.serviciosUsados); 
+			obj.AplicarConsumoServicios(obj.serviciosUsados); 
 
 			_context.Tareas.Add(obj);
+			_context.Update(obj.Cliente);
 			_context.SaveChanges();
 
 			return obj;
@@ -49,6 +50,7 @@ namespace Infraestructura.LogicaAccesoDatos.EF
 			return _context.Tareas
 		.Include(t => t.EmpleadoResponsable)
 		.Include(t => t.Cliente)
+		.Include(t => t.Calificación)
 		.Include(t => t.serviciosUsados).ThenInclude(s => s.tipoServicio)
 		.Include(t => t.ServiciosExtras).ThenInclude(s => s.tipoServicio)
 		.Where(ts => !ts.Eliminado)
@@ -73,6 +75,7 @@ namespace Infraestructura.LogicaAccesoDatos.EF
 			Tarea tarea = _context.Tareas
 				.Include(t => t.EmpleadoResponsable)
 				.Include(t => t.Cliente)
+				.Include(t => t.Calificación)
 				.Include(t => t.serviciosUsados).ThenInclude(s => s.tipoServicio)
 				.Include(t => t.ServiciosExtras).ThenInclude(s => s.tipoServicio)
 				.FirstOrDefault(t => t.Id == id);
@@ -91,6 +94,7 @@ namespace Infraestructura.LogicaAccesoDatos.EF
 			var query = _context.Tareas
 				.Include(t => t.EmpleadoResponsable)
 				.Include(t => t.Cliente)
+				.Include(t => t.Calificación)
 				.Include(t => t.ServiciosExtras).ThenInclude(s => s.tipoServicio)
 				.Include(t => t.serviciosUsados).ThenInclude(s => s.tipoServicio)
 				.Where(t => !t.Eliminado)

@@ -82,15 +82,15 @@ namespace LogicaNegocio.Entidades
 			if(serviciosUsados != null) this.serviciosUsados = serviciosUsados;
 			if (serviciosExtras != null) this.ServiciosExtras = serviciosExtras;
 		}
-		public void AplicarConsumoServicios(Cliente cliente, List<Servicio> serviciosSolicitados)
+		public void AplicarConsumoServicios(List<Servicio> serviciosSolicitados)
 		{
-			if (cliente == null || serviciosSolicitados == null) return;
+			if (this.Cliente == null || serviciosSolicitados == null) return;
 
 			foreach (var solicitado in serviciosSolicitados)
 			{
 				if (solicitado.cantServicios <= 0 || solicitado.tipoServicio == null) continue;
 
-				var disponible = cliente.ServiciosDisponibles
+				var disponible = this.Cliente.ServiciosDisponibles
 					.FirstOrDefault(s => s.tipoServicio == solicitado.tipoServicio);
 
 				if (disponible == null || disponible.cantServicios == 0)

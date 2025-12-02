@@ -61,8 +61,8 @@ namespace ApiCuidarte.Controllers
 		{
 			try
 			{
-			    IEnumerable<MensualidadDto> mCreado = _getAll.Ejecutar(idSuscripcion);
-				return Ok(mCreado);
+			    IEnumerable<MensualidadDto> m = _getAll.Ejecutar(idSuscripcion);
+				return Ok(m);
 			}
 			catch (DomainException ex)
 			{

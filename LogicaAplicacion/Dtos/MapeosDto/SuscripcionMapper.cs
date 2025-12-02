@@ -17,7 +17,8 @@ namespace LogicaAplicacion.Dtos.MapeosDto
 			SuscripcionDto sDto	= new SuscripcionDto(s.Id,s.ClienteId ?? 0, s.EmpresaId ?? 0,
 				s.PlanId,
 				s.FechaInicio,
-				s.ProximoCobro
+				s.ProximoCobro,
+				s.Plan.Precio
 			);
 			return sDto;
 		}

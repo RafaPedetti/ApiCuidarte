@@ -5,6 +5,7 @@ using LogicaNegocio.Entidades;
 using LogicaNegocio.Excepciones;
 using LogicaNegocio.InterfacesRepocitorio;
 using LogicaNegocio.InterfazServicios;
+using LogicaNegocio.ValueObject.TipoPlan;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -39,6 +40,10 @@ namespace LogicaAplicacion.Clientes
 			Cliente c = ClienteMapper.FromDto(obj);
 			Suscripcion suscripcion = _contextSuscripcion.GetByIdCliente(c.Id);
 			TipoPlan tp= _contextTP.GetById(obj.TipoPlanId);
+			if (tp.Destino != PlanDestino.Cliente)
+			{
+				throw new ArgumentException("El Tipo de plan no es valido para un cliente");
+			}
 			c.Plan = tp;
 			suscripcion.Plan = tp;
 			_contextSuscripcion.Update(suscripcion);

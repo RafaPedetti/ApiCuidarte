@@ -14,9 +14,9 @@ namespace LogicaAplicacion.Clientes
 			_context = repositorioCliente;
 		}
 
-		public IEnumerable<ClienteDto> Ejecutar(string texto)
+		public IEnumerable<ClienteDto> Ejecutar(string texto, string usuario)
 		{
-			IEnumerable<ClienteDto> cDto = ClienteMapper.ToListaDto(_context.GetByTexto(texto));
+			IEnumerable<ClienteDto> cDto = ClienteMapper.ToListaDto(_context.GetByTexto(texto,usuario));
 			return cDto;
 		}
 

@@ -21,9 +21,9 @@ namespace LogicaAplicacion.Usuarios
 			_context = context;
 		}
 
-		public IEnumerable<UsuarioDto> Ejecutar(string texto)
+		public IEnumerable<UsuarioDto> Ejecutar(string texto, string? usuario)
 		{
-			IEnumerable<Usuario> usuarios = _context.GetByText(texto);
+			IEnumerable<Usuario> usuarios = _context.GetByText(texto,usuario);
 			if(usuarios.Count() == 0)
 			{
 				throw new KeyNotFoundException($"No se encontro ningun usuario");

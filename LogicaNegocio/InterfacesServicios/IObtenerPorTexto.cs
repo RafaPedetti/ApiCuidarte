@@ -8,6 +8,6 @@ namespace LogicaNegocio.InterfacesServicios
 {
 	public interface IObtenerPorTexto<T>
 	{
-		IEnumerable<T> Ejecutar(string texto);
+		IEnumerable<T> Ejecutar(string texto,string? usuario);
 	}
 }

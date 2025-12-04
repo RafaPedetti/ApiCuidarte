@@ -16,9 +16,9 @@ namespace LogicaAplicacion.Tareas
 			_context = context;
 		}
 
-		public IEnumerable<TareaDto> Ejecutar(string texto)
+		public IEnumerable<TareaDto> Ejecutar(string texto, string? usuario)
 		{
-			IEnumerable<TareaDto> tDto = TareaMapper.ToListaDto(_context.GetByTexto(texto));
+			IEnumerable<TareaDto> tDto = TareaMapper.ToListaDto(_context.GetByTexto(texto,usuario));
 			return tDto;
 		}
 

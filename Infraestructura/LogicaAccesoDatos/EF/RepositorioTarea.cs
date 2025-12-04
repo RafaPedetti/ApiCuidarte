@@ -45,9 +45,11 @@ namespace Infraestructura.LogicaAccesoDatos.EF
 			Update(tarea);
 		}
 
-		public IEnumerable<Tarea> GetAll(int pagina)
+		public IEnumerable<Tarea> GetAll(int pagina, string? usuario)
 		{
-			return _context.Tareas
+			if(usuario == null) 
+			{
+				return _context.Tareas
 		.Include(t => t.EmpleadoResponsable)
 		.Include(t => t.Cliente)
 		.Include(t => t.Calificación)
@@ -58,6 +60,21 @@ namespace Infraestructura.LogicaAccesoDatos.EF
 		.Skip(pagina * Parametros.MaxItemsPaginado)
 		.Take(Parametros.MaxItemsPaginado)
 		.ToList();
+			}
+			else
+			{
+				return _context.Tareas
+			.Include(t => t.EmpleadoResponsable)
+			.Include(t => t.Cliente)
+			.Include(t => t.Calificación)
+			.Include(t => t.serviciosUsados).ThenInclude(s => s.tipoServicio)
+			.Include(t => t.ServiciosExtras).ThenInclude(s => s.tipoServicio)
+			.Where(t => !t.Eliminado && t.EmpleadoResponsable.Email.Value.Equals(usuario))
+			.OrderByDescending(t => t.fecha)
+			.Skip(pagina * Parametros.MaxItemsPaginado)
+			.Take(Parametros.MaxItemsPaginado)
+			.ToList();
+			}
 
 		}
 
@@ -88,10 +105,13 @@ namespace Infraestructura.LogicaAccesoDatos.EF
 		}
 
 
-		public IEnumerable<Tarea> GetByTexto(string texto)
+		public IEnumerable<Tarea> GetByTexto(string texto,string? usuario)
 		{
 			texto = texto?.ToLower()?.Trim();
-			var query = _context.Tareas
+			IEnumerable<Tarea> query;
+			if (usuario == null)
+			{
+				 query = _context.Tareas
 				.Include(t => t.EmpleadoResponsable)
 				.Include(t => t.Cliente)
 				.Include(t => t.Calificación)
@@ -104,8 +124,33 @@ namespace Infraestructura.LogicaAccesoDatos.EF
 					(!string.IsNullOrWhiteSpace(t.Cliente.NombreCompleto.Nombre) && t.Cliente.NombreCompleto.Apellido.ToLower().Contains(texto)) ||
 							(!string.IsNullOrWhiteSpace(t.EmpleadoResponsable.NombreCompleto.Nombre) && t.EmpleadoResponsable.NombreCompleto.Apellido.ToLower().Contains(texto)) ||
 					t.serviciosUsados.Any(s => s.tipoServicio?.Nombre.ToLower().Contains(texto) == true) ||
-					t.ServiciosExtras.Any(s => s.tipoServicio?.Nombre.ToLower().Contains(texto) == true)
+					t.ServiciosExtras.Any(s => s.tipoServicio?.Nombre.ToLower().Contains(texto) == true) ||
+					(!string.IsNullOrWhiteSpace(t.Estado.ToString()) && t.Estado.ToString().ToLower().Contains(texto))
 				);
+			}
+			else
+			{
+				query = _context.Tareas
+		.Include(t => t.EmpleadoResponsable)
+		.Include(t => t.Cliente)
+		.Include(t => t.Calificación)
+		.Include(t => t.ServiciosExtras).ThenInclude(s => s.tipoServicio)
+		.Include(t => t.serviciosUsados).ThenInclude(s => s.tipoServicio)
+		.Where(t => !t.Eliminado &&
+			(
+				(!string.IsNullOrWhiteSpace(t.Descripcion) && t.Descripcion.ToLower().Contains(texto)) ||
+				(!string.IsNullOrWhiteSpace(t.Cliente.NombreCompleto.Nombre) && t.Cliente.NombreCompleto.Apellido.ToLower().Contains(texto)) ||
+				(!string.IsNullOrWhiteSpace(t.EmpleadoResponsable.NombreCompleto.Nombre) && t.EmpleadoResponsable.NombreCompleto.Apellido.ToLower().Contains(texto)) ||
+				t.serviciosUsados.Any(s => s.tipoServicio!.Nombre.ToLower().Contains(texto)) ||
+				t.ServiciosExtras.Any(s => s.tipoServicio!.Nombre.ToLower().Contains(texto)) ||
+				(!string.IsNullOrWhiteSpace(t.Estado.ToString()) && t.Estado.ToString().ToLower().Contains(texto))
+			)
+			&& t.EmpleadoResponsable != null
+			&& t.EmpleadoResponsable.Email.Value.ToLower() == usuario.ToLower()
+		);
+
+			}
+
 
 			return query.ToList();
 		}

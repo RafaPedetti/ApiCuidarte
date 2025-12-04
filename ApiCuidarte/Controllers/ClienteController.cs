@@ -155,7 +155,7 @@ namespace ApiCuidarte.Controllers
 		{
 			try
 			{
-				IEnumerable<ClienteDto> c = _obtenerPorTexto.Ejecutar(texto);
+				IEnumerable<ClienteDto> c = _obtenerPorTexto.Ejecutar(texto,null);
 				if (c == null)
 				{
 					throw new ClienteException("No se encontro el cliente");
@@ -185,7 +185,7 @@ namespace ApiCuidarte.Controllers
 		{
 			try
 			{
-				PaginadoResultado<ClienteDto> c = _getAll.Ejecutar(pagina);
+				PaginadoResultado<ClienteDto> c = _getAll.Ejecutar(pagina,null);
 				if (c == null)
 				{
 					throw new ClienteException("No se encontraron cliente");

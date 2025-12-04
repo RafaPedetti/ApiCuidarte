@@ -10,9 +10,9 @@ namespace LogicaNegocio.InterfacesRepocitorio
 {
 	public interface IRepositorioTarea : IRepositorio<Tarea>
 	{
-		public IEnumerable<Tarea> GetByTexto(string texto);
+		public IEnumerable<Tarea> GetByTexto(string texto,string? usuario);
 
-		public IEnumerable<Tarea> GetAll(int pagina);
+		public IEnumerable<Tarea> GetAll(int pagina,string? usuario);
 		public int TotalItemsAsync();
 
 		public int GetHorasFuncionario(int idFuncionario, int mes, int anio);

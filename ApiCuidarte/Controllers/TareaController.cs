@@ -1,5 +1,6 @@
 ﻿using LogicaAplicacion.Dtos;
 using LogicaAplicacion.Dtos.Tareas;
+using LogicaAplicacion.Dtos.Usuarios;
 using LogicaNegocio.Entidades;
 using LogicaNegocio.Excepciones;
 using LogicaNegocio.Excepciones.Tarea;
@@ -8,6 +9,7 @@ using LogicaNegocio.InterfazServicios;
 using LogicaNegocio.ValueObject.Tarea;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 
 namespace ApiCuidarte.Controllers
 {
@@ -157,7 +159,17 @@ namespace ApiCuidarte.Controllers
 		{
 			try
 			{
-				IEnumerable<TareaDto> c = _obtenerPorTexto.Ejecutar(texto);
+				var rol = User.FindFirst(ClaimTypes.Role)?.Value;
+				IEnumerable<TareaDto> c;
+				if (rol == Administrador.DiscriminadorStatic)
+				{
+				c = _obtenerPorTexto.Ejecutar(texto,null);
+				}
+				else
+				{
+					c = _obtenerPorTexto.Ejecutar(texto, User.FindFirst(ClaimTypes.Email).Value);
+
+				}
 				if (c == null)
 				{
 					throw new TareaException("No se encontro la tarea");
@@ -188,7 +200,16 @@ namespace ApiCuidarte.Controllers
 		{
 			try
 			{
-				PaginadoResultado<TareaDto> c = _getAll.Ejecutar(pagina);
+				var rol = User.FindFirst(ClaimTypes.Role)?.Value;
+				PaginadoResultado<TareaDto> c;
+				if (rol == Administrador.DiscriminadorStatic)
+				{
+					c = _getAll.Ejecutar(pagina, null);
+				}
+				else
+				{
+					c = _getAll.Ejecutar(pagina, User.FindFirst(ClaimTypes.Email).Value);
+				}
 				if (c == null)
 				{
 					throw new TareaException("No se encontraron tareas");

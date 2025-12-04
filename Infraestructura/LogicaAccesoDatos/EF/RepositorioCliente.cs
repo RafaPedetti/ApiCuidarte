@@ -49,7 +49,7 @@ namespace Infraestructura.LogicaAccesoDatos.EF
 			Update(cliente);
 		}
 
-		public IEnumerable<Cliente> GetAll(int pagina)
+		public IEnumerable<Cliente> GetAll(int pagina, string? usuario)
 		{
 			return _context.Clientes.Include(c => c.Plan)
 			.Include(c => c.ServiciosDisponibles).ThenInclude(s => s.tipoServicio)
@@ -83,7 +83,7 @@ namespace Infraestructura.LogicaAccesoDatos.EF
 			return cliente;
 		}
 
-		public IEnumerable<Cliente> GetByTexto(string texto)
+		public IEnumerable<Cliente> GetByTexto(string texto, string? usuario)
 		{
 			if (string.IsNullOrWhiteSpace(texto))
 				return Enumerable.Empty<Cliente>();

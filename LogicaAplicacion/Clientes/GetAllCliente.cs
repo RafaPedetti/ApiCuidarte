@@ -20,9 +20,9 @@ namespace LogicaAplicacion.Clientes
 		{
 			_context = context;
 		}
-		public PaginadoResultado<ClienteDto> Ejecutar(int pagina)
+		public PaginadoResultado<ClienteDto> Ejecutar(int pagina, string? usuario)
 		{
-			var clientes = _context.GetAll(pagina);
+			var clientes = _context.GetAll(pagina,null);
 			var totalClientes = _context.TotalItems();
 			return new PaginadoResultado<ClienteDto>(ClienteMapper.ToListaDto(clientes), totalClientes);
 		}

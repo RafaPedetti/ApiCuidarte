@@ -14,10 +14,10 @@ namespace LogicaAplicacion.Tareas
 		{
 			_context = context;
 		}
-		public PaginadoResultado<TareaDto> Ejecutar(int pagina)
+		public PaginadoResultado<TareaDto> Ejecutar(int pagina, string? usuario)
 		{
 			var totalItems = _context.TotalItemsAsync();
-			var tareas =  _context.GetAll(pagina);
+			var tareas =  _context.GetAll(pagina,usuario);
 			return new PaginadoResultado<TareaDto>(TareaMapper.ToListaDto(tareas), totalItems);
 
 		}

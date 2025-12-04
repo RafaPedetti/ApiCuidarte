@@ -76,7 +76,7 @@ namespace Infraestructura.LogicaAccesoDatos.EF
 			return unUser;
 		}
 
-		public IEnumerable<Usuario> GetByText(string texto)
+		public IEnumerable<Usuario> GetByText(string texto, string? usuario)
 		{
 			IEnumerable<Usuario> usuarios = _context.Usuarios
 				.Where(user => !user.Eliminado && (user.NombreCompleto.Nombre.Contains(texto) || user.NombreCompleto.Apellido.Contains(texto) || user.Email.Value.Contains(texto)))

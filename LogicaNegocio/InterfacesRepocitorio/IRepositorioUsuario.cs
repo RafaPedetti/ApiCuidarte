@@ -11,6 +11,6 @@ namespace LogicaNegocio.InterfacesRepocitorio
 	public interface IRepositorioUsuario :IRepositorio<Usuario>
 	{
 		public Usuario GetByLogin(string email, string pass);
-		public IEnumerable<Usuario> GetByText(string texto);
+		public IEnumerable<Usuario> GetByText(string texto, string? usuario);
 	}
 }

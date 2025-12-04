@@ -8,7 +8,7 @@ namespace LogicaNegocio.InterfacesServicios
 {
 	public interface IObtenerPaginado<T>
 	{
-		T Ejecutar(int pagina);
+		T Ejecutar(int pagina, string? usuario);
 	}
 
 }

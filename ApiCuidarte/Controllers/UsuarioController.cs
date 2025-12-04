@@ -204,7 +204,7 @@ namespace ApiCuidarte.Controllers
 				{
 					throw new UsuarioException("El texto de busqueda no puede ser vacio");
 				}
-				IEnumerable<UsuarioDto> usuarios = _obtenerPorTexto.Ejecutar(texto);
+				IEnumerable<UsuarioDto> usuarios = _obtenerPorTexto.Ejecutar(texto,null);
 				if (usuarios == null || !usuarios.Any())
 				{
 					throw new UsuarioException("No se encontraron usuarios con el texto proporcionado");
@@ -275,7 +275,7 @@ namespace ApiCuidarte.Controllers
 				}
 				else
 				{
-					usuarios = _obtenerPorTexto.Ejecutar(User.FindFirst(ClaimTypes.Email).Value);
+					usuarios = _obtenerPorTexto.Ejecutar(User.FindFirst(ClaimTypes.Email).Value,null);
 				}
 				if (usuarios == null || !usuarios.Any())
 				{

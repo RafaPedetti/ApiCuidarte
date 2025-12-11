@@ -1,4 +1,5 @@
-﻿using LogicaNegocio.IntefacesDominio;
+﻿using LogicaNegocio.Excepciones;
+using LogicaNegocio.IntefacesDominio;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -28,6 +29,7 @@ namespace LogicaNegocio.Entidades
 
 		public void Update(TipoServicio obj)
 		{
+			if (PrecioHora <= 0) throw new DomainException("El precio debe ser mayor a 0");
 			Nombre = obj.Nombre;
 			PrecioHora = obj.PrecioHora;
 

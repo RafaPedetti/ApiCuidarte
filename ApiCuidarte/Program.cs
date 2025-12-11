@@ -100,7 +100,7 @@ namespace ApiCuidarte
 				});
 			});
 
-			var claveSecreta = "ZWRpw6fDo28gZW0gY29tcHV0YWRvcmE=";
+			var claveSecreta = "m_7??o87F`T-£'sqf)`n@d{\"7V@%5SNd?MWK!#";
 			builder.Services.AddAuthentication(aut =>
 			{
 				aut.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -207,6 +207,7 @@ namespace ApiCuidarte
 				app.UseSwaggerUI();
 			}
 
+			app.UseMiddleware<ExceptionMiddleware>();
 			app.UseCors("PermitirFrontend");
 
 			app.UseHttpsRedirection();

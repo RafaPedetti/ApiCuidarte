@@ -1,4 +1,5 @@
-﻿using LogicaAplicacion.Dtos;
+﻿using Infraestructura.LogicaAccesoDatos.Excepciones;
+using LogicaAplicacion.Dtos;
 using LogicaAplicacion.Dtos.Tareas;
 using LogicaAplicacion.Dtos.Usuarios;
 using LogicaNegocio.Entidades;
@@ -60,15 +61,20 @@ namespace ApiCuidarte.Controllers
 			}
 			catch (DomainException ex)
 			{
-				return StatusCode(400, ex.Message);
+				return BadRequest(new { message = ex.Message });
 			}
-			catch (ArgumentException ex)
+			catch (UnauthorizedAccessException)
 			{
-				return StatusCode(500, "Hupp" + ex.Message);
+				return Unauthorized(new { message = "No autorizado" });
 			}
-			catch (Exception ex)
+			catch (NotFoundException ex)
 			{
-				return StatusCode(500, "Hupps hubo un error intente nuevamente mas tarde");
+				return NotFound(new { message = ex.Message });
+			}
+			catch (Exception)
+			{
+				return StatusCode(StatusCodes.Status500InternalServerError,
+					new { message = "Hupps hubo un error, intente nuevamente más tarde" });
 			}
 		}
 		[ProducesResponseType(StatusCodes.Status200OK)]
@@ -84,15 +90,20 @@ namespace ApiCuidarte.Controllers
 			}
 			catch (DomainException ex)
 			{
-				return StatusCode(400, ex.Message);
+				return BadRequest(new { message = ex.Message });
 			}
-			catch (ArgumentException ex)
+			catch (UnauthorizedAccessException)
 			{
-				return StatusCode(500, "Hupp" + ex.Message);
+				return Unauthorized(new { message = "No autorizado" });
 			}
-			catch (Exception ex)
+			catch (NotFoundException ex)
 			{
-				return StatusCode(500, "Hupps hubo un error intente nuevamente mas tarde");
+				return NotFound(new { message = ex.Message });
+			}
+			catch (Exception)
+			{
+				return StatusCode(StatusCodes.Status500InternalServerError,
+					new { message = "Hupps hubo un error, intente nuevamente más tarde" });
 			}
 		}
 		[ProducesResponseType(StatusCodes.Status200OK)]
@@ -108,15 +119,20 @@ namespace ApiCuidarte.Controllers
 			}
 			catch (DomainException ex)
 			{
-				return StatusCode(400, ex.Message);
+				return BadRequest(new { message = ex.Message });
 			}
-			catch (ArgumentException ex)
+			catch (UnauthorizedAccessException)
 			{
-				return StatusCode(500, "Hupp" + ex.Message);
+				return Unauthorized(new { message = "No autorizado" });
 			}
-			catch (Exception ex)
+			catch (NotFoundException ex)
 			{
-				return StatusCode(500, "Hupps hubo un error intente nuevamente mas tarde");
+				return NotFound(new { message = ex.Message });
+			}
+			catch (Exception)
+			{
+				return StatusCode(StatusCodes.Status500InternalServerError,
+					new { message = "Hupps hubo un error, intente nuevamente más tarde" });
 			}
 		}
 
@@ -138,15 +154,20 @@ namespace ApiCuidarte.Controllers
 			}
 			catch (DomainException ex)
 			{
-				return StatusCode(400, ex.Message);
+				return BadRequest(new { message = ex.Message });
 			}
-			catch (ArgumentException ex)
+			catch (UnauthorizedAccessException)
 			{
-				return StatusCode(500, "Hupp" + ex.Message);
+				return Unauthorized(new { message = "No autorizado" });
 			}
-			catch (Exception ex)
+			catch (NotFoundException ex)
 			{
-				return StatusCode(500, "Hupps hubo un error intente nuevamente mas tarde");
+				return NotFound(new { message = ex.Message });
+			}
+			catch (Exception)
+			{
+				return StatusCode(StatusCodes.Status500InternalServerError,
+					new { message = "Hupps hubo un error, intente nuevamente más tarde" });
 			}
 		}
 
@@ -178,15 +199,20 @@ namespace ApiCuidarte.Controllers
 			}
 			catch (DomainException ex)
 			{
-				return StatusCode(400, ex.Message);
+				return BadRequest(new { message = ex.Message });
 			}
-			catch (ArgumentException ex)
+			catch (UnauthorizedAccessException)
 			{
-				return StatusCode(500, "Hupp" + ex.Message);
+				return Unauthorized(new { message = "No autorizado" });
 			}
-			catch (Exception ex)
+			catch (NotFoundException ex)
 			{
-				return StatusCode(500, "Hupps hubo un error intente nuevamente mas tarde");
+				return NotFound(new { message = ex.Message });
+			}
+			catch (Exception)
+			{
+				return StatusCode(StatusCodes.Status500InternalServerError,
+					new { message = "Hupps hubo un error, intente nuevamente más tarde" });
 			}
 		}
 
@@ -218,15 +244,20 @@ namespace ApiCuidarte.Controllers
 			}
 			catch (DomainException ex)
 			{
-				return StatusCode(204, ex.Message);
+				return BadRequest(new { message = ex.Message });
 			}
-			catch (ArgumentException ex)
+			catch (UnauthorizedAccessException)
 			{
-				return StatusCode(500, "Hupp" + ex.Message);
+				return Unauthorized(new { message = "No autorizado" });
 			}
-			catch (Exception ex)
+			catch (NotFoundException ex)
 			{
-				return StatusCode(500, "Hupps hubo un error intente nuevamente mas tarde");
+				return NotFound(new { message = ex.Message });
+			}
+			catch (Exception)
+			{
+				return StatusCode(StatusCodes.Status500InternalServerError,
+					new { message = "Hupps hubo un error, intente nuevamente más tarde" });
 			}
 		}
 
@@ -248,15 +279,20 @@ namespace ApiCuidarte.Controllers
 			}
 			catch (DomainException ex)
 			{
-				return StatusCode(204, ex.Message);
+				return BadRequest(new { message = ex.Message });
 			}
-			catch (ArgumentException ex)
+			catch (UnauthorizedAccessException)
 			{
-				return StatusCode(500, "Hupp" + ex.Message);
+				return Unauthorized(new { message = "No autorizado" });
 			}
-			catch (Exception ex)
+			catch (NotFoundException ex)
 			{
-				return StatusCode(500, "Hupps hubo un error intente nuevamente mas tarde");
+				return NotFound(new { message = ex.Message });
+			}
+			catch (Exception)
+			{
+				return StatusCode(StatusCodes.Status500InternalServerError,
+					new { message = "Hupps hubo un error, intente nuevamente más tarde" });
 			}
 		}
 	}

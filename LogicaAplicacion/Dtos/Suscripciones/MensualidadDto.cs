@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace LogicaAplicacion.Dtos.Suscripciones
 {
-	public record MensualidadDto(int id, int suscripcionId,SuscripcionDto? suscripcion,DateOnly periodoDesde, DateOnly periodoHasta,MensualidadEstado estado)
+	public record MensualidadDto(int id, int suscripcionId,SuscripcionDto? suscripcion,DateOnly periodoDesde, DateOnly periodoHasta,MensualidadEstado estado,decimal precio,int? clienteId)
 	{
 	}
 }

@@ -8,23 +8,26 @@ namespace LogicaNegocio.Entidades
 	public class Cliente : IEntity
 	{
 		public int Id { get; set; }
-
 		[Required]
-		public NombreCompleto NombreCompleto { get; set; }
-
+		public DateOnly Fecha{ get; set; }
+		[Required]
 		public string CI { get; set; } 
 		[Required]
-		public DateOnly FechaNacimiento { get; set; }
+		public NombreCompleto NombreCompleto { get; set; }
 		[Required]
-		public string Direccion { get; set; }
+		public DateOnly FechaNacimiento { get; set; }
+
+		public TipoPlan Plan { get; set; }
 		[Required]
 		public Telefono Telefono { get; set; }
-		
-		[Required]
-		public Telefono Celular { get; set; }
 
 		[Required]
 		public Email Email { get; set; }
+		[Required]
+		public string Direccion { get; set; }
+		
+		[Required]
+		public Telefono Celular { get; set; }
 
 		[Required]
 		public string ResponsablePago { get; set; }
@@ -36,7 +39,6 @@ namespace LogicaNegocio.Entidades
 		public string Observaciones { get; set; }
 		public int TipoPlanId { get; set; }
 
-		public TipoPlan Plan { get; set; }
 
 		public List<Servicio> ServiciosDisponibles { get; set; } = new();
 		public List<Servicio> ServiciosExtras { get; set; } = new();
@@ -45,9 +47,10 @@ namespace LogicaNegocio.Entidades
 		public int? SuscripcionId { get; set; }
 		public bool Eliminado { get; set; }
 
-		public Cliente(int id, NombreCompleto nombreCompleto, string ci,DateOnly fechaNacimiento, string direccion, Telefono telefono,Telefono celular, int plan,Email email,string ResponsablePago,string FormaPago,string Observaciones ,Suscripcion suscripcion)
+		public Cliente(int id, DateOnly fecha, NombreCompleto nombreCompleto, string ci,DateOnly fechaNacimiento, string direccion, Telefono telefono,Telefono celular, int plan,Email email,string ResponsablePago,string FormaPago,string Observaciones ,Suscripcion suscripcion)
 		{
 			Id = id;
+			fecha = Fecha;
 			NombreCompleto = nombreCompleto;
 			FechaNacimiento = fechaNacimiento;
 			Direccion = direccion;
@@ -63,9 +66,10 @@ namespace LogicaNegocio.Entidades
 			ValidarCedula(CI);
 		}
 
-		public Cliente(int id, NombreCompleto nombreCompleto, string ci, DateOnly fechaNacimiento, string direccion, Telefono telefono,Telefono celular, int plan, Email email, string ResponsablePago, string FormaPago, string Observaciones)
+		public Cliente(int id, DateOnly fecha, NombreCompleto nombreCompleto, string ci, DateOnly fechaNacimiento, string direccion, Telefono telefono,Telefono celular, int plan, Email email, string ResponsablePago, string FormaPago, string Observaciones)
 		{
 			Id = id;
+			Fecha = fecha;
 			NombreCompleto = nombreCompleto;
 			FechaNacimiento = fechaNacimiento;
 			Direccion = direccion;
@@ -81,9 +85,10 @@ namespace LogicaNegocio.Entidades
 		}
 
 
-		public Cliente(int id, NombreCompleto nombreCompleto, string ci, DateOnly fechaNacimiento, string direccion, Telefono telefono, Telefono celular,Email email, string ResponsablePago, string FormaPago, string Observaciones)
+		public Cliente(int id,DateOnly fecha, NombreCompleto nombreCompleto, string ci, DateOnly fechaNacimiento, string direccion, Telefono telefono, Telefono celular,Email email, string ResponsablePago, string FormaPago, string Observaciones)
 		{
 			Id = id;
+			Fecha = fecha;
 			NombreCompleto = nombreCompleto;
 			FechaNacimiento = fechaNacimiento;
 			Direccion = direccion;
@@ -105,6 +110,7 @@ namespace LogicaNegocio.Entidades
 				ValidarCedula(c.CI);
 				this.CI = c.CI;
 			}
+			if(c.Fecha != null) this.Fecha = (DateOnly)c.Fecha;
 			if( c.NombreCompleto != null) this.NombreCompleto =c.NombreCompleto;
 			if (c.FechaNacimiento != null) this.FechaNacimiento = (DateOnly)c.FechaNacimiento;
 			if (c.Direccion != null) this.Direccion = c.Direccion;

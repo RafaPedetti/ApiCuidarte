@@ -19,6 +19,8 @@ namespace LogicaNegocio.Entidades
 		[Required]
 		public decimal Precio { get; set; }
 
+		public decimal PrecioConDescuentoNoUso { get; set; }
+
 		public ICollection<Suscripcion> Suscripciones { get; set; }
 		  = new List<Suscripcion>();
 
@@ -31,28 +33,31 @@ namespace LogicaNegocio.Entidades
 		{
 		}
 
-		public TipoPlan(int id, string nombre, List<Servicio> servicios, decimal precio, PlanDestino destino)
+		public TipoPlan(int id, string nombre, List<Servicio> servicios, decimal precio, decimal? precioConDescuento, PlanDestino destino)
 		{
 			Id = id;
 			Nombre = nombre;
 			Servicios = servicios;
 			Precio = precio;
+			if(precioConDescuento != null && precioConDescuento != 0)PrecioConDescuentoNoUso = (decimal)precioConDescuento;
 			Destino = destino;
 		}
 
-		public TipoPlan(string nombre, List<Servicio> servicios, decimal precio, PlanDestino destino)
+		public TipoPlan(string nombre, List<Servicio> servicios, decimal precio, decimal? precioConDescuento, PlanDestino destino)
 		{
 			Nombre = nombre;
 			Servicios = servicios;
 			Precio = precio;
+			if (precioConDescuento != null && precioConDescuento != 0) PrecioConDescuentoNoUso = (decimal)precioConDescuento;
 			Destino = destino;
 		}
 
-		public TipoPlan(int id, string nombre, decimal precio, PlanDestino destino)
+		public TipoPlan(int id, string nombre, decimal precio, decimal? precioConDescuento, PlanDestino destino)
 		{
 			Id = id;
 			Nombre = nombre;
 			Precio = precio;
+			if (precioConDescuento != null && precioConDescuento != 0) PrecioConDescuentoNoUso = (decimal)precioConDescuento;
 			Destino = destino;
 		}
 

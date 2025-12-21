@@ -17,5 +17,7 @@ namespace LogicaNegocio.InterfacesRepocitorio
 
 		public int GetHorasFuncionario(int idFuncionario, int mes, int anio);
 
+		public IEnumerable<Tarea> GetTareasByCliente(int idCliente);
+
 	}
 }

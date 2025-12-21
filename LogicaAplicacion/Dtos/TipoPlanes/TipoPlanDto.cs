@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace LogicaAplicacion.Dtos.TipoPlanes
 {
-	public record TipoPlanDto(int id,string nombre,List<ServicioDto> servicios,int? empresaId,decimal precio,PlanDestino destino)
+	public record TipoPlanDto(int id,string nombre,List<ServicioDto> servicios,int? empresaId,decimal precio,decimal? precioConDescuento,PlanDestino destino)
 	{
 	}
 }

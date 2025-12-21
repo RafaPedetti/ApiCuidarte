@@ -73,7 +73,7 @@ namespace LogicaNegocio.Entidades
 			FechaInicio = DateOnly.FromDateTime(DateTime.UtcNow);
 			ProximoCobro = DateOnly.FromDateTime(DateTime.UtcNow.AddMonths(1));
 			Estado = SuscripcionEstado.Activa;
-			Mensualidad mensualidad = new Mensualidad(this.Id, this.FechaInicio, this.ProximoCobro);
+			Mensualidad mensualidad = new Mensualidad(this.Id, this.FechaInicio, this.ProximoCobro, Plan.Precio);
 			Mensualidades.Add(mensualidad);
 		}
 
@@ -90,7 +90,7 @@ namespace LogicaNegocio.Entidades
 			FechaInicio = DateOnly.FromDateTime(DateTime.UtcNow);
 			ProximoCobro = DateOnly.FromDateTime(DateTime.UtcNow.AddMonths(1));
 			Estado = SuscripcionEstado.Activa;
-			Mensualidad mensualidad = new Mensualidad(this.Id, this.FechaInicio, this.ProximoCobro);
+			Mensualidad mensualidad = new Mensualidad(this.Id, this.FechaInicio, this.ProximoCobro, Plan.Precio);
 			Mensualidades.Add(mensualidad);
 		}
 
@@ -108,7 +108,7 @@ namespace LogicaNegocio.Entidades
 			FechaInicio = DateOnly.FromDateTime(DateTime.UtcNow);
 			ProximoCobro = DateOnly.FromDateTime(DateTime.UtcNow.AddMonths(1));
 			Estado = SuscripcionEstado.Activa;
-			Mensualidad mensualidad = new Mensualidad(this.Id, this.FechaInicio, this.ProximoCobro);
+			Mensualidad mensualidad = new Mensualidad(this.Id, this.FechaInicio, this.ProximoCobro, Plan.Precio);
 			Mensualidades.Add(mensualidad);
 		}
 		public void Update(Suscripcion suscripcionUpdate)

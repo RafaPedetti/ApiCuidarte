@@ -200,6 +200,20 @@ namespace Infraestructura.LogicaAccesoDatos.EF
 			return totalHoras;
 		}
 
-
+		public IEnumerable<Tarea> GetTareasByCliente(int idCliente)
+		{
+			if (idCliente == null)
+			{
+				throw new ArgumentNullException(nameof(idCliente), "El ID no puede ser nulo.");
+			}
+		return _context.Tareas
+				.Include(t => t.EmpleadoResponsable)
+				.Include(t => t.Cliente)
+				.Include(t => t.Calificación)
+				.Include(t => t.serviciosUsados).ThenInclude(s => s.tipoServicio)
+				.Include(t => t.ServiciosExtras).ThenInclude(s => s.tipoServicio)
+				.Where(t => t.Cliente.Id == idCliente)
+				.ToList();
+		}
 	}
 }

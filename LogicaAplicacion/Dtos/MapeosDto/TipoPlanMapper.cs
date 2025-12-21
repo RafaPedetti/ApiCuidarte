@@ -14,7 +14,7 @@ namespace LogicaAplicacion.Dtos.MapeosDto
 	{
 		public static TipoPlan FromDto(TipoPlanDto tpDto)
 		{
-			TipoPlan plan = new TipoPlan(tpDto.id,tpDto.nombre, tpDto.precio,tpDto.destino);
+			TipoPlan plan = new TipoPlan(tpDto.id,tpDto.nombre, tpDto.precio,tpDto.precioConDescuento ,tpDto.destino);
 			return plan;
 		}
 
@@ -23,11 +23,11 @@ namespace LogicaAplicacion.Dtos.MapeosDto
 			TipoPlanDto tpDto;
 			if (tp.EmpresaId == null || tp.Empresa == null)
 			{
-				tpDto = new TipoPlanDto(tp.Id, tp.Nombre, ServicioMapper.ToListaDto(tp.Servicios).ToList(),null, tp.Precio,tp.Destino);
+				tpDto = new TipoPlanDto(tp.Id, tp.Nombre, ServicioMapper.ToListaDto(tp.Servicios).ToList(),null, tp.Precio, tp.PrecioConDescuentoNoUso, tp.Destino);
 			}
 			else
 			{
-				tpDto = new TipoPlanDto(tp.Id, tp.Nombre, ServicioMapper.ToListaDto(tp.Servicios).ToList(), tp.Empresa.Id, tp.Precio,tp.Destino);
+				tpDto = new TipoPlanDto(tp.Id, tp.Nombre, ServicioMapper.ToListaDto(tp.Servicios).ToList(), tp.Empresa.Id, tp.Precio, tp.PrecioConDescuentoNoUso, tp.Destino);
 			}
 			return tpDto;
 		}

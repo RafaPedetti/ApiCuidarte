@@ -20,12 +20,14 @@ namespace LogicaAplicacion.Clientes
 		public readonly IRepositorioCliente _context;
 		public readonly IRepositorioTipoPlan _contextTP;
 		public readonly IRepositorioSuscripcion _contextSuscripcion;
+		public readonly IRepositorioEmpresa _contextEmpresa;
 
-		public EditarCliente(IRepositorioCliente context, IRepositorioTipoPlan contextTP,IRepositorioSuscripcion contextS)
+		public EditarCliente(IRepositorioCliente context, IRepositorioTipoPlan contextTP,IRepositorioSuscripcion contextS, IRepositorioEmpresa contextEmpresa)
 		{
 			_context = context;
 			_contextTP = contextTP;
 			_contextSuscripcion = contextS;
+			_contextEmpresa = contextEmpresa;
 		}
 		public ClienteDto Ejecutar(ClienteDto obj)
 		{
@@ -38,13 +40,21 @@ namespace LogicaAplicacion.Clientes
 				throw new DomainException("El Id del cliente debe ser mayor a 0");
 			}
 			Cliente c = ClienteMapper.FromDto(obj);
-			Suscripcion suscripcion = _contextSuscripcion.GetByIdCliente(c.Id);
 			TipoPlan tp= _contextTP.GetById(obj.TipoPlanId);
-			if (tp.Destino != PlanDestino.Cliente)
-			{
-				throw new ArgumentException("El Tipo de plan no es valido para un cliente");
-			}
 			c.Plan = tp;
+			Suscripcion suscripcion;
+			if (tp.Destino.Equals(PlanDestino.Empresa))
+			{
+				Empresa e = _contextEmpresa.GetById((int)tp.EmpresaId);
+				suscripcion = e.Suscripcion;
+				suscripcion.Clientes.Add(c);
+
+			}
+			else
+			{
+
+				 suscripcion = _contextSuscripcion.GetByIdCliente(c.Id);
+			}
 			suscripcion.Plan = tp;
 			_contextSuscripcion.Update(suscripcion);
 			ClienteDto cDto = ClienteMapper.ToDto(_context.Update(c));

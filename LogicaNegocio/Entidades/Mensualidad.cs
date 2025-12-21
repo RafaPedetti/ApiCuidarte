@@ -8,6 +8,7 @@ namespace LogicaNegocio.Entidades
 		public int Id { get; set; }
 		public int SubscriptionId { get; set; }
 		public Suscripcion? Subscription { get; set; }
+		public decimal Precio { get; set; }
 		public DateOnly PeriodoDesde { get; set; }
 		public DateOnly PeriodoHasta { get; set; }
 		public MensualidadEstado Estado { get; set; }
@@ -21,14 +22,15 @@ namespace LogicaNegocio.Entidades
 			Estado = MensualidadEstado.Pagada;
 		}
 
-		public Mensualidad(int subscriptionId, DateOnly periodoDesde, DateOnly periodoHasta)
+		public Mensualidad(int subscriptionId, DateOnly periodoDesde, DateOnly periodoHasta, decimal precio)
 		{
 			SubscriptionId = subscriptionId;
 			PeriodoDesde = periodoDesde;
 			PeriodoHasta = periodoHasta;
 			Estado = MensualidadEstado.Pagada;
+			Precio = precio;
 		}
-		public Mensualidad(int id,int subscriptionId,Suscripcion? suscripcion, DateOnly periodoDesde, DateOnly periodoHasta, MensualidadEstado estado)
+		public Mensualidad(int id,int subscriptionId,Suscripcion? suscripcion, DateOnly periodoDesde, DateOnly periodoHasta, MensualidadEstado estado, decimal precio)
 		{
 			Id = id;
 			SubscriptionId = subscriptionId;
@@ -36,6 +38,7 @@ namespace LogicaNegocio.Entidades
 			PeriodoDesde = periodoDesde;
 			PeriodoHasta = periodoHasta;
 			Estado = estado;
+			Precio = precio;
 		}
 
 
@@ -58,6 +61,7 @@ namespace LogicaNegocio.Entidades
 			PeriodoHasta = mensualidad.PeriodoHasta;
 			Estado = mensualidad.Estado;
 			Eliminado = mensualidad.Eliminado;
+			Precio = mensualidad.Precio;
 			if (Eliminado)
 			{
 				Estado= MensualidadEstado.Cancelada;

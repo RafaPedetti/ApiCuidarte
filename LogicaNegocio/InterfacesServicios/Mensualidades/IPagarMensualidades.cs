@@ -9,6 +9,6 @@ namespace LogicaNegocio.InterfacesServicios.Mensualidades
 {
 	public interface IPagarMensualidades<T>
 	{
-		public Mensualidad Ejecutar(int id);
+		public Mensualidad Ejecutar(int id,int? ClienteId);
 	}
 }

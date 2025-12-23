@@ -16,7 +16,7 @@ namespace WebApi
             //clave secreta, generalmente se incluye en el archivo de configuración
             //Debe ser un vector de bytes 
 
-            var clave = Encoding.ASCII.GetBytes("ZWRpw6fDo28gZW0gY29tcHV0YWRvcmE=");
+            var clave = Encoding.ASCII.GetBytes("m_7??o87F`T-£'sqf)`n@d{\"7V@%5SNd?MWK!#");
 
 
             //Se incluye un claim (privelegios) para el rol

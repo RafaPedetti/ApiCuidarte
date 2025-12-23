@@ -33,11 +33,11 @@ namespace ApiCuidarte.Controllers
 		[ProducesResponseType(StatusCodes.Status500InternalServerError)]
 		[HttpPost]
 		[Route("Pagar")]
-		public IActionResult Pagar([FromBody]int idSuscripcion)
+		public IActionResult Pagar([FromBody]int idSuscripcion, int? idCliente)
 		{
 			try
 			{
-				Mensualidad mCreado = _pagarMensualidades.Ejecutar(idSuscripcion);
+				Mensualidad mCreado = _pagarMensualidades.Ejecutar(idSuscripcion, idCliente);
 				return Ok(mCreado);
 			}
 			catch (DomainException ex)

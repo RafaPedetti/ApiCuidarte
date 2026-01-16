@@ -17,10 +17,26 @@ namespace LogicaAplicacion.Mensualidades
 			_repositorioTarea = repositorioTarea;
 		}
 
-		public IEnumerable<MensualidadDto> Ejecutar(int id)
+		public IEnumerable<MensualidadDto> Ejecutar(int id, int clienteId)
 		{
 			IEnumerable<Mensualidad> mensualidades = _repositorioMensualidad.GetByCliente(id);
-			return MensualidadMapper.ToListaDto(mensualidades);
+			IEnumerable<Tarea> tareas = _repositorioTarea.GetTareasByCliente(clienteId);
+			decimal precio = 0;
+			if (tareas.Count() == 0)
+			{
+				foreach (var mensualidad in mensualidades)
+				{
+					mensualidad.PrecioProximaMensualidad = mensualidad.Subscription.Plan.PrecioConDescuentoNoUso;
+				}
+			}
+			else
+			{
+				foreach (var mensualidad in mensualidades)
+				{
+					mensualidad.PrecioProximaMensualidad = mensualidad.Subscription.Plan.Precio;
+				}
+			}
+				return MensualidadMapper.ToListaDto(mensualidades);
 		}
 
 	}

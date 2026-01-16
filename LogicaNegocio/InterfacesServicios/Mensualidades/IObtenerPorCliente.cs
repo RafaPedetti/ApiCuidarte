@@ -8,6 +8,6 @@ namespace LogicaNegocio.InterfacesServicios.Mensualidades
 {
 	public interface IObtenerPorCliente<T>
 	{	
-		public IEnumerable<T> Ejecutar(int id);
+		public IEnumerable<T> Ejecutar(int id,int clienteId);
 	}
 }

@@ -11,7 +11,7 @@ COPY . .
 RUN dotnet restore ApiCuidarte/ApiCuidarte.csproj
 
 # Publicar la API
-RUN dotnet publish Api/ApiCuidarte.csproj -c Release -o /out
+RUN dotnet publish ApiCuidarte/ApiCuidarte.csproj -c Release -o /out
 
 # ===============================
 # RUNTIME STAGE

@@ -3,8 +3,8 @@ WORKDIR /src
 
 COPY . .
 
-RUN dotnet restore ApiCuidarte.csproj
-RUN dotnet publish ApiCuidarte.csproj -c Release -o /out
+RUN dotnet restore ApiCuidarte/ApiCuidarte.csproj
+RUN dotnet publish ApiCuidarte/ApiCuidarte.csproj -c Release -o /out
 
 FROM mcr.microsoft.com/dotnet/aspnet:8.0
 WORKDIR /app

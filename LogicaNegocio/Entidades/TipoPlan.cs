@@ -66,6 +66,7 @@ namespace LogicaNegocio.Entidades
 		{
 			this.Nombre = obj.Nombre;
 			this.Precio = obj.Precio;
+			this.PrecioConDescuentoNoUso = obj.PrecioConDescuentoNoUso;
 			this.Destino = obj.Destino;
 			this.Servicios.RemoveAll(s => !obj.Servicios.Any(ns => ns.Id == s.Id));
 

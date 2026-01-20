@@ -28,6 +28,7 @@ using Microsoft.OpenApi.Models;
 using System.Reflection;
 using System.Text;
 using System.Text.Json.Serialization;
+using WebApi;
 
 namespace ApiCuidarte
 {
@@ -50,7 +51,7 @@ namespace ApiCuidarte
 
 			builder.Services.AddControllers();
 			builder.Services.AddEndpointsApiExplorer();
-
+			builder.Services.AddScoped<ManejadorJwt>();
 			builder.Services.AddControllers().AddJsonOptions(
 				option =>
 				option.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles
@@ -100,7 +101,8 @@ namespace ApiCuidarte
 				});
 			});
 
-			var claveSecreta = "m_7??o87F`T-£'sqf)`n@d{\"7V@%5SNd?MWK!#";
+			var claveSecreta = builder.Configuration["Jwt:SecretKey"]
+				?? throw new Exception("JWT SecretKey no configurada");
 			builder.Services.AddAuthentication(aut =>
 			{
 				aut.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;

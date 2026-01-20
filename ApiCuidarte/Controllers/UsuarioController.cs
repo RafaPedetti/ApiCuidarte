@@ -25,7 +25,7 @@ namespace ApiCuidarte.Controllers
 		ILogin<UsuarioDto> _obtenerLogin;
 		IObtenerPorTexto<UsuarioDto> _obtenerPorTexto;
 		IObtenerHorasDelMes _obtenerHorasDelMes;
-
+		private readonly ManejadorJwt _jwt;
 		public UsuarioController(
 			IObtenerTodos<UsuarioDto> getAll,
 			IAlta<UsuarioDto> alta,
@@ -34,7 +34,8 @@ namespace ApiCuidarte.Controllers
 			IEditar<UsuarioDto> editar,
 			IEliminar<UsuarioDto> eliminar,
 			ILogin<UsuarioDto> login,
-			IObtenerHorasDelMes obtenerHorasDelMes
+			IObtenerHorasDelMes obtenerHorasDelMes,
+			ManejadorJwt jwt
 		)
 		{
 			_getAll = getAll;
@@ -45,6 +46,7 @@ namespace ApiCuidarte.Controllers
 			_eliminar = eliminar;
 			_obtenerLogin = login;
 			_obtenerHorasDelMes = obtenerHorasDelMes;
+			_jwt = jwt;
 		}
 
 		[ProducesResponseType(StatusCodes.Status200OK)]
@@ -61,7 +63,7 @@ namespace ApiCuidarte.Controllers
 					throw new UsuarioException("Ni el correo ni la contraseña debe ser vacia");
 				}
 				UsuarioDto usuario = _obtenerLogin.Ejecutar(user.Email, user.Password);
-				var token = ManejadorJwt.GenerarToken(usuario);
+				var token = _jwt.GenerarToken(usuario);
 				var usuarioConToken = usuario with { token = token };
 
 				return Ok(usuarioConToken);

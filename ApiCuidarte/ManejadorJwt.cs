@@ -1,5 +1,4 @@
-﻿
-using Microsoft.IdentityModel.Tokens;
+﻿using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
@@ -9,19 +8,24 @@ namespace WebApi
 {
     public class ManejadorJwt
     {
-        public static string GenerarToken(UsuarioDto user)
+		private readonly string _clave;
+
+		public ManejadorJwt(IConfiguration configuration)
+		{
+			_clave = configuration["Jwt:SecretKey"]
+					 ?? throw new Exception("JWT SecretKey no configurada");
+		}
+		public string GenerarToken(UsuarioDto user)
         {
             var tokenHandler = new JwtSecurityTokenHandler();
-
-            //clave secreta, generalmente se incluye en el archivo de configuración
-            //Debe ser un vector de bytes 
-
-            var clave = Encoding.ASCII.GetBytes("m_7??o87F`T-£'sqf)`n@d{\"7V@%5SNd?MWK!#");
+			var claveBytes = Encoding.ASCII.GetBytes(_clave);
+			//clave secreta, generalmente se incluye en el archivo de configuración
+			//Debe ser un vector de bytes 
 
 
-            //Se incluye un claim (privelegios) para el rol
+			//Se incluye un claim (privelegios) para el rol
 
-            var tokenDescriptor = new SecurityTokenDescriptor
+			var tokenDescriptor = new SecurityTokenDescriptor
             {
                 Subject = new ClaimsIdentity(new Claim[]
                 {
@@ -30,10 +34,11 @@ namespace WebApi
                 }),
                 Expires = DateTime.UtcNow.AddMonths(1),
 
-                SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(clave),
-                // hmac-codigo de autentificacion sha256-cifrado base64-codificacion
-                SecurityAlgorithms.HmacSha256Signature)
-            };
+				SigningCredentials = new SigningCredentials(
+					new SymmetricSecurityKey(claveBytes),
+					SecurityAlgorithms.HmacSha256Signature
+				)
+			};
 
             var token = tokenHandler.CreateToken(tokenDescriptor);
 

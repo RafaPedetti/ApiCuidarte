@@ -21,6 +21,7 @@ using LogicaNegocio.InterfacesRepocitorio;
 using LogicaNegocio.InterfacesServicios;
 using LogicaNegocio.InterfacesServicios.Mensualidades;
 using LogicaNegocio.InterfazServicios;
+using LogicaNegocio.ValueObject;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -37,21 +38,24 @@ namespace ApiCuidarte
 		public static void Main(string[] args)
 		{
 
+
 			var builder = WebApplication.CreateBuilder(args);
 
 			builder.Services.AddCors(options =>
 			{
 				options.AddPolicy("PermitirFrontend", policy =>
-				{	
+				{
 					policy.WithOrigins("http://localhost:3000")
 						  .AllowAnyHeader()
 						  .AllowAnyMethod();
 				});
 			});
-
 			builder.Services.AddControllers();
 			builder.Services.AddEndpointsApiExplorer();
 			builder.Services.AddScoped<ManejadorJwt>();
+			builder.Services.Configure<EmailOptions>(
+				builder.Configuration.GetSection("Email")
+			);
 			builder.Services.AddControllers().AddJsonOptions(
 				option =>
 				option.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles
@@ -196,10 +200,11 @@ namespace ApiCuidarte
 			var connectionString = builder.Configuration.GetConnectionString("cuidarte");
 			Console.WriteLine($"Cadena de conexión: {connectionString}");
 
-			builder.Services.AddDbContext<CuidarteContext>(
-				options => options.UseNpgsql
-				(builder.Configuration.GetConnectionString("cuidarte")));
-			builder.Configuration.AddJsonFile("appsettings.json", optional: false, reloadOnChange: true);
+			builder.Services.AddDbContext<CuidarteContext>(options =>
+			options.UseNpgsql(
+			builder.Configuration.GetConnectionString("cuidarte")
+				)
+			);
 			var app = builder.Build();
 
 			// Configure the HTTP request pipeline.

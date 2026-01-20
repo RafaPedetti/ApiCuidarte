@@ -8,6 +8,6 @@ namespace LogicaNegocio.InterfacesServicios
 {
 	public interface IFormularioNuevoCliente<T>
 	{
-		void Ejecutar(T obj);
+		Task Ejecutar(T obj);
 	}
 }

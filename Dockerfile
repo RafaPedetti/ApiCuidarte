@@ -3,16 +3,15 @@ WORKDIR /src
 
 COPY . .
 
-RUN dotnet publish ApiCuidarte.csproj -c Release -o /out
+RUN dotnet restore Api/ApiCuidarte.csproj
+RUN dotnet publish Api/ApiCuidarte.csproj -c Release -o /out
 
 FROM mcr.microsoft.com/dotnet/aspnet:8.0
 WORKDIR /app
 
 COPY --from=build /out .
 
-RUN ls -l
-
 ENV ASPNETCORE_URLS=http://+:8080
 EXPOSE 8080
 
-CMD ["dotnet", "ApiCuidarte.dll"]
+ENTRYPOINT ["dotnet", "ApiCuidarte.dll"]

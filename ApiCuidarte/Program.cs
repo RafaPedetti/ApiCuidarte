@@ -210,14 +210,12 @@ namespace ApiCuidarte
 			Parametros.TopeUnidades = config.GetValue<int>("TopeUnidades");
 
 			var connectionString = builder.Configuration.GetConnectionString("cuidarte");
-			Console.WriteLine($"Cadena de conexión: {connectionString}");
 
 			builder.Services.AddDbContext<CuidarteContext>(options =>
 			options.UseNpgsql(
 			builder.Configuration.GetConnectionString("cuidarte")
 				)
 			);
-			Console.WriteLine("Connection string: " + builder.Configuration.GetConnectionString("cuidarte"));
 			var app = builder.Build();
 
 			using (var scope = app.Services.CreateScope())

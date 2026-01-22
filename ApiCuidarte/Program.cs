@@ -212,6 +212,7 @@ namespace ApiCuidarte
 			builder.Configuration.GetConnectionString("cuidarte")
 				)
 			);
+			Console.WriteLine("Connection string: " + builder.Configuration.GetConnectionString("cuidarte"));
 			var app = builder.Build();
 
 			using (var scope = app.Services.CreateScope())

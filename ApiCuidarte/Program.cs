@@ -45,11 +45,18 @@ namespace ApiCuidarte
 			{
 				options.AddPolicy("PermitirFrontend", policy =>
 				{
-					policy.WithOrigins("http://localhost:3000")
-						  .AllowAnyHeader()
-						  .AllowAnyMethod();
+					policy.WithOrigins(
+						"http://localhost:3000",
+						"https://cuidarte-frontend-m5s94vpmu-rafapedettis-projects.vercel.app"
+					)
+					.AllowAnyHeader()
+					.AllowAnyMethod();
 				});
 			});
+			var port = Environment.GetEnvironmentVariable("PORT") ?? "5000";
+			builder.WebHost.UseUrls($"http://*:{port}");
+
+
 			builder.Services.AddControllers();
 			builder.Services.AddEndpointsApiExplorer();
 			builder.Services.AddScoped<ManejadorJwt>();
@@ -219,6 +226,7 @@ namespace ApiCuidarte
 
 			app.UseHttpsRedirection();
 
+			app.UseAuthentication();
 			app.UseAuthorization();
 
 			app.MapControllers();

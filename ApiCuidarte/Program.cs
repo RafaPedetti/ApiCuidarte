@@ -39,7 +39,12 @@ namespace ApiCuidarte
 		{
 
 
-			var builder = WebApplication.CreateBuilder(args);
+			var builder = WebApplication.CreateBuilder(new WebApplicationOptions
+			{
+				Args = args,
+				EnvironmentName = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") ?? "Production"
+			});
+
 
 			builder.Services.AddCors(options =>
 			{

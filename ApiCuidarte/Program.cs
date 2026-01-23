@@ -39,11 +39,8 @@ namespace ApiCuidarte
 		{
 
 
-			var builder = WebApplication.CreateBuilder(new WebApplicationOptions
-			{
-				Args = args,
-				EnvironmentName = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") ?? "Production"
-			});
+			var builder = WebApplication.CreateBuilder(args);
+
 
 
 			builder.Services.AddCors(options =>
@@ -231,6 +228,7 @@ namespace ApiCuidarte
 				app.UseSwagger();
 				app.UseSwaggerUI();
 			}
+		
 
 			app.UseMiddleware<ExceptionMiddleware>();
 			app.UseCors("PermitirFrontend");

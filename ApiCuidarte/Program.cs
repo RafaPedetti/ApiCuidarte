@@ -49,7 +49,7 @@ namespace ApiCuidarte
 				{
 					policy.WithOrigins(
 						"http://localhost:3000",
-						"https://cuidarte-frontend-m5s94vpmu-rafapedettis-projects.vercel.app"
+						"https://cuidarte-frontend-iefli298f-rafapedettis-projects.vercel.app"
 					)
 					.AllowAnyHeader()
 					.AllowAnyMethod();

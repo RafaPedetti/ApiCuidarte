@@ -26,10 +26,6 @@ namespace LogicaAplicacion.Clientes
 				throw new ArgumentNullException("El tipo de objeto está vacío");
 			Cliente c = ClienteMapper.FromDto(obj);
 			TipoPlan plan = _contextTipoPlan.GetById(obj.TipoPlanId);
-			if (plan.Destino.Equals(PlanDestino.Empresa))
-			{
-				throw new DomainException("El plan seleccionado no es valido para un cliente");
-			}
 			Cliente cCreado = _context.Add(c);
 			_context.CambiarPlan(cCreado.Id, plan);
 			var suscripcion = new Suscripcion(null,cCreado, cCreado.Plan);

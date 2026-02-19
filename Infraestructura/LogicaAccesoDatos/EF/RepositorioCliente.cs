@@ -1,4 +1,5 @@
 ﻿using LogicaNegocio.Entidades;
+using LogicaNegocio.Excepciones;
 using LogicaNegocio.InterfacesRepocitorio;
 using Microsoft.EntityFrameworkCore;
 
@@ -19,7 +20,7 @@ namespace Infraestructura.LogicaAccesoDatos.EF
 			.Any();
 
 			if (existe)
-				throw new InvalidOperationException("Ya existe un cliente con esa cédula.");
+				throw new DomainException("Ya existe un cliente con esa cédula.");
 
 			_context.Clientes.Add(obj);
 			_context.SaveChanges();
@@ -31,7 +32,7 @@ namespace Infraestructura.LogicaAccesoDatos.EF
 			Cliente cliente = GetById(idCliente);
 			if (cliente == null)
 			{
-				throw new KeyNotFoundException($"Cliente con ID {idCliente} no encontrado.");
+				throw new DomainException($"Cliente con ID {idCliente} no encontrado.");
 			}
 			cliente.TipoPlanId = tipoPlan.Id;
 			cliente.Plan = tipoPlan;
@@ -43,7 +44,7 @@ namespace Infraestructura.LogicaAccesoDatos.EF
 			Cliente cliente = GetById(id);
 			if (cliente == null)
 			{
-				throw new KeyNotFoundException($"Cliente con ID {id} no encontrado.");
+				throw new DomainException($"Cliente con ID {id} no encontrado.");
 			}
 			cliente.Eliminado = true;
 			Update(cliente);
@@ -78,7 +79,7 @@ namespace Infraestructura.LogicaAccesoDatos.EF
 
 			if (cliente == null)
 			{
-				throw new KeyNotFoundException($"El cliente con ID {id} no encontrado.");
+				throw new DomainException($"El cliente con ID {id} no encontrado.");
 			}
 			return cliente;
 		}
@@ -126,7 +127,7 @@ namespace Infraestructura.LogicaAccesoDatos.EF
 			{
 				bool existe = _context.Clientes.Any(c => c.CI == obj.CI);
 				if (existe)
-					throw new InvalidOperationException("Ya existe un cliente con esa cédula.");
+					throw new DomainException("Ya existe un cliente con esa cédula.");
 
 
 			}

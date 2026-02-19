@@ -1,4 +1,5 @@
 ﻿using LogicaNegocio.Entidades;
+using LogicaNegocio.Excepciones;
 using LogicaNegocio.InterfacesRepocitorio;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -29,7 +30,7 @@ namespace Infraestructura.LogicaAccesoDatos.EF
 			Empresa empresa = GetById(id);
 			if (empresa == null)
 			{
-				throw new KeyNotFoundException($"Empresa con ID {id} no encontrado.");
+				throw new DomainException($"Empresa con ID {id} no encontrado.");
 			}
 			empresa.Eliminado = true;
 			Update(empresa);
@@ -61,7 +62,7 @@ namespace Infraestructura.LogicaAccesoDatos.EF
 
 			if (empresa == null)
 			{
-				throw new KeyNotFoundException($"La empresa con ID {id} no encontrado.");
+				throw new DomainException($"La empresa con ID {id} no encontrado.");
 			}
 			return empresa;
 		}

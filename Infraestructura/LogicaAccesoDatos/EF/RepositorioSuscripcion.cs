@@ -1,4 +1,5 @@
 ﻿using LogicaNegocio.Entidades;
+using LogicaNegocio.Excepciones;
 using LogicaNegocio.InterfacesRepocitorio;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -39,7 +40,7 @@ namespace Infraestructura.LogicaAccesoDatos.EF
 			Suscripcion suscripcion = GetById(id);
 			if (suscripcion == null)
 			{
-				throw new KeyNotFoundException($"Suscripcion con ID {id} no encontrado.");
+				throw new DomainException($"Suscripcion con ID {id} no encontrado.");
 			}
 			suscripcion.Eliminado = true;
 			Update(suscripcion);
@@ -91,7 +92,7 @@ namespace Infraestructura.LogicaAccesoDatos.EF
 
 			if (suscripcion == null)
 			{
-				throw new KeyNotFoundException($"Suscripcion con ID {id} no encontrado.");
+				throw new DomainException($"Suscripcion con ID {id} no encontrado.");
 			}
 			return suscripcion;
 		}

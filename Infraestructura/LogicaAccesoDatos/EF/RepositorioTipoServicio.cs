@@ -1,4 +1,5 @@
 ﻿using LogicaNegocio.Entidades;
+using LogicaNegocio.Excepciones;
 using LogicaNegocio.InterfacesRepocitorio;
 using LogicaNegocio.InterfazRepositorio;
 using System;
@@ -30,7 +31,7 @@ namespace Infraestructura.LogicaAccesoDatos.EF
 			TipoServicio tipoServicio = GetById(id);
 			if(tipoServicio == null)
 			{
-				throw new KeyNotFoundException($"Tipo de servicio con ID {id} no encontrado.");
+				throw new DomainException($"Tipo de servicio con ID {id} no encontrado.");
 			}
 			tipoServicio.Eliminado = true; 
 			Update(tipoServicio);
@@ -51,7 +52,7 @@ namespace Infraestructura.LogicaAccesoDatos.EF
 			TipoServicio tipoServicio = _context.TipoServicios.FirstOrDefault(ts => ts.Id == id && !ts.Eliminado);
 			if(tipoServicio == null)
 			{
-				throw new KeyNotFoundException($"Tipo de servicio con ID {id} no encontrado.");
+				throw new DomainException($"Tipo de servicio con ID {id} no encontrado.");
 			}
 			return tipoServicio;
 		}
@@ -62,7 +63,7 @@ namespace Infraestructura.LogicaAccesoDatos.EF
 				throw new ArgumentNullException(nameof(obj), "El objeto no puede ser nulo.");
 			}
 			TipoServicio tipoServicio = GetById(obj.Id);
-			if(tipoServicio == null) throw new KeyNotFoundException($"Tipo de servicio con ID {obj.Id} no encontrado.");
+			if(tipoServicio == null) throw new DomainException($"Tipo de servicio con ID {obj.Id} no encontrado.");
 			tipoServicio.Update(obj);
 			_context.TipoServicios.Update(tipoServicio);
 			_context.SaveChanges();

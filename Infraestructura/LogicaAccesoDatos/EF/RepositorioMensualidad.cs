@@ -1,4 +1,5 @@
 ﻿using LogicaNegocio.Entidades;
+using LogicaNegocio.Excepciones;
 using LogicaNegocio.InterfacesRepocitorio;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -30,7 +31,7 @@ namespace Infraestructura.LogicaAccesoDatos.EF
 			Mensualidad mensualidad = GetById(id);
 			if (mensualidad == null)
 			{
-				throw new KeyNotFoundException($"Suscripcion con ID {id} no encontrado.");
+				throw new DomainException($"Suscripcion con ID {id} no encontrado.");
 			}
 			mensualidad.Eliminado = true;
 			Update(mensualidad);
@@ -68,7 +69,7 @@ namespace Infraestructura.LogicaAccesoDatos.EF
 
 			if (mensualidad == null)
 			{
-				throw new KeyNotFoundException($"Mensualidad con ID {id} no encontrado.");
+				throw new DomainException($"Mensualidad con ID {id} no encontrado.");
 			}
 			return mensualidad;
 		}

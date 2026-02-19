@@ -1,11 +1,13 @@
 ﻿using Infraestructura.LogicaAccesoDatos.Excepciones;
 using LogicaNegocio.Entidades;
+using LogicaNegocio.Excepciones;
 using LogicaNegocio.InterfacesRepocitorio;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Infraestructura.LogicaAccesoDatos.EF
 {
@@ -30,6 +32,10 @@ namespace Infraestructura.LogicaAccesoDatos.EF
 				_context.Usuarios.Add(obj);
 				_context.SaveChanges();
 				return obj;
+			}
+			catch (DomainException ex)
+			{
+				throw new DomainException($"Error al agregar el usuario: { ex.Message}");
 			}
 			catch (Exception ex)
 			{
@@ -101,6 +107,10 @@ namespace Infraestructura.LogicaAccesoDatos.EF
 				_context.Usuarios.Update(user);
 				_context.SaveChanges(true);
 				return user;
+			}
+			catch (DomainException ex)
+			{
+				throw new DomainException(ex.Message);
 			}
 			catch (Exception ex)
 			{

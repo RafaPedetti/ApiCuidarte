@@ -1,4 +1,5 @@
 ﻿using LogicaNegocio.Entidades;
+using LogicaNegocio.Excepciones;
 using LogicaNegocio.InterfacesRepocitorio;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -39,7 +40,7 @@ namespace Infraestructura.LogicaAccesoDatos.EF
 			Tarea tarea = GetById(id);
 			if (tarea == null)
 			{
-				throw new KeyNotFoundException($"Tipo de plan con ID {id} no encontrado.");
+				throw new DomainException($"Tipo de plan con ID {id} no encontrado.");
 			}
 			tarea.Eliminado = true;
 			Update(tarea);
@@ -99,7 +100,7 @@ namespace Infraestructura.LogicaAccesoDatos.EF
 
 			if (tarea == null)
 			{
-				throw new KeyNotFoundException($"Tipo de plan con ID {id} no encontrado.");
+				throw new DomainException($"Tipo de plan con ID {id} no encontrado.");
 			}
 			return tarea;
 		}

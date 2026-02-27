@@ -20,6 +20,7 @@ namespace LogicaAplicacion.Clientes
 		}
 		public async Task Ejecutar(ClienteFormularioDto obj)
 		{
+			Console.Write("Email: " +_email.FromAddress,_email.Password);
 			var message = new MimeMessage();
 			message.From.Add(new MailboxAddress(
 				_email.FromName,

@@ -49,7 +49,7 @@ namespace LogicaAplicacion.Clientes
 
 			message.Body = builder.ToMessageBody();
 
-			using var client = new SmtpClient(new ProtocolLogger(Console.OpenStandardOutput()));
+			using var client = new SmtpClient();
 
 			await client.ConnectAsync(
 				_email.SmtpHost,

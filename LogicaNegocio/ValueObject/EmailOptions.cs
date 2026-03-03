@@ -10,9 +10,8 @@ namespace LogicaNegocio.ValueObject
 	{
 		public string FromName { get; set; } = string.Empty;
 		public string FromAddress { get; set; } = string.Empty;
-		public string SmtpHost { get; set; } = string.Empty;
-		public int SmtpPort { get; set; }
-		public string Password { get; set; } = string.Empty;
+		public string ToAddress { get; set; } = string.Empty;
+		public string Key { get; set; } = string.Empty;
 	}
 
 }

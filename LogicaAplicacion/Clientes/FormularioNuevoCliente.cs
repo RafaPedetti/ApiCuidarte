@@ -1,12 +1,10 @@
 ﻿using LogicaAplicacion.Dtos.Clientes;
-using LogicaNegocio.Entidades;
 using LogicaNegocio.InterfacesServicios;
 using LogicaNegocio.ValueObject;
-using MailKit;
-using MailKit.Net.Smtp;
-using MailKit.Security;
+
 using Microsoft.Extensions.Options;
-using MimeKit;
+
+using Resend;
 
 
 namespace LogicaAplicacion.Clientes
@@ -14,57 +12,52 @@ namespace LogicaAplicacion.Clientes
 	public class FormularioNuevoCliente : IFormularioNuevoCliente<ClienteFormularioDto>
 	{
 		private readonly EmailOptions _email;
+		private IResend _client;
+
 
 		public FormularioNuevoCliente(IOptions<EmailOptions> emailOptions)
 		{
 			_email = emailOptions.Value;
+			_client = ResendClient.Create(_email.Key);
+
 		}
 		public async Task Ejecutar(ClienteFormularioDto obj)
 		{
-			var message = new MimeMessage();
-			message.From.Add(new MailboxAddress(
-				_email.FromName,
-				_email.FromAddress
-			));
+			var serviciosHtml = string.Join("",
+				obj.servicios.Select(s => $"<li>{s.servicio}: {s.horas} horas</li>")
+			);
 
-			message.To.Add(MailboxAddress.Parse(_email.FromAddress));
-			message.Subject = $"Nuevo mensaje de {obj.nombre} {obj.apellido}";
+			var htmlBody = $@"
+        <html>
+          <body style='font-family: Arial, sans-serif; color: #333;'>
+            <h2 style='color:#2c3e50;'>Nuevo Cliente</h2>
+            <p><strong>Nombre:</strong> {obj.nombre} {obj.apellido}</p>
+            <p><strong>Email:</strong> {obj.email}</p>
+            <p><strong>Teléfono:</strong> {obj.telefono}</p>
+            <p><strong>Fecha de Nacimiento:</strong> {obj.fechaNacimiento.ToShortDateString()}</p>
+            <p><strong>Dirección:</strong> {obj.direccion}</p>
+            <p><strong>CI:</strong> {obj.ci}</p>
+            <p><strong>Responsable de Pago:</strong> {obj.responsablePago}</p>
+            <p><strong>Forma de Pago:</strong> {obj.formaPago}</p>
+            <p><strong>Observaciones:</strong> {obj.observaciones}</p>
+            <h3 style='color:#2980b9;'>Servicios Solicitados</h3>
+            <ul>
+              {serviciosHtml}
+            </ul>
+          </body>
+        </html>";
 
-			var builder = new BodyBuilder
+			var email = new EmailMessage
 			{
-				TextBody = $@"
-				Nombre: {obj.nombre} {obj.apellido}
-				Email: {obj.email}
-				Teléfono: {obj.telefono}
-				Fecha de Nacimiento: {obj.fechaNacimiento.ToShortDateString()}
-				Dirección: {obj.direccion}
-				CI: {obj.ci}
-				Responsable de Pago: {obj.responsablePago}
-				Forma de Pago: {obj.formaPago}
-				Observaciones: {obj.observaciones}
-				Servicios Solicitados:
-				{string.Join(Environment.NewLine, obj.servicios.Select(s => $"- {s.servicio}: {s.horas} horas"))}
-"
+				From = _email.FromAddress,
+				To = new[] { _email.ToAddress },
+				Subject = $"{obj.nombre} {obj.apellido} completo el formulario.",
+				HtmlBody = htmlBody,
+				TextBody = $"Información cliente: {obj.nombre} {obj.apellido} - {obj.email}"
 			};
 
-			message.Body = builder.ToMessageBody();
-
-			using var client = new SmtpClient(new ProtocolLogger("smtp.log"));
-
-
-			await client.ConnectAsync(
-				_email.SmtpHost,
-				_email.SmtpPort,
-				SecureSocketOptions.StartTls
-			);
-
-			await client.AuthenticateAsync(
-				_email.FromAddress,
-				_email.Password
-			);
-
-			await client.SendAsync(message);
-			await client.DisconnectAsync(true);
+			var response = await _client.EmailSendAsync(email);
 		}
 	}
+
 }

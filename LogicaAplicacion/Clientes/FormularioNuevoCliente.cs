@@ -49,7 +49,8 @@ namespace LogicaAplicacion.Clientes
 
 			message.Body = builder.ToMessageBody();
 
-			using var client = new SmtpClient();
+			using var client = new SmtpClient(new ProtocolLogger("smtp.log"));
+
 
 			await client.ConnectAsync(
 				_email.SmtpHost,

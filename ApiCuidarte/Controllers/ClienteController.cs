@@ -264,8 +264,13 @@ namespace ApiCuidarte.Controllers
 			{
 				return NotFound(new { message = ex.Message });
 			}
-			catch (Exception)
+			catch (Exception ex)
 			{
+				// Loguear el detalle completo en Railway
+				Console.WriteLine($"❌ Error inesperado: {ex.Message}");
+				Console.WriteLine(ex.StackTrace);
+
+
 				return StatusCode(StatusCodes.Status500InternalServerError,
 					new { message = "Hupps hubo un error, intente nuevamente más tarde" });
 			}

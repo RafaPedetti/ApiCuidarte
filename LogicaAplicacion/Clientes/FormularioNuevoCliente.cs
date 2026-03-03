@@ -2,6 +2,7 @@
 using LogicaNegocio.Entidades;
 using LogicaNegocio.InterfacesServicios;
 using LogicaNegocio.ValueObject;
+using MailKit;
 using MailKit.Net.Smtp;
 using MailKit.Security;
 using Microsoft.Extensions.Options;
@@ -48,7 +49,8 @@ namespace LogicaAplicacion.Clientes
 
 			message.Body = builder.ToMessageBody();
 
-			using var client = new SmtpClient();
+			using var client = new SmtpClient(new ProtocolLogger(Console.OpenStandardOutput()));
+
 			await client.ConnectAsync(
 				_email.SmtpHost,
 				_email.SmtpPort,

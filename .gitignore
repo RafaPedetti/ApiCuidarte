@@ -363,3 +363,4 @@ MigrationBackup/
 FodyWeavers.xsd
 /ApiCuidarte/appsettings.json
 /ApiCuidarte/appsettings.json
+/ApiCuidarte/appsettings.Development.json
